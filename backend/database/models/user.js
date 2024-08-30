@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
   
 
 const UserSchema = new mongoose.Schema({
+
     username: {
         type: String,
+        unique: true,
         required: true,
         minlength: 1,
         trim: true                  
@@ -11,13 +13,46 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 1,
+        minlength: 1,           
         trim: true
-    }
-  
+    },
+    email: {
+        type: String,
+        required: false,         
+        trim: true,
+        lowercase: true,
+        unique: true,
+        // sparse:true,
+        match: [/\S+@\S+\.\S+/, 'is invalid'],
+        validate: {
+            validator: function(v) {
+                return this.telephone || v;
+            },
+            message: 'Debe proporcionar un email o un teléfono'
+        }  
+    },
+    telephone: {
+        type: String,
+        trim: true,
+        unique: true,
+        // sparse:true,
+        // Validación personalizada para comprobar que al menos uno de email o telefono está presente
+        validate: {
+            validator: function (value) {
+                return this.email || value; // Devuelve true si el teléfono está presente o si el email está presente
+            },
+            message: 'Debe proporcionar al menos un email o un teléfono.'
+        }
+    },
+
 });
+// UserSchema.pre('save', function(next) {
+//     if (!this.email && !this.telephone) {
+//         return next(new Error('Debe proporcionar al menos un email o un teléfono.'));
+//     }
 
+// });
 
-const List = mongoose.model('List', ListSchema);
+const User = mongoose.model('User', UserSchema);
 
-module.exports = List;
+module.exports = User;
