@@ -24,14 +24,27 @@ app.use((req, res, next) => {
     next();
 }); //this allows to make requests from different domains
 
-
+const verifyUserId = (req, res, next) => {
+    User.findById(req.params.userId)
+        .then(user => {
+            if (!user) {
+                return res.status(404).send({ error: 'User not found' });
+            }
+            next();
+        })
+        .catch(error => res.status(500).send({ error: 'Internal Server Error' }));
+};
 // Endpoints 
 // User
 
 app.get('/users', (req, res) => {
     User.find({})
         .then(users => res.send(users))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
 });
 
 app.post('/createUser', (req, res) => {
@@ -43,20 +56,32 @@ app.post('/createUser', (req, res) => {
     }))
         .save()
         .then((appointment) => res.send(appointment))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
 
 });
 
 app.get('/users/:userId', (req, res) => {
     User.find({_id: req.params.userId})
         .then(user => res.send(user))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
 });
 
 app.patch('/users/:userId', (req, res) => {
     User.findOneAndUpdate({ _id: req.params.userId }, { $set: req.body })
         .then(user => res.send(user))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
 });
 
 app.delete('/users/:userId', (req, res) => {
@@ -65,17 +90,57 @@ app.delete('/users/:userId', (req, res) => {
             return User.find({});
         })
         .then(users => res.send(users))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
 });
+
+
 // Apointments
 
 app.get('/appointments', (req, res) => {
     Appointment.find({})
         .then(appointments => res.send(appointments))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
 }
 );
 
+app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
+    (new Appointment({ 'userId': req.params.userId, 'worker': req.body.worker, 'date': req.body.date, 'haircut': req.body.haircut }))
+        .save()
+        .then((appointment) => res.send(appointment))
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
+});
+
+app.get('/users/:userId/appointments/', (req, res) => {
+    Appointment.find({ userID: req.params.userId })
+        .then(appointment => res.send(appointment))
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
+});
+
+app.patch('/users/:userId/appointments/:appointmentId', verifyUserId, (req, res) => {
+    Appointment.findOneAndUpdate({ _id: req.params.appointmentId }, { $set: req.body })
+        .then(appointment => res.send(appointment))
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
+});
 
 // Worker
 
@@ -83,5 +148,5 @@ app.get('/appointments', (req, res) => {
 
 
 
-app.listen(3000, () => console.log('Server is running on port 3000'));
+app.listen(3000, () => console.log('ClickToBook ready to go!'));
 

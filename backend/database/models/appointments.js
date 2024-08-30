@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
-        user: {
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true
@@ -9,11 +9,12 @@ const AppointmentSchema = new mongoose.Schema({
         worker: {   
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Worker',
-            required: true
+            required: false
         },    
         date: {
             type: Date,
             required: true,
+            unique: true,
             trim: true
         },
         haircut: {
@@ -21,11 +22,6 @@ const AppointmentSchema = new mongoose.Schema({
             enum: ['Corte de pelo', 'Corte de barba', 'Corte de pelo y barba'],
             required: true,
             
-        },
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
         },
         confirmed: {
             type: Boolean,
