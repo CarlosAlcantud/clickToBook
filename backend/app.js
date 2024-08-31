@@ -84,20 +84,25 @@ app.patch('/users/:userId', (req, res) => {
         );
 });
 
-app.delete('/users/:userId', (req, res) => {
-    User.findByIdAndDelete(req.params.userId)
-        .then(() => {
-            return User.find({});
-        })
-        .then(users => res.send(users))
+app.delete('/users/:userId', async (req, res) => {
+   const deleteAppointments = (user) => {
+        Appointment.deleteMany({ userId: user._id})
+            .then(() => user)
+            .catch((error) => {
+                console.log(error)
+                res.status(500).send({ error: 'Internal Server Error' });
+            });
+   };
+   const user = User.findByIdAndDelete(req.params.userId)
+        .then((user) => deleteAppointments(user))
         .catch((error) => {
             console.log(error)
             res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
+        });
+        res.send(user);
+
+            
 });
-
-
 // Apointments
 
 app.get('/appointments', (req, res) => {
@@ -122,8 +127,8 @@ app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
         );
 });
 
-app.get('/users/:userId/appointments/', (req, res) => {
-    Appointment.find({ userID: req.params.userId })
+app.get('/users/:userId/appointments', (req, res) => {
+    Appointment.find({ userId: req.params.userId })
         .then(appointment => res.send(appointment))
         .catch((error) => {
             console.log(error)
@@ -132,7 +137,7 @@ app.get('/users/:userId/appointments/', (req, res) => {
         );
 });
 
-app.patch('/users/:userId/appointments/:appointmentId', verifyUserId, (req, res) => {
+app.patch('/users/:userId/updateAppointment/:appointmentId', verifyUserId, (req, res) => {
     Appointment.findOneAndUpdate({ _id: req.params.appointmentId }, { $set: req.body })
         .then(appointment => res.send(appointment))
         .catch((error) => {
@@ -142,6 +147,19 @@ app.patch('/users/:userId/appointments/:appointmentId', verifyUserId, (req, res)
         );
 });
 
+
+app.delete('/users/:userId/deleteAppointment/:appointmentId', verifyUserId, (req, res) => {
+    Appointment.findByIdAndDelete(req.params.appointmentId)
+        .then(() => {
+            return Appointment.find({});
+        })
+        .then(appointments => res.send(appointments))
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
+});
 // Worker
 
 
