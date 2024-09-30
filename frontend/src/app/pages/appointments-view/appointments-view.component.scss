@@ -1,0 +1,225 @@
+@import "../../../main.scss";
+
+// this is the css code for the div that contains all the information about the apoointments
+.appointments-container { 
+  display: flex;
+  flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  height: 93vh;
+  width: 93vw;
+  background-color: white;
+  color: black;
+  padding: 2vw;
+  border-radius: 12px;
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.main-content { 
+    display: flex;
+    flex-direction: column;
+    
+    padding: 20vw;
+    margin-left: 2vw;
+    width: 25vw;
+    
+}
+
+.title {
+    display : flex;
+    color : black;
+    position : center;
+    
+}
+
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    width: 25vw;
+    height: 100%;
+    background-color: white;
+    padding: 2vw;
+    border-right: 1px solid gray;
+    margin-right: 2vw;
+}
+ 
+.list-of-appointments{
+    background-color: white ;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 20px;
+    border-radius: 0 12px 12px 0;
+    overflow: auto;
+}
+
+
+.days-menu {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5vw;
+    flex-grow: 1;
+    overflow: auto ;
+    .day-menu-item {
+        display: flex;
+        align-items: center;
+        padding: 1vw 1.5vw;
+        border-radius: 12px;
+        width: 100%;
+        color: #5f5f5f;
+        margin-bottom: 0.5vw;
+        text-decoration: none ;
+        
+        p {
+            display: flex; // Añade flexbox al párrafo
+            justify-content: space-between; // Distribuye el espacio entre el texto y el botón
+            align-items: center; // Alinea verticalmente el contenido
+            margin: 0px;
+            width: 100%;
+            word-wrap: break-word; // Permite que las palabras largas se dividan y se ajusten al contenedor
+            max-width: 100%;
+
+        }
+
+        &.is-active {
+            background-color: white;
+            color: black;
+            transform: translateY(-0.5vw);
+            box-shadow: 0 0.4vw 1.5vw rgba(212, 212, 212, 0.2);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+    }
+    overflow: auto;
+}
+
+.task {
+
+
+    background: #ffffff;
+    padding: 1.5vw 2vw;
+    margin-top: 1vw;
+    border-radius: 12px;
+    transition: box-shadow .5s ease, transform .3s ease;
+    user-select: none;
+    &:not(.complete){
+        &:active {
+            transform: scale(.95)
+
+        }
+
+        &:hover {
+            box-shadow: 0px 0px 5px #cccccc;
+
+        }
+
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.complete {
+        text-decoration: line-through #000000; 
+        opacity: .5;
+
+    }
+}
+
+.circle-add-button {
+    position: absolute;
+    bottom: 35px;
+    right: 35px;
+    height: 50px;
+    width: 50px;
+    border: none;
+    border-radius: 12%;
+}
+
+.btn-rounded-corners {
+    border-radius: 12px;
+}
+
+.task {
+    p {
+        margin:0px;
+    }
+
+    background-color: #201d1d;
+
+}
+
+.pull-right {
+    float: right;
+}
+
+.task-delete {
+    &:hover {
+        color: red;
+
+    }
+
+    padding:0px 5px;
+}
+
+a.day-menu-item {
+    &:hover{
+        text-decoration: none;
+    
+    }
+   
+}
+
+
+
+//   .appointments-view__header {
+//     display: flex;
+//     flex-direction: row;
+//     align-items: center;
+//     justify-content: space-between;
+//     width: 100%;
+//     margin-bottom: 20px;
+
+//     h1 {
+//       font-size: 2rem;
+//     }
+
+//     .appointments-view__header__buttons {
+//       display: flex;
+//       flex-direction: row;
+//       align-items: center;
+//       justify-content: space-between;
+//     }
+//   }
+
+//   .appointments-view__table {
+//     width: 100%;
+//     border-collapse: collapse;
+
+//     th {
+//       background-color: $background-color;
+//       color: $text-color;
+//       font-size: 1.2rem;
+//       font-weight: 400;
+//       padding: 10px;
+//       text-align: left;
+//     }
+
+//     td {
+//       background-color: $background-color;
+//       color: $text-color;
+//       font-size: 1rem;
+//       font-weight: 300;
+//       padding: 10px;
+//       border-bottom: 1px solid $text-color;
+//     }
+
+//     tr {
+//       transition: background-color 0.3s;
+
+//       &:hover {
+//         background-color: $hover-color;
+//       }
+//     }
+//   }
+// }
