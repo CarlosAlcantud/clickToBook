@@ -5,25 +5,23 @@
             <div class="days-menu" >
                 <a href="#" class="day-menu-item is-active" *ngFor="let appointments of appointments" >
                     <p class="black-text">
-                        rjlakjdk
-                        <!-- {{appointments.userId}} -->
+                        
+                        {{appointments.userId}}
                         <span class="pull-right task-delete btn-rounded-corners">X</span>
                     </p>
                 </a>
             </div>
             <button class="btn btn-primary btn-rounded-corners" > Add Appointments</button>
         </div>
-        <div class="main-content">
-            <div class="days-menu">
-                <div class="day-menu-item is-active">
-                    <p class="black-text">
-                        appointment
-                        <span class="pull-right task-delete btn-rounded-corners">X</span>
-                    </p>
-                </div>
-
+        <div class="list-of-appointments">
+            <h1 class="title"></h1>
+            <div class="appointment complete">
+                <p class="black-text">
+                    Appointment
+                    <span class="pull-right task-delete btn-rounded-corners">X</span>
+                </p>
             </div>
-            
+
         </div>
 
         
