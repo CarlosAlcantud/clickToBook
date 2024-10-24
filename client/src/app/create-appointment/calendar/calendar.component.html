@@ -1,0 +1,30 @@
+<p>calendar works!</p>
+
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button (click)="prevMonth()">&#8249;</button>
+      <span>{{ monthName }} {{ year }}</span>
+      <button (click)="nextMonth()">&#8250;</button>
+    </div>
+  
+    <table>
+      <thead>
+        <tr>
+          <th *ngFor="let day of weekDays">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let week of weeks">
+          <td *ngFor="let day of week" 
+              [ngClass]="{'today': isToday(day), 'selected': isSelected(day)}"
+              (click)="selectDay(day)">
+            {{ day }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="frase" > El {{nameOfTheDay}} {{selectedDay}} de {{monthName}}, {{year}}</div>
+    
+    <button class = "button">CREATE</button>
+  </div>

@@ -1,0 +1,8 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root { /*Esto se refiere para cambiar cosas de toda la pagina */
+
+    color-scheme: light dark;   /* Esto lo que hace es meter el modo oscuro */
+} 
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

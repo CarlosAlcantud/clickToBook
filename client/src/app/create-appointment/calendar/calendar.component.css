@@ -1,0 +1,56 @@
+.calendar-container {
+    max-width: 300px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th {
+    color: gray;
+    font-weight: normal;
+  }
+  
+  td {
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .selected {
+    background-color: orange;
+    border-radius: 50%;
+    color: white;
+  }
+  
+  .today {
+    background-color: lightblue;
+    border-radius: 50%;
+  }
+  
+  td:hover {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+  }
+  
+  .frase {
+    margin-top: 30px;
+    
+    font-size: 16px;
+  }
+
+  .button{
+    margin-top: 20px;
+  }
