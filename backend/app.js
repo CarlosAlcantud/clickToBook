@@ -1,8 +1,10 @@
 const express = require('express');
-
+const checkAvailableAppointmentsAndNotify = require('./sendEmails');
 const app = express();
 const mongoose = require('./database/mongoose');
 app.use(express.json()); // this allows to use json data in the request body
+const sendEmail = require('./email');
+const cron = require('node-cron');
 /*  
 
 CORS - Cross Origin Request Security
@@ -16,6 +18,10 @@ const User = require('./database/models/user');
 const Worker = require('./database/models/worker'); 
 const Appointment = require('./database/models/appointments');
 
+cron.schedule('43 19 * * *', () => {
+    console.log('BUSCANDO CITAS...');
+    checkAvailableAppointmentsAndNotify.checkAvailableAppointmentsAndNotify(); // Llamar a la función para verificar y notificar
+});
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*'); // * means all domains are allowed
@@ -164,6 +170,18 @@ app.delete('/users/:userId/deleteAppointment/:appointmentId', verifyUserId, (req
 
 
 
+
+//Send Email request 
+
+app.post('/sendEmail', (req, res) => {
+    sendEmail(req.body.email, req.body.subject, req.body.text)
+        .then(() => res.send({ message: 'Email sent' }))
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Failed to send an email' });
+        }
+        );
+});
 
 
 app.listen(3000, () => console.log('ClickToBook ready to go!'));
