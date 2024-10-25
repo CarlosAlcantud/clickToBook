@@ -82,6 +82,9 @@ export class CalendarComponent implements OnInit{
   }
 
   selectDay(day: number) {
+    if (this.isWeekend(day)) {
+      return;
+    }
     this.selectedDay = day;
     this.nameDay();
   }
@@ -96,4 +99,9 @@ export class CalendarComponent implements OnInit{
     return new Date(this.year, this.month).toLocaleString('es-ES', { month: 'long' });
   }
 
+  isWeekend(day: number): boolean {
+    const date = new Date(this.year, this.month, day);
+    const dayOfWeek = date.getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6; // 0 es domingo y 6 es sábado
+  }
 }

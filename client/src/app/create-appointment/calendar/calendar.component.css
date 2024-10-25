@@ -55,3 +55,9 @@
   .button{
     margin-top: 20px;
   }
+
+  .disabled {
+    color: #ccc; /* Color gris para indicar que está deshabilitado */
+    pointer-events: none; /* No permitir clics */
+    cursor: not-allowed; /* Cambiar el cursor para indicar que no está permitido */
+  }
