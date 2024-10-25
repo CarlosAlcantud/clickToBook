@@ -1,0 +1,12 @@
+div{
+    /* background-color : blue; */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    border-radius: 0.375rem;
+    margin-top: 20px;
+}

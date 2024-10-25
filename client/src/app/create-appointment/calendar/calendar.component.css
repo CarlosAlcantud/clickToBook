@@ -1,16 +1,31 @@
+.box{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .calendar-container {
-    max-width: 300px;
+    /* max-width: 300px;
+    max-height: 300px; */
+    
+    max-width: 320px;
+    max-height: auto;
     margin: 0 auto;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     text-align: center;
-    margin-top: 100px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding : 15px;
   }
   
   .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 20px;
+    margin-top: 10px;
   }
   
   table {
@@ -19,8 +34,9 @@
   }
   
   th {
-    color: gray;
+    color: #B5BEC6;
     font-weight: normal;
+    font-size: 14px;
   }
   
   td {
@@ -28,28 +44,48 @@
     width: 40px;
     text-align: center;
     cursor: pointer;
+    color : #4A5660;
+    font-size: 20px;
   }
   
   .selected {
-    background-color: orange;
+    background-color: #F04D23;
     border-radius: 50%;
     color: white;
+    display: inline-block; /* Asegura que el contenido se ajuste al tamaño del texto */
+    width: 30px; /* Ajusta el ancho del círculo */
+    height: 30px; /* Ajusta la altura del círculo */
+    line-height: 30px; /* Centra verticalmente el texto */
+    text-align: center; /* Centra horizontalmente el texto */
+    margin: 5px; 
   }
   
   .today {
     background-color: lightblue;
     border-radius: 50%;
-  }
-  
-  td:hover {
-    background-color: #f0f0f0;
-    border-radius: 50%;
-  }
-  
-  .frase {
-    margin-top: 30px;
     
-    font-size: 16px;
+    width: 30px; /* Ajusta el ancho del círculo */
+    height: 30px; /* Ajusta la altura del círculo */
+    line-height: 30px; /* Centra verticalmente el texto */
+    text-align: center; /* Centra horizontalmente el texto */
+    margin: 5px; 
+    
+  }
+  
+  .titulo{
+    font-size: 20px;
+    margin-top: 3ch;
+  }
+  .frase:first-letter {
+    margin-top: 10px;
+    text-transform: capitalize;
+    font-size: 18px;
+    text-align: center;
+  }
+  .frase{
+    font-size: 18px;
+    margin-top: 10px;
+    text-align: center;
   }
 
   .button{
@@ -61,3 +97,17 @@
     pointer-events: none; /* No permitir clics */
     cursor: not-allowed; /* Cambiar el cursor para indicar que no está permitido */
   }
+
+  .month-nav {
+    border: none; /* Sin borde */
+    color: gray; /* Color del texto */
+    padding: 10px 15px; /* Espaciado interno */
+    text-align: center; /* Alineación del texto */
+   /* Sin subrayado */
+    display: inline-block; /* Mostrar en línea */
+    font-size: 40px; /* Tamaño de la fuente */
+    background-color: white;
+    cursor: pointer;
+    
+  }
+
