@@ -1,0 +1,43 @@
+    .hour-button {
+    
+        background-color: #fff; /* Fondo blanco */
+        color: #000; /* Color del texto */
+        font-size: 16px; /* Tamaño del texto */
+        padding: 10px; /* Espaciado interno */
+        width: 320px; /* Ancho fijo */
+        height: 40px; /* Alto fijo */
+        border: none; /* Sin borde */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Sombra suave */
+        cursor: pointer; /* Cambia el cursor al pasar por encima */
+        font-family: Arial, sans-serif; /* Fuente del texto */
+        outline: none; /* Elimina el contorno al hacer clic */
+        box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+    }   
+    
+    .hour-button:hover {
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más intensa al pasar el mouse */
+    }
+    
+    .hour-button:active {
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Sombra más suave al hacer clic */
+        transform: translateY(1px); /* Efecto de presionar */
+    }
+
+    .hours{
+        margin-top: 20px;
+    }
+
+    .message{
+        font-size: 20px;
+        color: red;
+        width: 320px;
+        margin-top: 100px;
+    }
+
+    .link{
+        font-size: 12px;
+        color: blue;
+        width: 320px;
+        margin-top: 20px;
+    }

@@ -1,5 +1,5 @@
-div{
-    /* background-color : blue; */
+/* div{
+    background-color : blue;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -9,4 +9,11 @@ div{
     padding: 40px 20px;
     border-radius: 0.375rem;
     margin-top: 20px;
-}
+} */
+
+.box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }

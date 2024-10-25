@@ -9,5 +9,5 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './nav-bar.component.css'
 })
 export class NavBarComponent {
-
+  
 }

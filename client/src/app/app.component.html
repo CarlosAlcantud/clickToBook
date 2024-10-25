@@ -1,9 +1,9 @@
 <nav-bar/>
 <main>
     
-    <login></login>
+    <login *ngIf = "userIslogged == false"></login>
     
-    <create-appointment />
+    <create-appointment *ngIf = "userIslogged == true" />
     
 </main>
 
