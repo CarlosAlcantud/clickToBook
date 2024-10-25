@@ -11,12 +11,30 @@ import { HoursAvailableComponent } from "./hours-available/hours-available.compo
 })
 export class CreateAppointmentComponent {
     title = 'client';
-    value = '';
-    newAppointment = '';
+    hour = '';
+    date: Date | null  = null;
     
-    onCreateAppointment() {
-      this.newAppointment = this.value;
+    dateAdded(date: Date) {
+        this.date = date;
+    }
 
+    hourAdded(time: string) {
+      this.hour = time;
+      this.addHourToDate();
+    }
+    
+    addHourToDate() {
+        if (this.date && this.hour != '') {
+          const [time, modifier] = this.hour.split(' ');
+          let [hours, minutes] = time.split(':');
+          if (modifier === 'pm' && hours !== '12') {
+              hours = (parseInt(hours, 10) + 12).toString();
+          }
+          if (modifier === 'am' && hours === '12') {
+              hours = '00';
+          }
+          this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), parseInt(hours, 10), parseInt(minutes, 10));
+      }
     }
 
 }

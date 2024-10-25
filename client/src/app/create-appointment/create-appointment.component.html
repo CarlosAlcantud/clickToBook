@@ -1,6 +1,7 @@
 <div class = "box">
-    <app-calendar />
-    <hours-available/>
+    <app-calendar (dateSelected) =  "dateAdded($event)"/>
+    <hours-available (hourselcted)="hourAdded($event)"/>
+    <p>{{date}} </p>
 </div>
 <!-- <textarea [(ngModel)] = "value"></textarea>
 <button (click)="onCreateAppointment()">create</button>

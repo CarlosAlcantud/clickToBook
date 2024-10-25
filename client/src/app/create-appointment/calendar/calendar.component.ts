@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -19,7 +19,8 @@ export class CalendarComponent implements OnInit{
   weekDays: string[] = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   weeks: number[][] = [];
   nameOfTheDay: string = '';
-
+  @Output() dateSelected = new EventEmitter();
+  
   ngOnInit() {
     this.generateCalendar();
     this.nameDay();
@@ -87,6 +88,7 @@ export class CalendarComponent implements OnInit{
     }
     this.selectedDay = day;
     this.nameDay();
+    this.dateSelected.emit(new Date(this.year, this.month, this.selectedDay));
   }
 
   nameDay(){
@@ -104,4 +106,6 @@ export class CalendarComponent implements OnInit{
     const dayOfWeek = date.getDay();
     return dayOfWeek === 0 || dayOfWeek === 6; // 0 es domingo y 6 es sábado
   }
+
+
 }

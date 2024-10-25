@@ -1,6 +1,6 @@
 <div *ngIf= "hours.length > 0">
     <div  *ngFor = "let hour of hours " class = "hours" >
-        <button class= "hour-button" *ngIf = "hour.available == true">{{hour.hour}}</button>
+        <button class= "hour-button" *ngIf = "hour.available == true" (click) = "onClickHour(hour.hour)">{{hour.hour}}</button>
     </div>
 </div>
 
