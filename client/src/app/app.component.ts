@@ -4,11 +4,17 @@ import { CreateAppointmentComponent } from './appointments/create-appointment/cr
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { LoginComponent } from "./login/login.component";
 import { CommonModule } from '@angular/common';
+import { ShowAppointmentsComponent } from './appointments/show-appointments/show-appointments.component';
 
 @Component({
   selector: 'app-root',
   standalone: true, 
-  imports: [RouterOutlet, CreateAppointmentComponent, NavBarComponent, LoginComponent, CommonModule],
+  imports: [
+    RouterOutlet, 
+    CreateAppointmentComponent, ShowAppointmentsComponent,
+    NavBarComponent, 
+    LoginComponent, 
+    CommonModule],
   templateUrl: './app.component.html', // aqui se podria poner el codigo html directamente y asi no se necesita el archivo html. 
   styleUrl: './app.component.css' // aqui se podria poner el codigo css directamente y asi no se necesita el archivo css.
 })
