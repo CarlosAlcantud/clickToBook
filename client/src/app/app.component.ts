@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
+import { CreateAppointmentComponent } from './appointments/create-appointment/create-appointment.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { LoginComponent } from "./login/login.component";
 import { CommonModule } from '@angular/common';
