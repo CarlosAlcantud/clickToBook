@@ -18,6 +18,7 @@ localhost:4200 - front-end
 const User = require('./database/models/user');
 const Worker = require('./database/models/worker'); 
 const Appointment = require('./database/models/appointments');
+const Schedule = require('./database/models/schedule');
 
 cron.schedule('43 19 * * *', () => {
     console.log('BUSCANDO CITAS...');
@@ -133,6 +134,18 @@ app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
         }
         );
 });
+
+//Schedule
+app.post('/schedule', async (req, res) => {
+    (new Schedule({ 'hour': req.body.hour }))
+    .save()
+    .then((schedule) => res.send(schedule))
+    .catch((error) => {
+        console.log(error)
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+    );
+  });
 
 app.get('/users/:userId/appointments', (req, res) => {
     Appointment.find({ userId: req.params.userId })
