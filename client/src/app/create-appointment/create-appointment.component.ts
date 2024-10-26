@@ -34,6 +34,7 @@ export class CreateAppointmentComponent {
               hours = '00';
           }
           this.date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), parseInt(hours, 10), parseInt(minutes, 10));
+          
       }
     }
 

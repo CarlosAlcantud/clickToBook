@@ -5,6 +5,7 @@ const mongoose = require('./database/mongoose');
 app.use(express.json()); // this allows to use json data in the request body
 const sendEmail = require('./email');
 const cron = require('node-cron');
+const helmet = require('helmet');
 /*  
 
 CORS - Cross Origin Request Security
@@ -183,6 +184,15 @@ app.post('/sendEmail', (req, res) => {
         );
 });
 
+app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "http://localhost:3000"],
+        // Agrega otras directivas según sea necesario
+      },
+    },
+  }));
 
 app.listen(3000, () => console.log('ClickToBook ready to go!'));
 
