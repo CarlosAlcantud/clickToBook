@@ -20,7 +20,7 @@ const Worker = require('./database/models/worker');
 const Appointment = require('./database/models/appointments');
 const Schedule = require('./database/models/schedule');
 
-cron.schedule('43 19 * * *', () => {
+cron.schedule('50 19 * * *', () => {
     console.log('BUSCANDO CITAS...');
     checkAvailableAppointmentsAndNotify.checkAvailableAppointmentsAndNotify(); // Llamar a la función para verificar y notificar
 });
@@ -187,15 +187,15 @@ app.delete('/users/:userId/deleteAppointment/:appointmentId', verifyUserId, (req
 
 //Send Email request 
 
-app.post('/sendEmail', (req, res) => {
-    sendEmail(req.body.email, req.body.subject, req.body.text)
-        .then(() => res.send({ message: 'Email sent' }))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Failed to send an email' });
-        }
-        );
-});
+// app.post('/sendEmail', (req, res) => {
+//     sendEmail(req.body.email, req.body.subject, req.body.text)
+//         .then(() => res.send({ message: 'Email sent' }))
+//         .catch((error) => {
+//             console.log(error)
+//             res.status(500).send({ error: 'Failed to send an email' });
+//         }
+//         );
+// });
 
 app.use(helmet({
     contentSecurityPolicy: {
@@ -205,7 +205,80 @@ app.use(helmet({
         // Agrega otras directivas según sea necesario
       },
     },
-  }));
+}));
+
+
+// Get all the hours available for a day: 
+
+app.get('/schedule/:date', async (req, res) => {
+    const date = new Date(req.params.date);
+    const startday = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999));
+
+    const hoursavailable = new Set();
+    const hoursnotavailable = new Set();
+    const schedule = await Schedule.find().lean();
+    const appointmentsForTheDay = await Appointment.find({
+        date: { $gte: startday, $lte: endOfDay }
+    }).lean();
+
+    appointmentsForTheDay.forEach(appointment => {
+        const appointmentDate = new Date(appointment.date);
+        const hoursAndMinutes = `${appointmentDate.getUTCHours().toString().padStart(2, '0')}:${appointmentDate.getUTCMinutes().toString().padStart(2, '0')}`; // Extrae HH:MM en UTC
+        hoursnotavailable.add(hoursAndMinutes);
+    });
+
+    schedule.forEach(hour => {
+        if (!hoursnotavailable.has(hour.hour)) {
+            hoursavailable.add(hour.hour);
+        }
+    });
+
+    const sortedHoursAvailable = [...hoursavailable].sort((a, b) => {
+        const [aHours, aMinutes] = a.split(':').map(Number);
+        const [bHours, bMinutes] = b.split(':').map(Number);
+        return aHours * 60 + aMinutes - (bHours * 60 + bMinutes);
+    });
+
+    console.log(sortedHoursAvailable);
+
+    res.send(sortedHoursAvailable);
+
+
+
+});
+
+
+// cron.schedule('*/15 * * * * *', async () => {
+//     const startday = new Date(Date.UTC(2024, 9, 29)); // Mes es 0-indexado, así que 9 es octubre
+//     const endOfDay = new Date(Date.UTC(2024, 9, 29, 23, 59, 59, 999));
+//     const hoursavailable = new Set();
+//     const hoursnotavailable = new Set();
+//     const schedule = await Schedule.find().lean();
+//     const appointmentsForTheDay = await Appointment.find({
+//         date: { $gte: startday, $lte: endOfDay }
+//     }).lean();
+
+//     appointmentsForTheDay.forEach(appointment => {
+//         const appointmentDate = new Date(appointment.date);
+//         const hoursAndMinutes = `${appointmentDate.getUTCHours().toString().padStart(2, '0')}:${appointmentDate.getUTCMinutes().toString().padStart(2, '0')}`; // Extrae HH:MM en UTC
+//         hoursnotavailable.add(hoursAndMinutes);
+//     });
+
+//     schedule.forEach(hour => {
+//         if (!hoursnotavailable.has(hour.hour)) {
+//             hoursavailable.add(hour.hour);
+//         }
+//     });
+
+//     const sortedHoursAvailable = [...hoursavailable].sort((a, b) => {
+//         const [aHours, aMinutes] = a.split(':').map(Number);
+//         const [bHours, bMinutes] = b.split(':').map(Number);
+//         return aHours * 60 + aMinutes - (bHours * 60 + bMinutes);
+//     });
+
+//     console.log(sortedHoursAvailable); // Muestra las horas y minutos no disponibles
+// });
 
 app.listen(3000, () => console.log('ClickToBook ready to go!'));
 
