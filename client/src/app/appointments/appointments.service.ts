@@ -21,10 +21,6 @@ export class AppointmentsService{
     urlDate: string = '';
 
     constructor(private http: HttpClient) {
-
-        this.dateSelected$.subscribe(date => {
-                this.urlDate = this.formatDateToLocalString(date);
-          });
     }
 
     stablishUrlDate() {

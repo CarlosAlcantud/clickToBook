@@ -3,8 +3,11 @@
     <hours-available (hourselcted)="hourAdded($event) "/>
     
 </div>
+<div *ngIf="appointment !== null">
+    
+    <p >Este es el appointment: {{appointment}}</p>
+</div>
 
-<p >Este es el appointment: {{appointment}}</p>
 <!-- <div>Esta es la fecha por obserbables {{date}}</div> -->
  <!-- <div>Esta es la fecha url {{date}}</div> -->
 <!-- <div>Esta es la fecha por service {{pruebaFecha}}</div> --> 

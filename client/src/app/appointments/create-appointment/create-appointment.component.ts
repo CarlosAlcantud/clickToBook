@@ -5,11 +5,12 @@ import { HoursAvailableComponent } from "./hours-available/hours-available.compo
 import { url } from 'node:inspector';
 import { AppointmentsService } from '../appointments.service';
 import { NgIf } from '@angular/common';
+import { ShowAppointmentsComponent } from "../show-appointments/show-appointments.component";
 
 @Component({
   selector: 'create-appointment',
   standalone: true,
-  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf],
+  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf, ShowAppointmentsComponent],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.css'
 })
@@ -17,7 +18,7 @@ export class CreateAppointmentComponent implements OnInit {
 
     title = 'client';
     hour = '';
-    date: Date | null  = null;
+    date = new Date();
     // urlDate: string = '';
     // pruebaFecha: Date | null = null;
     appointment: Date | null = null;
@@ -27,15 +28,11 @@ export class CreateAppointmentComponent implements OnInit {
     ngOnInit() {
         this.appointmentsService.dateSelected$.subscribe(date => {
             this.date = date;
+            console.log("La fecha es: "+this.date);
         });
         
     }
     
-    // dateAdded(date: Date) {
-    //     this.date = date;
-
-    // }
-
 
     hourAdded(time: string) {
       this.hour = time;

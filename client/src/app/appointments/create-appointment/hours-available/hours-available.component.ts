@@ -30,7 +30,7 @@ export class HoursAvailableComponent implements OnInit {
   }
 
 
-  onClickHour(hour: string) {
+  onClickHour(hour: {hour: string}) {
     this.hourselcted.emit(hour);
 
   };
