@@ -1,0 +1,40 @@
+.box{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+header{
+  font-size: 32px;
+  font-style: bold;
+}
+.cita{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  max-width: 400px;
+  font-family: Arial, sans-serif;
+}
+
+.description{
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+}
+
+.date{
+  font-weight: bold;
+  color: #000000;
+}
+
+.hour{
+  font-size: 18px;
+  font-weight: bold;
+  color: #000000;
+  margin: 0;
+}

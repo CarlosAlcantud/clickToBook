@@ -3,9 +3,8 @@
     <hours-available (hourselcted)="hourAdded($event) "/>
     
 </div>
-<div *ngIf="appointment !== null">
-    
-    <p >Este es el appointment: {{appointment}}</p>
+<div class = "box" *ngIf="appointment !== null">
+    <book-appointment [appointment]="appointment" [hour] = "hour"  /> <!-- Le paso el valor que tengo en mi componente create commponent a book-appointment-->
 </div>
 
 <!-- <div>Esta es la fecha por obserbables {{date}}</div> -->

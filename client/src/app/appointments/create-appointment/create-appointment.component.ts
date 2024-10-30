@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CalendarComponent } from './calendar/calendar.component';
 import { HoursAvailableComponent } from "./hours-available/hours-available.component";
@@ -6,11 +6,12 @@ import { url } from 'node:inspector';
 import { AppointmentsService } from '../appointments.service';
 import { NgIf } from '@angular/common';
 import { ShowAppointmentsComponent } from "../show-appointments/show-appointments.component";
+import { BookAppointmentComponent } from "./book-appointment/book-appointment.component";
 
 @Component({
   selector: 'create-appointment',
   standalone: true,
-  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf, ShowAppointmentsComponent],
+  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf, ShowAppointmentsComponent, BookAppointmentComponent],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.css'
 })
@@ -22,7 +23,7 @@ export class CreateAppointmentComponent implements OnInit {
     // urlDate: string = '';
     // pruebaFecha: Date | null = null;
     appointment: Date | null = null;
-
+    
     constructor(private appointmentsService: AppointmentsService) {}
 
     ngOnInit() {
@@ -50,7 +51,6 @@ export class CreateAppointmentComponent implements OnInit {
               hours = '00';
           }
           this.appointment = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate(), parseInt(hours, 10), parseInt(minutes, 10));
-          
       }
     }
 
