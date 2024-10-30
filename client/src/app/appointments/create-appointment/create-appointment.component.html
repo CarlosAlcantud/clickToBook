@@ -1,8 +1,13 @@
-<div class = "box">
-    <app-calendar (dateSelected) =  "dateAdded($event)"/>
-    <hours-available (hourselcted)="hourAdded($event)"/>
+<div class = "box" *ngIf="appointment == null">
+    <app-calendar />
+    <hours-available (hourselcted)="hourAdded($event) "/>
     
 </div>
+
+<p >Este es el appointment: {{appointment}}</p>
+<!-- <div>Esta es la fecha por obserbables {{date}}</div> -->
+ <!-- <div>Esta es la fecha url {{date}}</div> -->
+<!-- <div>Esta es la fecha por service {{pruebaFecha}}</div> --> 
 <!-- <textarea [(ngModel)] = "value"></textarea>
 <button (click)="onCreateAppointment()">create</button>
 <p>{{newAppointment}}</p> -->

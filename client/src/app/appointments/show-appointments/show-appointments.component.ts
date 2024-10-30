@@ -18,12 +18,14 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
    //Almacena el servicio de AppointmentsService
   private appointmentsSub!: Subscription; 
 
-  constructor(public appointmentsService: AppointmentsService) {
-  }
+  constructor(public appointmentsService: AppointmentsService) {}
+
   ngOnInit(){
     this.appointmentsService.getAppointments().subscribe((data: Appointment[]) => {
       this.appointments = data;
     }); 
+
+    
     // this.appointmentsService.getAppointments(); //Obtiene los appointments del servicio Appointments
     // this.appointmentsSub = this.appointmentsService.getAppointmentUpdateListener()
     // .subscribe((appointments: Appointment[]) => {

@@ -2,6 +2,8 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { AppointmentsService } from '../../appointments.service';
+
 
 @Component({
   selector: 'app-calendar',
@@ -21,6 +23,11 @@ export class CalendarComponent implements OnInit{
   nameOfTheDay: string = '';
   @Output() dateSelected = new EventEmitter();
   
+  constructor( private appointmentsService: AppointmentsService) { 
+
+  }
+
+
   ngOnInit() {
     this.generateCalendar();
     this.nameDay();
@@ -88,7 +95,11 @@ export class CalendarComponent implements OnInit{
     }
     this.selectedDay = day;
     this.nameDay();
-    this.dateSelected.emit(new Date(this.year, this.month, this.selectedDay));
+    //this.dateSelected.emit(new Date(this.year, this.month, this.selectedDay));
+    this.appointmentsService.emitDateSelected(new Date(this.year, this.month, this.selectedDay)); //Emite la fecha seleccionada
+    this.appointmentsService.gethoursAvailable().subscribe(hours =>{
+      this.appointmentsService.updateHoursAvailable(hours) ;
+    });
   }
 
   nameDay(){

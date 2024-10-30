@@ -1,8 +1,9 @@
-<div *ngIf= "hours.length > 0">
-    <div  *ngFor = "let hour of hours " class = "hours" >
-        <button class= "hour-button" *ngIf = "hour.available == true" (click) = "onClickHour(hour.hour)">{{hour.hour}}</button>
+<div *ngIf= "hoursAvailable.length > 0">
+    <div  *ngFor = "let hourAvailable of hoursAvailable" class = "hours" >
+        <button class= "hour-button" (click) = "onClickHour(hourAvailable.hour)">{{hourAvailable}}</button>
     </div>
 </div>
 
-<p class = "message" *ngIf = "hours.length <=0"> No appoiments available for the day</p>
-<p class = "link" *ngIf = "hours.length <= 0"> Want to recive an email if there is an opening on this day? Click here</p>
+<p class = "message" *ngIf = "hoursAvailable.length <=0"> No appoiments available for the day</p>
+<p class = "link" *ngIf = "hoursAvailable.length <= 0"> Want to recive an email if there is an opening on this day? Click here</p>
+

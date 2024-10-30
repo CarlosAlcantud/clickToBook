@@ -211,6 +211,7 @@ app.use(helmet({
 // Get all the hours available for a day: 
 
 app.get('/schedule/:date', async (req, res) => {
+    console.log(req.params.date);
     const date = new Date(req.params.date);
     const startday = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0));
     const endOfDay = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999));

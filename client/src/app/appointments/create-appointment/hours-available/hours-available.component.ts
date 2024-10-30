@@ -1,6 +1,6 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { AppointmentsService } from '../../appointments.service';
 
 @Component({
   selector: 'hours-available',
@@ -9,19 +9,26 @@ import { CommonModule } from '@angular/common';
   templateUrl: './hours-available.component.html',
   styleUrl: './hours-available.component.css'
 })
-export class HoursAvailableComponent {
+export class HoursAvailableComponent implements OnInit {
 
   @Output() hourselcted = new EventEmitter();
 
+  
+  hoursAvailable: { hour: string }[] = [];
 
-  hours: { hour: string, available: boolean }[] = [
+  constructor(private appointmentsService: AppointmentsService) {}
 
-    { hour : '8:00 am', available: true },
-    { hour : '9:00 am', available: true },
-    { hour : '9:15 am', available: true },
-    { hour : '10:00 am', available: true },
+  ngOnInit() {
+    this.appointmentsService.stablishUrlDate();
+    this.appointmentsService.gethoursAvailable().subscribe(hours =>{
+      this.appointmentsService.updateHoursAvailable(hours) ;
+    });
+    this.appointmentsService.hoursAvailable$.subscribe(hours => {
+      this.hoursAvailable = hours;
+    });
+    
+  }
 
-  ]; 
 
   onClickHour(hour: string) {
     this.hourselcted.emit(hour);
