@@ -54,7 +54,9 @@ export class AppointmentsService{
         // });
     }
 
-
+    createAppointment(appointmet: Appointment) {
+        return this.http.post('http://localhost:3000/users/670a96469ce79c490a523624/createAppointment', appointmet);
+    }
 
     // getAppointmentUpdateListener() {
     //     return this.appointmentUpdate.asObservable();

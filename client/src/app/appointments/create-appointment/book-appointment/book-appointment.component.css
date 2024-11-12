@@ -3,12 +3,16 @@
   flex-direction: column;
   align-items: center;
   margin-top: 10px;
+  
 }
 
-header{
+.titulo{
+  margin-top: 50px;
   font-size: 32px;
   font-style: bold;
+  text-align: center ;
 }
+
 .cita{
   display: flex;
   justify-content: space-between;
