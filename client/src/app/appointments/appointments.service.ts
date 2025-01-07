@@ -21,6 +21,9 @@ export class AppointmentsService{
     urlDate: string = '';
 
     constructor(private http: HttpClient) {
+        this.dateSelected$.subscribe(date => {
+            this.urlDate = this.formatDateToLocalString(date);
+      });
     }
 
     stablishUrlDate() {
@@ -35,6 +38,7 @@ export class AppointmentsService{
     }
     
     gethoursAvailable() {
+        console.log("Se llama a coger las horas disponibles para la fecha: "+this.urlDate);
         return this.http.get<{ hour: string }[]>(`http://localhost:3000/schedule/${this.urlDate}`);
         
     }
@@ -43,6 +47,7 @@ export class AppointmentsService{
         this.hoursAvailableSource.next(hours);
         console.log(hours);
     }
+
     getAppointments() {
         return this.http.get<Appointment[]>('http://localhost:3000/appointments');
         
