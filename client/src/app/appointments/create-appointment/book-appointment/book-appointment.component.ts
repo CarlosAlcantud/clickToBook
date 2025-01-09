@@ -12,25 +12,50 @@ import { AppointmentsService } from '../../appointments.service';
 })
 export class BookAppointmentComponent {
 
+  // Variables para recibir valores del componente create appointment
+  @Input() appointment: Date | null = null; 
+  @Input() hourSelected: string = '';
+
+
   finalAppointment: Appointment | null = null;
-
-  @Input() appointment: Date | null = null; // El valor que quiero recibir de otro componente. 
-  @Input() hour: string = '';
-  
+  date: string = '';
+  haircutType : string = 'Corte de pelo';
+  confirmed : boolean = false;
+  paid: boolean = false;
+  // Variable para mostrar la fecha en el formato deseado
   formatedDate: string = '';
-
- 
+  
   constructor(private datePipe: DatePipe, private appointmentsService: AppointmentsService) {}
 
   ngOnInit(): void {
     if (this.appointment) {
       this.formatedDate = this.datePipe.transform(this.appointment, "d 'de' MMMM yyyy", 'es-ES') || '';
+      this.date = this.transformToISO(this.appointment);
     }
   }
 
-  pay(){
-    
+  transformToISO(date: Date): string {
+    const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+    return localDate.toISOString();
+  }
 
+  pay(){
+    console.log("Pagar");
+    this.appointmentsService.setShowComponent(true);
+    if (this.appointment && this.hourSelected) {
+      this.finalAppointment = {
+        date: this.date,
+        haircut: this.haircutType,
+        confirmed: this.confirmed,
+        paid: true
+      }
+      this.appointmentsService.createAppointment(this.finalAppointment).subscribe(response => {
+        console.log("Cita creada:", response);
+      }, error => {
+        console.error("Error al crear la cita:", error);
+      });
+
+    }
   }
   
 }

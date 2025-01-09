@@ -4,6 +4,6 @@
     <login *ngIf = "userIslogged == false"></login>
     
     <create-appointment *ngIf = "userIslogged == true" />
-    <!-- <show-appointments/> -->
+    <show-appointments *ngIf = "showComponent === true" />
 </main>
 

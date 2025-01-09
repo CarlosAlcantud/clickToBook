@@ -1,3 +1,15 @@
+.scrollable {
+    margin-top: 20px;
+    max-height: 300px; /* Ajusta esta altura según tus necesidades */
+    overflow-y: auto;
+    /* border: 1px solid #ccc; Opcional: para visualizar mejor el área de desplazamiento */
+    padding: 10px; /* Opcional: para agregar espacio interno */
+}
+/* Ocultar la barra de desplazamiento */
+.scrollable::-webkit-scrollbar {
+    width: 0px; /* Ancho de la barra de desplazamiento */
+    background: transparent; /* Fondo transparente */
+}
     .hour-button {
     
         background-color: #fff; /* Fondo blanco */

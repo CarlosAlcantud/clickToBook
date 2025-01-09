@@ -1,0 +1,28 @@
+.titulo{
+    margin-top: 50px;
+    font-size: 32px;
+    font-style: bold;
+    text-align: center ;
+  }
+
+.cita{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    max-width: 400px;
+    font-family: Arial, sans-serif;
+}
+
+.box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+

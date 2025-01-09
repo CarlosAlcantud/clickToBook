@@ -1,11 +1,19 @@
 <div class = "box" *ngIf="appointment == null">
-    <app-calendar />
+    <calendar />
+    <!-- Recibe la hora seleccionada que emite el componente hours-available y se recibe en el metodo hourAdded -->
     <hours-available (hourselcted)="hourAdded($event) "/>
     
 </div>
-<div class = "box" *ngIf="appointment !== null">
-    <book-appointment [appointment]="appointment" [hour] = "hour"  /> <!-- Le paso el valor que tengo en mi componente create commponent a book-appointment-->
+<div class = "box" *ngIf="appointment !== null && showComponent === false">
+    <!-- 
+    La varuable entre corchetes [appointment] es ek nombre de la variable en el destino (book-appointment) y la que va en 
+    comillas "appointment" es la de origen (create-appointment)
+    Lo que hace: [appointment]="appointment" es pasar el objeto appointment al componente book-appointment 
+    y lo que hace: 
+    [hourSelected] = "hourSelected" es pasar la hora seleccionada al componente book-appointment -->
+    <book-appointment [appointment]="appointment" [hourSelected] = "hourSelected"  /> 
 </div>
+
 
 <!-- <div>Esta es la fecha por obserbables {{date}}</div> -->
  <!-- <div>Esta es la fecha url {{date}}</div> -->

@@ -1,7 +1,6 @@
 export interface Appointment {
-    id: string;
-    date : Date;
-    haircutType : string;
+    date : string;
+    haircut : string;
     confirmed : boolean;
     paid: boolean;
 }

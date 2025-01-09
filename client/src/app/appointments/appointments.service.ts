@@ -15,6 +15,19 @@ export class AppointmentsService{
     private dateSelected = new Subject<Date>();
     dateSelected$ = this.dateSelected.asObservable();
 
+    private showComponentSource = new BehaviorSubject<boolean>(false);
+    showComponent$ = this.showComponentSource.asObservable();
+
+    // Método para actualizar la variable boolean
+    setShowComponent(value: boolean) {
+        this.showComponentSource.next(value);
+    }
+
+    // Método para obtener el valor actual de la variable boolean
+    getShowComponent(): boolean {
+        return this.showComponentSource.getValue();
+    }
+
     //Emiter for the hours available
     private hoursAvailableSource = new BehaviorSubject<{ hour: string }[]>([]);
     hoursAvailable$ = this.hoursAvailableSource.asObservable();
@@ -49,8 +62,10 @@ export class AppointmentsService{
     }
 
     getAppointments() {
-        return this.http.get<Appointment[]>('http://localhost:3000/appointments');
         
+        // return this.http.get<Appointment[]>('http://localhost:3000/appointments');
+        return this.http.get<Appointment[]>('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/appointments');
+        // 67800d44c1d0723ab7bc8f19
         // .subscribe((data: Appointment[]) => { 
             
         //     this.appointments = data;
@@ -60,7 +75,8 @@ export class AppointmentsService{
     }
 
     createAppointment(appointmet: Appointment) {
-        return this.http.post('http://localhost:3000/users/670a96469ce79c490a523624/createAppointment', appointmet);
+        console.log("Se llama a crear una cita");
+        return this.http.post('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment', appointmet);
     }
 
     // getAppointmentUpdateListener() {
@@ -85,5 +101,5 @@ export class AppointmentsService{
     emitDateSelected(date: Date) {
         this.dateSelected.next(date);
     }
-
+    
 }

@@ -125,6 +125,8 @@ app.get('/appointments', (req, res) => {
 );
 
 app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
+    console.log(req.body);
+    console.log("algo pasa");
     (new Appointment({ 'userId': req.params.userId, 'worker': req.body.worker, 'date': req.body.date, 'haircut': req.body.haircut }))
         .save()
         .then((appointment) => res.send(appointment))

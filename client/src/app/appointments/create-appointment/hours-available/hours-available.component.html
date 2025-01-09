@@ -1,4 +1,4 @@
-<div *ngIf= "hoursAvailable.length > 0">
+<div class = "scrollable" *ngIf= "hoursAvailable.length > 0">
     <div  *ngFor = "let hourAvailable of hoursAvailable" class = "hours" >
         <button class= "hour-button" (click) = "onClickHour(hourAvailable)">{{hourAvailable}}</button>
     </div>
