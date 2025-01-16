@@ -40,21 +40,17 @@ export class BookAppointmentComponent {
   }
 
   pay(){
-    console.log("Pagar");
-    this.appointmentsService.setShowComponent(true);
+    console.log("Pagado");
     if (this.appointment && this.hourSelected) {
       this.finalAppointment = {
+        id: '',
         date: this.date,
         haircut: this.haircutType,
         confirmed: this.confirmed,
         paid: true
       }
-      this.appointmentsService.createAppointment(this.finalAppointment).subscribe(response => {
-        console.log("Cita creada:", response);
-      }, error => {
-        console.error("Error al crear la cita:", error);
-      });
-
+      this.appointmentsService.createAppointment(this.finalAppointment);
+      this.appointmentsService.setShowComponent(true);
     }
   }
   

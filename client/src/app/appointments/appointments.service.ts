@@ -11,22 +11,11 @@ export class AppointmentsService{
     private appointmentUpdate = new Subject<Appointment[]>();
      
     //Emiter for the date 
-
     private dateSelected = new Subject<Date>();
     dateSelected$ = this.dateSelected.asObservable();
 
     private showComponentSource = new BehaviorSubject<boolean>(false);
     showComponent$ = this.showComponentSource.asObservable();
-
-    // Método para actualizar la variable boolean
-    setShowComponent(value: boolean) {
-        this.showComponentSource.next(value);
-    }
-
-    // Método para obtener el valor actual de la variable boolean
-    getShowComponent(): boolean {
-        return this.showComponentSource.getValue();
-    }
 
     //Emiter for the hours available
     private hoursAvailableSource = new BehaviorSubject<{ hour: string }[]>([]);
@@ -38,6 +27,19 @@ export class AppointmentsService{
             this.urlDate = this.formatDateToLocalString(date);
       });
     }
+
+    // Método para actualizar la variable boolean
+    setShowComponent(value: boolean) {
+        this.showComponentSource.next(value);
+    }
+
+    // Método para obtener el valor actual de la variable boolean
+    getShowComponent(): boolean {
+        this.getAppointments();
+        return this.showComponentSource.getValue();
+    }
+
+    
 
     stablishUrlDate() {
         this.urlDate = this.formatDateToLocalString(new Date());
@@ -62,21 +64,41 @@ export class AppointmentsService{
     }
 
     getAppointments() {
-        
-        // return this.http.get<Appointment[]>('http://localhost:3000/appointments');
-        return this.http.get<Appointment[]>('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/appointments');
-        // 67800d44c1d0723ab7bc8f19
-        // .subscribe((data: Appointment[]) => { 
-            
-        //     this.appointments = data;
-        //     this.appointmentUpdate.next([...this.appointments]);
+        //Como antes.
+        // this.http.get<Appointment[]>(
+        //     'http://localhost:3000/users/67800d44c1d0723ab7bc8f19/appointments')
+        //     .subscribe( (appointmentsData)=> {
+        //         this.appointments = appointmentsData;
+        //         this.appointmentUpdate.next([...this.appointments]);
+        //     });
+        //Prueba: 
+        this.http
+            .get<{ message: string; apointments: Appointment[] }>(
+                "http://localhost:3000/api/posts"
+            )
+            .subscribe(appointmentData => {
+                this.appointments = appointmentData.apointments;
+                this.appointmentUpdate.next([...this.appointments]);
+        });
 
-        // });
+    }
+
+    getAppointmentUpdateListener() {
+        return this.appointmentUpdate.asObservable();
     }
 
     createAppointment(appointmet: Appointment) {
-        console.log("Se llama a crear una cita");
-        return this.http.post('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment', appointmet);
+        // console.log("Se llama a crear una cita");
+        // return this.http.post('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment', appointmet);
+        this.http
+            .post<{message: string }>(
+                "http://localhost:3000/api/createAppointment",appointmet)
+            .subscribe(responseData => {
+                console.log(responseData.message);
+                this.appointments.push(appointmet);
+                this.appointmentUpdate.next([...this.appointments]);
+           });
+
     }
 
     // getAppointmentUpdateListener() {

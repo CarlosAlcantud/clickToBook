@@ -14,27 +14,23 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class ShowAppointmentsComponent implements OnInit, OnDestroy{
 
-  appointments: Appointment[] = []; //Almacena los appointments y al ser del tipo Appointment no permite otros valores. 
-   //Almacena el servicio de AppointmentsService
-  private appointmentsSub!: Subscription; 
+  appointments: Appointment[] = []; // Almacena los appointments y al ser del tipo Appointment no permite otros valores.
+  private appointmentsSub: Subscription | undefined;
 
   constructor(public appointmentsService: AppointmentsService) {}
 
-  ngOnInit(){
-    this.appointmentsService.getAppointments().subscribe((data: Appointment[]) => {
-      this.appointments = data;
-    }); 
-
-    
-    // this.appointmentsService.getAppointments(); //Obtiene los appointments del servicio Appointments
-    // this.appointmentsSub = this.appointmentsService.getAppointmentUpdateListener()
-    // .subscribe((appointments: Appointment[]) => {
-    //   this.appointments = appointments;
-    // });
+  ngOnInit() {
+    this.appointmentsService.getAppointments();
+    this.appointmentsSub = this.appointmentsService.getAppointmentUpdateListener()
+      .subscribe((appointments: Appointment[]) => {
+        this.appointments = appointments;
+      });
   }
 
-  ngOnDestroy(){
-    //this.appointmentsSub.unsubscribe(); 
+  ngOnDestroy() {
+    if (this.appointmentsSub) {
+      this.appointmentsSub.unsubscribe();
+    }
   }
 
 }

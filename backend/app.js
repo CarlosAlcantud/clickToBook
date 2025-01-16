@@ -6,6 +6,10 @@ app.use(express.json()); // this allows to use json data in the request body
 const sendEmail = require('./email');
 const cron = require('node-cron');
 const helmet = require('helmet');
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 /*  
 
 CORS - Cross Origin Request Security
@@ -111,6 +115,8 @@ app.delete('/users/:userId', async (req, res) => {
 
             
 });
+
+
 // Apointments
 
 app.get('/appointments', (req, res) => {
@@ -124,12 +130,32 @@ app.get('/appointments', (req, res) => {
 }
 );
 
+//Prueba 
+app.post('/api/createAppointment', (req, res) => {
+    const appointment = req.body;
+    console.log(appointment);
+    res.status(201).json({
+        message: 'Appointment created successfully',
+    })
+
+});
+
 app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
     console.log(req.body);
     console.log("algo pasa");
     (new Appointment({ 'userId': req.params.userId, 'worker': req.body.worker, 'date': req.body.date, 'haircut': req.body.haircut }))
         .save()
         .then((appointment) => res.send(appointment))
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+        );
+});
+
+app.get('/users/:userId/appointments', (req, res) => {
+    Appointment.find({ userId: req.params.userId })
+        .then(appointment => res.send(appointment))
         .catch((error) => {
             console.log(error)
             res.status(500).send({ error: 'Internal Server Error' });
@@ -149,15 +175,7 @@ app.post('/schedule', async (req, res) => {
     );
   });
 
-app.get('/users/:userId/appointments', (req, res) => {
-    Appointment.find({ userId: req.params.userId })
-        .then(appointment => res.send(appointment))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-});
+
 
 app.patch('/users/:userId/updateAppointment/:appointmentId', verifyUserId, (req, res) => {
     Appointment.findOneAndUpdate({ _id: req.params.appointmentId }, { $set: req.body })
