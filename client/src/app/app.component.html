@@ -1,12 +1,13 @@
 <nav-bar class= "bar"/>
+
 <main>
+
+    <router-outlet></router-outlet>
     
-    <login *ngIf = "userIslogged == false"></login>
+    <!-- <login *ngIf = "userIslogged == false"></login>
     
-    <create-appointment *ngIf = "userIslogged == true" />
-    <div >
-        <show-appointments />
-    </div>
+    <create-appointment *ngIf = "userIslogged == true" /> -->
+    
     
 </main>
 

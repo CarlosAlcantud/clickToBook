@@ -6,11 +6,11 @@ import { url } from 'node:inspector';
 import { AppointmentsService } from '../appointments.service';
 import { NgIf } from '@angular/common';
 import { BookAppointmentComponent } from "./book-appointment/book-appointment.component";
-
+import { ShowAppointmentsComponent } from "../show-appointments/show-appointments.component";
 @Component({
   selector: 'create-appointment',
   standalone: true,
-  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf, BookAppointmentComponent],
+  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf, BookAppointmentComponent, ShowAppointmentsComponent],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.css'
 })

@@ -1,8 +1,8 @@
-
-<form class="form" novalidate>
-    <div class="form-group">
+<form class="form" >
+    <div class="form-group" (submit) ="onLogin(loginForm)" ngForm #loginForm="ngForm">
         <label for="email" class="form-label">E-mail address</label>
         <input 
+            ngModel
             id="email" 
             name="email" 
             type="email" 
@@ -10,27 +10,30 @@
             placeholder="johndoe@example.com" 
             required 
             class="form-input"
+            #emailInput="ngModel"
         />
-        <p class="form-error">Please provide a valid email address.</p>
+        <p class="form-error" *ngIf="emailInput.invalid" >Please provide a valid email address.</p>
+        
     </div>
 
     <div class="form-group">
         <label for="password" class="form-label">Password</label>
         <input 
+            ngModel
             id="password" 
             name="password" 
             type="password" 
             autocomplete="current-password" 
-            placeholder=" " 
+            placeholder="********" 
             required 
             class="form-input"
+            #passwordInput="ngModel"
         />
-        <p class="form-error">Please input your password.</p>
+        <p class="form-error" *ngIf="passwordInput.invalid">Please input your password.</p>
     </div>
-
     
-
     <div class="form-group">
-        <button type="submit" class="submit-button">Sign in</button>
+        <button type="submit" class="submit-button">LogIn</button>
     </div>
 </form>
+<a href="/auth/register">Not an account yet? Register</a>

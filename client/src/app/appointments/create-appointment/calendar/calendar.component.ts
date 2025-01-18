@@ -8,7 +8,7 @@ import { AppointmentsService } from '../../appointments.service';
 @Component({
   selector: 'calendar',
   standalone: true,
-  imports: [DatePipe, CommonModule],
+  imports: [CommonModule],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css'
 })
