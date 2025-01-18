@@ -13,17 +13,23 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrl: './show-appointments.component.css'
 })
 export class ShowAppointmentsComponent implements OnInit, OnDestroy{
-
+  showComponent: boolean = false;
   appointments: Appointment[] = []; // Almacena los appointments y al ser del tipo Appointment no permite otros valores.
   private appointmentsSub: Subscription | undefined;
 
   constructor(public appointmentsService: AppointmentsService) {}
 
   ngOnInit() {
+    console.log("Los appointments antes de mostrarlos son: "+this.appointments);
     this.appointmentsService.getAppointments();
     this.appointmentsSub = this.appointmentsService.getAppointmentUpdateListener()
       .subscribe((appointments: Appointment[]) => {
+        console.log("Los appointments son: "+appointments);
         this.appointments = appointments;
+      });
+
+      this.appointmentsService.showComponent$.subscribe(value => {
+        this.showComponent = value;
       });
   }
 

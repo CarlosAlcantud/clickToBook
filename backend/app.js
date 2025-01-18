@@ -131,36 +131,55 @@ app.get('/appointments', (req, res) => {
 );
 
 //Prueba 
-app.post('/api/createAppointment', (req, res) => {
-    const appointment = req.body;
+app.post('/users/:userId/createAppointment', (req, res) => {
+    const appointment = new Appointment({
+        'userId': req.params.userId,
+        'date': req.body.date,
+        'haircut': req.body.haircut,
+        'confirmed': req.body.confirmed,
+        'paid': req.body.paid
+    });
     console.log(appointment);
+    appointment.save();
     res.status(201).json({
         message: 'Appointment created successfully',
     })
 
 });
 
-app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
-    console.log(req.body);
-    console.log("algo pasa");
-    (new Appointment({ 'userId': req.params.userId, 'worker': req.body.worker, 'date': req.body.date, 'haircut': req.body.haircut }))
-        .save()
-        .then((appointment) => res.send(appointment))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-});
+// app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
+//     console.log(req.body);
+//     console.log("algo pasa");
+//     (new Appointment({ 'userId': req.params.userId, 'worker': req.body.worker, 'date': req.body.date, 'haircut': req.body.haircut }))
+//         .save()
+//         .then((appointment) => res.send(appointment))
+//         .catch((error) => {
+//             console.log(error)
+//             res.status(500).send({ error: 'Internal Server Error' });
+//         }
+//         );
+// });
 
 app.get('/users/:userId/appointments', (req, res) => {
+    // Appointment.find({ userId: req.params.userId })
+    //     .then(appointment => res.send(appointment))
+    //     .catch((error) => {
+    //         console.log(error)
+    //         res.status(500).send({ error: 'Internal Server Error' });
+    //     }
+    //     );
+
     Appointment.find({ userId: req.params.userId })
-        .then(appointment => res.send(appointment))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
+        .then(appointments => {
+            console.log(appointments);
+            res.status(200).json({
+                
+                message: 'Appointments fetched successfully',
+                appointments: appointments
+            })
+        });
+
+
 });
 
 //Schedule

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Appointment } from "./appointment.model";
 import { Subject, BehaviorSubject} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class AppointmentsService{
@@ -64,20 +65,24 @@ export class AppointmentsService{
     }
 
     getAppointments() {
-        //Como antes.
-        // this.http.get<Appointment[]>(
-        //     'http://localhost:3000/users/67800d44c1d0723ab7bc8f19/appointments')
-        //     .subscribe( (appointmentsData)=> {
-        //         this.appointments = appointmentsData;
-        //         this.appointmentUpdate.next([...this.appointments]);
-        //     });
-        //Prueba: 
         this.http
-            .get<{ message: string; apointments: Appointment[] }>(
-                "http://localhost:3000/api/posts"
+            .get<{ message: string; appointments: any[] }>(
+                "http://localhost:3000/users/67800d44c1d0723ab7bc8f19/appointments"
             )
-            .subscribe(appointmentData => {
-                this.appointments = appointmentData.apointments;
+            .pipe(map((appointmentData) => {
+                return appointmentData.appointments.map(appointment => {
+                    return {
+                        id: appointment._id,
+                        date: appointment.date,
+                        haircut: appointment.haircut,
+                        confirmed: appointment.confirmed,
+                        paid: appointment.paid
+                    };
+                }
+                );
+            }))
+            .subscribe(appointments => {
+                this.appointments = appointments;
                 this.appointmentUpdate.next([...this.appointments]);
         });
 
@@ -92,7 +97,7 @@ export class AppointmentsService{
         // return this.http.post('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment', appointmet);
         this.http
             .post<{message: string }>(
-                "http://localhost:3000/api/createAppointment",appointmet)
+                "http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment",appointmet)
             .subscribe(responseData => {
                 console.log(responseData.message);
                 this.appointments.push(appointmet);

@@ -19,15 +19,10 @@ import { AppointmentsService } from './appointments/appointments.service';
   styleUrl: './app.component.css' // aqui se podria poner el codigo css directamente y asi no se necesita el archivo css.
 })
 
-export class AppComponent implements OnInit{
-  showComponent: boolean = false;
+export class AppComponent{
   constructor(private appointmentsService: AppointmentsService) {}
 
-  ngOnInit() {
-    this.appointmentsService.showComponent$.subscribe(value => {
-      this.showComponent = value;
-    });
-  }
+  
 
   title = 'client';
   userIslogged = true;
