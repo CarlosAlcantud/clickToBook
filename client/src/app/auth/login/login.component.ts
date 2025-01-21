@@ -1,6 +1,7 @@
 import {Component } from '@angular/core';
 import {NgForm, FormsModule} from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { AuthService } from '../auth.service';
 
 @Component({
     selector: 'login',
@@ -11,15 +12,16 @@ import { NgIf } from '@angular/common';
 })
 
 export class LoginComponent {
-  constructor() {}
+  constructor(public authService: AuthService) {}
 
 
 
 
   onLogin(loginForm: NgForm) {
-    console.log(loginForm.value);
-
-
+    if (loginForm.invalid) {
+      return;
+    }
+    this.authService.login(loginForm.value.email, loginForm.value.password);
 
   }
 }

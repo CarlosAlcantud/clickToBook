@@ -1,5 +1,5 @@
-<form class="form" >
-    <div class="form-group" (submit) ="onLogin(loginForm)" ngForm #loginForm="ngForm">
+<form class="form" (submit) ="onLogin(loginForm)" ngForm #loginForm="ngForm" >
+    <div class="form-group" >
         <label for="email" class="form-label">E-mail address</label>
         <input 
             ngModel

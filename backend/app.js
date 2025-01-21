@@ -6,9 +6,12 @@ app.use(express.json()); // this allows to use json data in the request body
 const sendEmail = require('./email');
 const cron = require('node-cron');
 const helmet = require('helmet');
-
+const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+
+const jwt = require('jsonwebtoken');
+
 
 /*  
 
@@ -59,22 +62,49 @@ app.get('/users', (req, res) => {
         );
 });
 
-app.post('/createUser', (req, res) => {
-    (new User({ 
-        'username': req.body.username,
-        'password': req.body.password,
-        'email': req.body.email,
-        'telephone': req.body.telephone
-    }))
-        .save()
-        .then((appointment) => res.send(appointment))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
 
+app.post("/auth/singup", (req,res) => {
+    console.log("function post(auth/singup/).app.js");
+    bcrypt.hash(req.body.password, 10)
+    .then((hash) => {
+        const user = new User({
+            username: req.body.username,
+            email: req.body.email,
+            telephone: req.body.phone,
+            password: hash
+        });
+        user.save()
+        .then(result => {
+            res.status(201).json({
+                message: 'User created',
+                result: result
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+    })
 });
+
+
+// app.post('/createUser', (req, res) => {
+//     (new User({ 
+//         'username': req.body.username,
+//         'password': req.body.password,
+//         'email': req.body.email,
+//         'telephone': req.body.telephone
+//     }))
+//         .save()
+//         .then((appointment) => res.send(appointment))
+//         .catch((error) => {
+//             console.log(error)
+//             res.status(500).send({ error: 'Internal Server Error' });
+//         }
+//         );
+
+// });
 
 app.get('/users/:userId', (req, res) => {
     User.find({_id: req.params.userId})
@@ -114,6 +144,47 @@ app.delete('/users/:userId', async (req, res) => {
         res.send(user);
 
             
+});
+
+// login
+
+app.post('/auth/login', (req, res) => {
+    let fetchedUser;
+    User.findOne({ email: req.body.email })
+    .then(user => {
+        
+        if(!user) {
+            return res.status(401).json({
+                message: 'Auth failed'
+            });
+        }
+        fetchedUser = user;
+        return bcrypt.compare(req.body.password, user.password)
+
+
+    })
+    .then(result => {
+        
+        if (!result) {
+            return res.status(401).json({
+                message: 'Auth failed'
+            });
+        }
+        const token = jwt.sign(
+            {email: fetchedUser.email, userId: fetchedUser._id},
+            'secret_this_should_be_longer',
+            {expiresIn: '1h'}
+        );
+        res.status(200).json({
+            token: token
+        });
+    })
+    .catch(err => {
+        
+        return res.status(401).json({
+            message: 'Auth failed'
+        });
+    });
 });
 
 
