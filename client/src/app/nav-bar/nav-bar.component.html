@@ -2,16 +2,36 @@
     <div class="container">
         <div class="navbar-content">
             <div class="navbar-left">
-                <a href="/" class="brand">
+                <a routerLink="/"  class="brand">
                     <div class="brand-name">ClBk</div>
                 </a>
             </div>
             <div class="navbar-right">
                 <!-- Simulando lógica de sesión -->
-                <a href="/create" class="navbar-link">Create</a>
-                <a href="/auth/register" class="navbar-link">Sign up</a>
-                <a href="/auth/login" class="navbar-link">LogIn</a>
+                
+                <div class = "authenticated " *ngIf= "userIsAuthenticated;else notAuthenticated"  >
+                    <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">appointments</a>
+                    <a routerLink="/create" routerLinkActive="active" class="navbar-link">Book</a>
+                    <button class="navbar-link" (click) ="onLogout()">LogOut</button>
+                </div>
+                <ng-template #notAuthenticated>
+                    <div class = "authenticated"  >
+                        <a routerLink="/auth/register" routerLinkActive="active" class="navbar-link">Sign up</a>
+                        <a routerLink="/auth/login" routerLinkActive="active" class="navbar-link">LogIn</a>
+    
+                    </div>
+
+                </ng-template>
+                
+                
+
+                
             </div>
+            <div >
+                
+            </div>
+            
+
         </div>
     </div>
 </nav>
