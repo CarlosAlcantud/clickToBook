@@ -10,7 +10,7 @@ import { ShowAppointmentsComponent } from "../show-appointments/show-appointment
 @Component({
   selector: 'create-appointment',
   standalone: true,
-  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf, BookAppointmentComponent, ShowAppointmentsComponent],
+  imports: [FormsModule, CalendarComponent, HoursAvailableComponent, NgIf, BookAppointmentComponent],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.css'
 })

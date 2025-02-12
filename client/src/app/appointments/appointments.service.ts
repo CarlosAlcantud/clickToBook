@@ -67,9 +67,10 @@ export class AppointmentsService{
     getAppointments() {
         this.http
             .get<{ message: string; appointments: any[] }>(
-                "http://localhost:3000/users/67800d44c1d0723ab7bc8f19/appointments"
+                "http://localhost:3000/users/679f459b8e5741c66ff14a23/appointments", 
             )
             .pipe(map((appointmentData) => {
+               
                 return appointmentData.appointments.map(appointment => {
                     return {
                         id: appointment._id,
@@ -97,7 +98,7 @@ export class AppointmentsService{
         // return this.http.post('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment', appointmet);
         this.http
             .post<{message: string }>(
-                "http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment",appointmet)
+                "http://localhost:3000/users/679f459b8e5741c66ff14a23/createAppointment",appointmet)
             .subscribe(responseData => {
                 console.log(responseData.message);
                 this.appointments.push(appointmet);

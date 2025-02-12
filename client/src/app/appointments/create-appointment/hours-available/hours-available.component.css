@@ -10,7 +10,7 @@
     width: 0px; /* Ancho de la barra de desplazamiento */
     background: transparent; /* Fondo transparente */
 }
-    .hour-button {
+.hour-button {
     
         background-color: #fff; /* Fondo blanco */
         color: #000; /* Color del texto */

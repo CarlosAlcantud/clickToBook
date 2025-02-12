@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 const jwt = require('jsonwebtoken');
-
+const checkAuth = require('./middleware/check-auth');
 
 /*  
 
@@ -34,7 +34,7 @@ cron.schedule('50 19 * * *', () => {
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*'); // * means all domains are allowed
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
 }); //this allows to make requests from different domains
@@ -155,19 +155,19 @@ app.post('/auth/login', (req, res) => {
         
         if(!user) {
             return res.status(401).json({
-                message: 'Auth failed'
+                message: 'El usuario no existe'
             });
         }
         fetchedUser = user;
         return bcrypt.compare(req.body.password, user.password)
-
+        
 
     })
     .then(result => {
         
         if (!result) {
             return res.status(401).json({
-                message: 'Auth failed'
+                message: 'Wrong password'
             });
         }
         const token = jwt.sign(
@@ -176,7 +176,8 @@ app.post('/auth/login', (req, res) => {
             {expiresIn: '1h'}
         );
         res.status(200).json({
-            token: token
+            token: token,
+            expiresIn: 3600,
         });
     })
     .catch(err => {
@@ -202,7 +203,11 @@ app.get('/appointments', (req, res) => {
 );
 
 //Prueba 
-app.post('/users/:userId/createAppointment', (req, res) => {
+app.post('/users/:userId/createAppointment',
+    
+    checkAuth,
+    
+    (req, res) => {
     const appointment = new Appointment({
         'userId': req.params.userId,
         'date': req.body.date,
@@ -231,15 +236,11 @@ app.post('/users/:userId/createAppointment', (req, res) => {
 //         );
 // });
 
-app.get('/users/:userId/appointments', (req, res) => {
-    // Appointment.find({ userId: req.params.userId })
-    //     .then(appointment => res.send(appointment))
-    //     .catch((error) => {
-    //         console.log(error)
-    //         res.status(500).send({ error: 'Internal Server Error' });
-    //     }
-    //     );
-
+app.get(
+    '/users/:userId/appointments',
+    checkAuth,
+    (req, res) => {
+    
     Appointment.find({ userId: req.params.userId })
         .then(appointments => {
             console.log(appointments);
@@ -254,7 +255,9 @@ app.get('/users/:userId/appointments', (req, res) => {
 });
 
 //Schedule
-app.post('/schedule', async (req, res) => {
+app.post('/schedule',
+    //checkAuth,
+    async (req, res) => {
     (new Schedule({ 'hour': req.body.hour }))
     .save()
     .then((schedule) => res.send(schedule))
@@ -267,7 +270,9 @@ app.post('/schedule', async (req, res) => {
 
 
 
-app.patch('/users/:userId/updateAppointment/:appointmentId', verifyUserId, (req, res) => {
+app.patch('/users/:userId/updateAppointment/:appointmentId', 
+    checkAuth, 
+    verifyUserId, (req, res) => {
     Appointment.findOneAndUpdate({ _id: req.params.appointmentId }, { $set: req.body })
         .then(appointment => res.send(appointment))
         .catch((error) => {
@@ -278,7 +283,8 @@ app.patch('/users/:userId/updateAppointment/:appointmentId', verifyUserId, (req,
 });
 
 
-app.delete('/users/:userId/deleteAppointment/:appointmentId', verifyUserId, (req, res) => {
+app.delete('/users/:userId/deleteAppointment/:appointmentId',
+    checkAuth, verifyUserId, (req, res) => {
     Appointment.findByIdAndDelete(req.params.appointmentId)
         .then(() => {
             return Appointment.find({});

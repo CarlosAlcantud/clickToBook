@@ -2,10 +2,11 @@ import { Component, Input, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Appointment } from '../../appointment.model';
 import { AppointmentsService } from '../../appointments.service';
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'book-appointment',
   standalone: true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './book-appointment.component.html',
   styleUrl: './book-appointment.component.css',
   providers: [DatePipe]

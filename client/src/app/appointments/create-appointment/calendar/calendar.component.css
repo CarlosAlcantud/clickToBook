@@ -111,4 +111,6 @@
     cursor: pointer;
     
   }
-
+  .notAvailable{
+    pointer-events: none;
+  }

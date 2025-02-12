@@ -4,7 +4,7 @@
     <hours-available (hourselcted)="hourAdded($event) "/>
     
 </div>
-<div class = "box" *ngIf="appointment !== null && showComponent === false">
+<div class = "box" *ngIf="appointment !== null">
     <!-- 
     La varuable entre corchetes [appointment] es ek nombre de la variable en el destino (book-appointment) y la que va en 
     comillas "appointment" es la de origen (create-appointment)
@@ -13,9 +13,7 @@
     [hourSelected] = "hourSelected" es pasar la hora seleccionada al componente book-appointment -->
     <book-appointment [appointment]="appointment" [hourSelected] = "hourSelected"  /> 
 </div>
-<div >
-    <show-appointments />
-</div>
+
 
 <!-- <div>Esta es la fecha por obserbables {{date}}</div> -->
  <!-- <div>Esta es la fecha url {{date}}</div> -->

@@ -80,9 +80,19 @@ export class CalendarComponent implements OnInit{
   }
 
   isToday(day: number) {
-    return day === this.today.getDate() && 
+    if(this.isWeekendExactDay(day) == 0){
+      return day === this.today.getDate() + 1 && 
+      this.month === this.today.getMonth() && 
+      this.year === this.today.getFullYear();
+    }else if (this.isWeekendExactDay(day) == 6){
+      return day === this.today.getDate() +2 && 
+      this.month === this.today.getMonth() && 
+      this.year === this.today.getFullYear();
+    }else{
+      return day === this.today.getDate() && 
            this.month === this.today.getMonth() && 
            this.year === this.today.getFullYear();
+    }    
   }
 
   isSelected(day: number) {
@@ -118,5 +128,10 @@ export class CalendarComponent implements OnInit{
     return dayOfWeek === 0 || dayOfWeek === 6; // 0 es domingo y 6 es sábado
   }
 
+  isWeekendExactDay(day: number): number {
+    const date = new Date(this.year, this.month, day);
+    const dayOfWeek = date.getDay();
+    return dayOfWeek; // 0 es domingo y 6 es sábado
+  }
 
 }
