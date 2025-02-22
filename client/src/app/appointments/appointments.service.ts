@@ -67,7 +67,7 @@ export class AppointmentsService{
     getAppointments() {
         this.http
             .get<{ message: string; appointments: any[] }>(
-                "http://localhost:3000/users/679f459b8e5741c66ff14a23/appointments", 
+                "http://localhost:3000/users/appointments", 
             )
             .pipe(map((appointmentData) => {
                
@@ -94,11 +94,9 @@ export class AppointmentsService{
     }
 
     createAppointment(appointmet: Appointment) {
-        // console.log("Se llama a crear una cita");
-        // return this.http.post('http://localhost:3000/users/67800d44c1d0723ab7bc8f19/createAppointment', appointmet);
         this.http
             .post<{message: string }>(
-                "http://localhost:3000/users/679f459b8e5741c66ff14a23/createAppointment",appointmet)
+                "http://localhost:3000/users/createAppointment",appointmet)
             .subscribe(responseData => {
                 console.log(responseData.message);
                 this.appointments.push(appointmet);
@@ -106,23 +104,6 @@ export class AppointmentsService{
            });
 
     }
-
-    // getAppointmentUpdateListener() {
-    //     return this.appointmentUpdate.asObservable();
-    // }
-
-    // addAppointmet(id: string, date: Date, haircutType: string, confirmed: boolean, paid: boolean) {
-    //     const appointment: Appointment = {
-    //         id: id,
-    //         date: date,
-    //         haircutType: haircutType,
-    //         confirmed: confirmed,
-    //         paid: paid
-    //     };
-    //     this.appointments.push(appointment);
-    //     this.appointmentUpdate.next([...this.appointments]);
-        
-    // }
 
 
     //Provide the date selected
