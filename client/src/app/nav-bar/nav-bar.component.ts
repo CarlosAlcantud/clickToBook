@@ -15,22 +15,35 @@ import { NgIf } from '@angular/common';
 export class NavBarComponent implements OnInit,OnDestroy {
 
   userIsAuthenticated = false;
+  userisWorker = false;
   private authListenerSubs: Subscription = new Subscription();
-
+  private workerListenerSubs: Subscription = new Subscription(); 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.userIsAuthenticated = this.authService.getIsAuth();
+    //this.userIsAuthenticated = this.authService.getIsAuth();
+    //this.userisWorker = this.authService.getIsWorker();
+    console.log("User is authenticated adsfa antes a: " + this.userIsAuthenticated);
+
     this.authListenerSubs = this.authService.getAuthStatusListener().subscribe(isAuthenticated => {
-      console.log("User is authenticated asdf a: " + this.userIsAuthenticated);
+      
       this.userIsAuthenticated = isAuthenticated;
       
     });
+
+    this.workerListenerSubs = this.authService.getWorkerStatusListener().subscribe(isWorker => {
+      
+      this.userisWorker = isWorker;
+      
+    });
+    console.log("User is authenticated adsfa despues a: " + this.userIsAuthenticated);
+    
   }
 
   ngOnDestroy() {
     console.log("NavBarComponent ngOnDestroy called");
     this.authListenerSubs.unsubscribe();
+    this.workerListenerSubs.unsubscribe();
   }
 
   onLogout() {

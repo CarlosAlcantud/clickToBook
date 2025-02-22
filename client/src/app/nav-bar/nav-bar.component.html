@@ -9,20 +9,30 @@
             <div class="navbar-right">
                 <!-- Simulando lógica de sesión -->
                 
-                <div class = "authenticated " *ngIf= "userIsAuthenticated;else notAuthenticated"  >
-                    <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">appointments</a>
-                    <a routerLink="/create" routerLinkActive="active" class="navbar-link">Book</a>
-                    <button class="navbar-link" (click) ="onLogout()">LogOut</button>
-                </div>
+                <ng-container *ngIf="userIsAuthenticated; else notAuthenticated">
+                    <!-- Si está autenticado, evaluamos si es trabajador o no -->
+                    <div class="authenticated" *ngIf="!userisWorker; else workerView">
+                        <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">Appointments</a>
+                        <a routerLink="/create" routerLinkActive="active" class="navbar-link">Book</a>
+                        <button class="navbar-link" (click)="onLogout()">LogOut</button>
+                    </div>
+                </ng-container>
+                
+                <!-- Template para usuario NO autenticado -->
                 <ng-template #notAuthenticated>
-                    <div class = "authenticated"  >
+                    <div class="authenticated">
                         <a routerLink="/auth/register" routerLinkActive="active" class="navbar-link">Sign up</a>
                         <a routerLink="/auth/login" routerLinkActive="active" class="navbar-link">LogIn</a>
-    
                     </div>
-
                 </ng-template>
                 
+                <!-- Template para trabajadores autenticados -->
+                <ng-template #workerView>
+                    <div class="authenticated">
+                        <p>Hola mUENDO</p>
+                        <button class="navbar-link" (click)="onLogout()">LogOut</button>
+                    </div>
+                </ng-template>
                 
 
                 

@@ -25,7 +25,8 @@ router.post("/auth/singup", (req,res) => {
             username: req.body.username,
             email: req.body.email,
             telephone: req.body.phone,
-            password: hash
+            password: hash,
+            worker: false
         });
         user.save()
         .then(result => {
@@ -35,6 +36,7 @@ router.post("/auth/singup", (req,res) => {
             });
         })
         .catch(err => {
+            console.log("No se pudo crear el usuario");
             res.status(500).json({
                 error: err
             });
@@ -116,6 +118,7 @@ router.post('/auth/login', (req, res) => {
         res.status(200).json({
             token: token,
             expiresIn: 3600,
+            worker: fetchedUser.worker,
         });
     })
     .catch(err => {
