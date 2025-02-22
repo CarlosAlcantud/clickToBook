@@ -2,15 +2,14 @@ const express = require('express');
 const checkAvailableAppointmentsAndNotify = require('./sendEmails');
 const app = express();
 const mongoose = require('./database/mongoose');
-app.use(express.json()); // this allows to use json data in the request body
 const sendEmail = require('./email');
 const cron = require('node-cron');
 const helmet = require('helmet');
-const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
+
+app.use(express.json()); // this allows to use json data in the request body
 app.use(bodyParser.json());
 
-const jwt = require('jsonwebtoken');
 const checkAuth = require('./middleware/check-auth');
 
 /*  
@@ -22,8 +21,6 @@ localhost:4200 - front-end
 
 */
 
-const User = require('./database/models/user');
-const Worker = require('./database/models/worker'); 
 const Appointment = require('./database/models/appointments');
 const Schedule = require('./database/models/schedule');
 
@@ -32,272 +29,13 @@ cron.schedule('50 19 * * *', () => {
     checkAvailableAppointmentsAndNotify.checkAvailableAppointmentsAndNotify(); // Llamar a la función para verificar y notificar
 });
 
+
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*'); // * means all domains are allowed
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
 }); //this allows to make requests from different domains
-
-const verifyUserId = (req, res, next) => {
-    User.findById(req.params.userId)
-        .then(user => {
-            if (!user) {
-                return res.status(404).send({ error: 'User not found' });
-            }
-            next();
-        })
-        .catch(error => res.status(500).send({ error: 'Internal Server Error' }));
-};
-// Endpoints 
-// User
-
-app.get('/users', (req, res) => {
-    User.find({})
-        .then(users => res.send(users))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-});
-
-
-app.post("/auth/singup", (req,res) => {
-    console.log("function post(auth/singup/).app.js");
-    bcrypt.hash(req.body.password, 10)
-    .then((hash) => {
-        const user = new User({
-            username: req.body.username,
-            email: req.body.email,
-            telephone: req.body.phone,
-            password: hash
-        });
-        user.save()
-        .then(result => {
-            res.status(201).json({
-                message: 'User created',
-                result: result
-            });
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            });
-        });
-    })
-});
-
-
-// app.post('/createUser', (req, res) => {
-//     (new User({ 
-//         'username': req.body.username,
-//         'password': req.body.password,
-//         'email': req.body.email,
-//         'telephone': req.body.telephone
-//     }))
-//         .save()
-//         .then((appointment) => res.send(appointment))
-//         .catch((error) => {
-//             console.log(error)
-//             res.status(500).send({ error: 'Internal Server Error' });
-//         }
-//         );
-
-// });
-
-app.get('/users/:userId', (req, res) => {
-    User.find({_id: req.params.userId})
-        .then(user => res.send(user))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-});
-
-app.patch('/users/:userId', (req, res) => {
-    User.findOneAndUpdate({ _id: req.params.userId }, { $set: req.body })
-        .then(user => res.send(user))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-});
-
-app.delete('/users/:userId', async (req, res) => {
-   const deleteAppointments = (user) => {
-        Appointment.deleteMany({ userId: user._id})
-            .then(() => user)
-            .catch((error) => {
-                console.log(error)
-                res.status(500).send({ error: 'Internal Server Error' });
-            });
-   };
-   const user = User.findByIdAndDelete(req.params.userId)
-        .then((user) => deleteAppointments(user))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        });
-        res.send(user);
-
-            
-});
-
-// login
-
-app.post('/auth/login', (req, res) => {
-    let fetchedUser;
-    User.findOne({ email: req.body.email })
-    .then(user => {
-        
-        if(!user) {
-            return res.status(401).json({
-                message: 'El usuario no existe'
-            });
-        }
-        fetchedUser = user;
-        return bcrypt.compare(req.body.password, user.password)
-        
-
-    })
-    .then(result => {
-        
-        if (!result) {
-            return res.status(401).json({
-                message: 'Wrong password'
-            });
-        }
-        const token = jwt.sign(
-            {email: fetchedUser.email, userId: fetchedUser._id},
-            'secret_this_should_be_longer',
-            {expiresIn: '1h'}
-        );
-        res.status(200).json({
-            token: token,
-            expiresIn: 3600,
-        });
-    })
-    .catch(err => {
-        
-        return res.status(401).json({
-            message: 'Auth failed'
-        });
-    });
-});
-
-
-// Apointments
-
-app.get('/appointments', (req, res) => {
-    Appointment.find({})
-        .then(appointments => res.send(appointments))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-}
-);
-
-//Prueba 
-app.post('/users/:userId/createAppointment',
-    
-    checkAuth,
-    
-    (req, res) => {
-    const appointment = new Appointment({
-        'userId': req.params.userId,
-        'date': req.body.date,
-        'haircut': req.body.haircut,
-        'confirmed': req.body.confirmed,
-        'paid': req.body.paid
-    });
-    console.log(appointment);
-    appointment.save();
-    res.status(201).json({
-        message: 'Appointment created successfully',
-    })
-
-});
-
-// app.post('/users/:userId/createAppointment', verifyUserId,(req, res) => {
-//     console.log(req.body);
-//     console.log("algo pasa");
-//     (new Appointment({ 'userId': req.params.userId, 'worker': req.body.worker, 'date': req.body.date, 'haircut': req.body.haircut }))
-//         .save()
-//         .then((appointment) => res.send(appointment))
-//         .catch((error) => {
-//             console.log(error)
-//             res.status(500).send({ error: 'Internal Server Error' });
-//         }
-//         );
-// });
-
-app.get(
-    '/users/:userId/appointments',
-    checkAuth,
-    (req, res) => {
-    
-    Appointment.find({ userId: req.params.userId })
-        .then(appointments => {
-            console.log(appointments);
-            res.status(200).json({
-                
-                message: 'Appointments fetched successfully',
-                appointments: appointments
-            })
-        });
-
-
-});
-
-//Schedule
-app.post('/schedule',
-    //checkAuth,
-    async (req, res) => {
-    (new Schedule({ 'hour': req.body.hour }))
-    .save()
-    .then((schedule) => res.send(schedule))
-    .catch((error) => {
-        console.log(error)
-        res.status(500).send({ error: 'Internal Server Error' });
-    }
-    );
-  });
-
-
-
-app.patch('/users/:userId/updateAppointment/:appointmentId', 
-    checkAuth, 
-    verifyUserId, (req, res) => {
-    Appointment.findOneAndUpdate({ _id: req.params.appointmentId }, { $set: req.body })
-        .then(appointment => res.send(appointment))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-});
-
-
-app.delete('/users/:userId/deleteAppointment/:appointmentId',
-    checkAuth, verifyUserId, (req, res) => {
-    Appointment.findByIdAndDelete(req.params.appointmentId)
-        .then(() => {
-            return Appointment.find({});
-        })
-        .then(appointments => res.send(appointments))
-        .catch((error) => {
-            console.log(error)
-            res.status(500).send({ error: 'Internal Server Error' });
-        }
-        );
-});
-// Worker
-
 
 
 
@@ -322,49 +60,6 @@ app.use(helmet({
       },
     },
 }));
-
-
-// Get all the hours available for a day: 
-
-app.get('/schedule/:date', async (req, res) => {
-    console.log(req.params.date);
-    const date = new Date(req.params.date);
-    const startday = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0));
-    const endOfDay = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999));
-
-    const hoursavailable = new Set();
-    const hoursnotavailable = new Set();
-    const schedule = await Schedule.find().lean();
-    const appointmentsForTheDay = await Appointment.find({
-        date: { $gte: startday, $lte: endOfDay }
-    }).lean();
-
-    appointmentsForTheDay.forEach(appointment => {
-        const appointmentDate = new Date(appointment.date);
-        const hoursAndMinutes = `${appointmentDate.getUTCHours().toString().padStart(2, '0')}:${appointmentDate.getUTCMinutes().toString().padStart(2, '0')}`; // Extrae HH:MM en UTC
-        hoursnotavailable.add(hoursAndMinutes);
-    });
-
-    schedule.forEach(hour => {
-        if (!hoursnotavailable.has(hour.hour)) {
-            hoursavailable.add(hour.hour);
-        }
-    });
-
-    const sortedHoursAvailable = [...hoursavailable].sort((a, b) => {
-        const [aHours, aMinutes] = a.split(':').map(Number);
-        const [bHours, bMinutes] = b.split(':').map(Number);
-        return aHours * 60 + aMinutes - (bHours * 60 + bMinutes);
-    });
-
-    console.log(sortedHoursAvailable);
-
-    res.send(sortedHoursAvailable);
-
-
-
-});
-
 
 // cron.schedule('*/15 * * * * *', async () => {
 //     const startday = new Date(Date.UTC(2024, 9, 29)); // Mes es 0-indexado, así que 9 es octubre
@@ -396,6 +91,16 @@ app.get('/schedule/:date', async (req, res) => {
 
 //     console.log(sortedHoursAvailable); // Muestra las horas y minutos no disponibles
 // });
+//Routes 
+
+const appointmentsRoutes = require('./routes/appointments');
+app.use("/appointments", appointmentsRoutes);
+
+const scheduleRoutes = require('./routes/schedule');
+app.use("/schedule", scheduleRoutes);
+
+const userRoutes = require('./routes/user');
+app.use(userRoutes);
 
 app.listen(3000, () => console.log('ClickToBook ready to go!'));
 

@@ -67,7 +67,7 @@ export class AppointmentsService{
     getAppointments() {
         this.http
             .get<{ message: string; appointments: any[] }>(
-                "http://localhost:3000/users/appointments", 
+                "http://localhost:3000/appointments/forUser", 
             )
             .pipe(map((appointmentData) => {
                
@@ -96,7 +96,7 @@ export class AppointmentsService{
     createAppointment(appointmet: Appointment) {
         this.http
             .post<{message: string }>(
-                "http://localhost:3000/users/createAppointment",appointmet)
+                "http://localhost:3000/appointments/createAppointment",appointmet)
             .subscribe(responseData => {
                 console.log(responseData.message);
                 this.appointments.push(appointmet);
