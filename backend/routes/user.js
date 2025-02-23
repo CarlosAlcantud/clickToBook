@@ -26,7 +26,7 @@ router.post("/auth/singup", (req,res) => {
             email: req.body.email,
             telephone: req.body.phone,
             password: hash,
-            worker: false
+            role: 'client'
         });
         user.save()
         .then(result => {
@@ -111,14 +111,13 @@ router.post('/auth/login', (req, res) => {
             });
         }
         const token = jwt.sign(
-            {email: fetchedUser.email, userId: fetchedUser._id},
-            'secret_this_should_be_longer',
+            {email: fetchedUser.email, userId: fetchedUser._id, role: fetchedUser.role},
+            'secret_this_should_be_longer_like_this_longer_to_be_more_secure_i_thimk_now_it_is_long_enough',
             {expiresIn: '1h'}
         );
         res.status(200).json({
             token: token,
             expiresIn: 3600,
-            worker: fetchedUser.worker,
         });
     })
     .catch(err => {

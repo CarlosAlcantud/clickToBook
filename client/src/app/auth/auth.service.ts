@@ -10,15 +10,25 @@ export class AuthService {
 
    
     private isAuthenticated = false;
+    private role = '';
     private isWorker = false;
+    private isClient = false;
+    private isAdmin = false;
 
     private authStatusListener = new BehaviorSubject<boolean>(this.isAuthenticated);
     private workerStatusListener = new BehaviorSubject<boolean>(this.isWorker);
+    private clientStatusListener = new BehaviorSubject<boolean>(this.isClient);
+    private adminStatusListener = new BehaviorSubject<boolean>(this.isAdmin);
+    
 
     constructor(private http:HttpClient, private router: Router) {
 
         this.token = '';
         this.tokenTimer = setTimeout(() => {}, 0);
+    }
+    
+    getUserRole(){
+        return this.role;
     }
     
     getToken() {
@@ -28,11 +38,7 @@ export class AuthService {
     getIsAuth() {
         return this.isAuthenticated;
     }
-
-    getIsWorker() {
-        return this.isWorker;
-    }
-
+    
     getAuthStatusListener() {
         return this.authStatusListener.asObservable();
     }
@@ -40,6 +46,15 @@ export class AuthService {
     getWorkerStatusListener() {
         return this.workerStatusListener.asObservable();
     }
+
+    getClientStatusListener() {
+        return this.clientStatusListener.asObservable();
+    }
+
+    getAdminStatusListener() {
+        return this.adminStatusListener.asObservable();
+    }
+    
     
     createUser(email: string, password: string, username: string, phone: string) {
         const authData: AuthData = {email: email, password: password, username: username, phone: phone};
@@ -54,7 +69,7 @@ export class AuthService {
     login(email: string, password: string) {
         console.log("Metodo/ login()");
         const authData = {email: email, password: password};
-        this.http.post<{token: string, expiresIn: number, worker:boolean}>('http://localhost:3000/auth/login',authData)
+        this.http.post<{token: string, expiresIn: number}>('http://localhost:3000/auth/login',authData)
         .subscribe(response => {
             const token = response.token;
             console.log("Authenticated = " + token);
@@ -63,13 +78,20 @@ export class AuthService {
                 this.setAuthTimer(expiresInDuration);
                 this.token = token;
                 const expirationDate = new Date(new Date().getTime() + expiresInDuration * 1000);
-                this.saveAuthData(token, expirationDate, response.worker);
+                this.saveAuthData(token, expirationDate);
                 console.log("Session expires's in: " + expirationDate);
                 this.authStatusListener.next(true);
-                this.workerStatusListener.next(response.worker);
-                this.isWorker = response.worker;
+                this.setRoles(token);
                 this.isAuthenticated = true;
-                this.router.navigate(['/']);
+                if(this.isWorker){
+                    this.router.navigate(['/misCitas']);
+                }
+                else if(this.isClient){
+                    this.router.navigate(['/']);
+                }
+                else{
+                    this.router.navigate(['/']);
+                }
             }
         });
     }
@@ -88,22 +110,12 @@ export class AuthService {
                 this.token = authInformation.token;
                 
                 this.setAuthTimer(expiresIn / 1000);
-                
+                this.setRoles(this.token);
                 this.authStatusListener.next(true);
                 this.isAuthenticated = true;
-                if(authInformation.worker == 'true') {
-                    this.isWorker = true;
-                    this.workerStatusListener.next(true);
-                }else{  
-                    this.isWorker = false;
-                    this.workerStatusListener.next(false);
-                }         
-                console.log("Este es el valor de worker cuando autoAuthUser() es llamado: " + authInformation.worker);
-                console.log("Este es el valor con el que se queda worker despues de guardar el valor de localStorage: " + this.isWorker);
+               
             } 
         }
-        console.log("Los valores de worker y isAuthenticated son: " + this.isWorker + " " + this.isAuthenticated);
-        
     }
 
     private setAuthTimer(duration: number) {
@@ -116,38 +128,59 @@ export class AuthService {
     logout() {
         this.token = '';
         this.isAuthenticated = false;
-        this.isWorker = false;
+        this.role = '';
         this.authStatusListener.next(false);
+        this.isWorker = false;
+        this.workerStatusListener.next(false);
+        this.isClient = false;
+        this.clientStatusListener.next(false);
+        this.isAdmin = false;
+        this.adminStatusListener.next(false);
         clearTimeout(this.tokenTimer);
         this.clearAuthData();
         this.router.navigate(['/']);
         
     }
 
-    private saveAuthData(token: string, expirationDate: Date, worker:boolean) {
+    private setRoles(token: string) {
+        console.log("setRoles()");
+        console.log("El role antes de sacarlo: " + this.role);
+        this.role = JSON.parse(atob(token.split('.')[1])).role;
+        console.log("El Role es: " + this.role);
+        if(this.role === 'worker') {
+            this.isWorker = true;
+            this.workerStatusListener.next(true);
+        }
+        if(this.role === 'client') {
+            this.isClient = true;
+            this.clientStatusListener.next(true);
+        }
+        if(this.role === 'admin') {
+            this.isAdmin = true;
+            this.adminStatusListener.next(true);
+        }
+    }
+    private saveAuthData(token: string, expirationDate: Date) {
         localStorage.setItem('token', token);
         localStorage.setItem('expiration', expirationDate.toISOString());
-        localStorage.setItem('worker', worker.toString());
     }
 
     private clearAuthData() {
         localStorage.removeItem('token');
         localStorage.removeItem('expiration');
-        localStorage.removeItem('worker');
     }
 
     private getAuthData() {
         if(typeof localStorage === "undefined") return null;
         const token = localStorage.getItem('token');
         const expirationDate = localStorage.getItem('expiration');
-        const worker = localStorage.getItem('worker');
-        if(!token || !expirationDate || !worker) {
+        if(!token || !expirationDate) {
             return;
         }else{
             return {
                 token: token,
                 expirationDate: new Date(expirationDate),
-                worker: worker
+
             }   
         }
 

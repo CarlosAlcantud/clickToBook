@@ -18,30 +18,43 @@ router.get(
     '/forUser',
     checkAuth, 
     (req, res) => {
-    Appointment.find({ userId: req.userData.userId })
-        .then(appointments => {
-            console.log(appointments);
-            res.status(200).json({ message: 'Appointments fetched successfully', appointments });
+    if(req.userData.role === 'client') {
+        Appointment.find({ userId: req.userData.userId })
+            .then(appointments => {
+                console.log(appointments);
+                res.status(200).json({ message: 'Appointments fetched successfully', appointments });
+            });
+    }else{
+        res.status(401).json({
+            message: 'The role is not valid'
         });
+    }
 });
 
 router.post(
     '/createAppointment',
     checkAuth,
-    
     (req, res) => {
-    const appointment = new Appointment({
-        'userId': req.userData.userId,
-        'date': req.body.date,
-        'haircut': req.body.haircut,
-        'confirmed': req.body.confirmed,
-        'paid': req.body.paid
-    });
-    console.log(appointment);
-    appointment.save();
-    res.status(201).json({
-        message: 'Appointment created successfully',
-    })
+    if(req.userData.role === 'client') {
+        const appointment = new Appointment({
+            'userId': req.userData.userId,
+            'date': req.body.date,
+            'haircut': req.body.haircut,
+            'confirmed': req.body.confirmed,
+            'paid': req.body.paid
+        });
+        console.log(appointment);
+        appointment.save();
+        res.status(201).json({
+            message: 'Appointment created successfully',
+        })
+    }else{
+        res.status(401).json({
+            message: 'The role is not valid'
+        });
+    }
+    
+    
 
 });
 

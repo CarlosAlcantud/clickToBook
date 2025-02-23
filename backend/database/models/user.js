@@ -44,11 +44,12 @@ const UserSchema = new mongoose.Schema({
             message: 'Debe proporcionar al menos un email o un teléfono.'
         }
     },
-    worker : {
-        type: Boolean,
-        required: true
+    role: {
+        type: String,
+        enum: ['admin', 'worker', 'client'],
+        required: true,
         
-    }
+    },
 
 });
 // UserSchema.pre('save', function(next) {

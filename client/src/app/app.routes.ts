@@ -9,14 +9,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule} from '@angular/router';
 import { PrincipalComponent } from './principal/principal.component';
 import { authGuard } from './auth/auth.guard';
+import { WorkerAppointmentsComponent } from './worker/worker-appointments/worker-appointments.component';
 
 export const routes: Routes = [
     {  path: '', component: PrincipalComponent},
     //Habilitar esta ruta en un futuro 
-    {  path: 'create',  component: CreateAppointmentComponent, canActivate: [authGuard]},
+    {  path: 'create',  component: CreateAppointmentComponent, canActivate: [authGuard], data: {roles: ['client']}},
     {  path: 'auth/login', component: LoginComponent},
     {  path: 'auth/register', component: SingUpComponent}, 
-    { path: 'showappointments', component: ShowAppointmentsComponent, canActivate: [authGuard]} 
+    { path: 'showappointments', component: ShowAppointmentsComponent, canActivate: [authGuard], data: {roles: [ 'client']}},
+    { path: 'misCitas', component: WorkerAppointmentsComponent, canActivate: [authGuard], data: {roles: ['worker']}}
+
+
     
 ];
 

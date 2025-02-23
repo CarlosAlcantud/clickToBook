@@ -16,13 +16,17 @@ export class NavBarComponent implements OnInit,OnDestroy {
 
   userIsAuthenticated = false;
   userisWorker = false;
+  userisClient = false;
+  userisAdmin = false;
   private authListenerSubs: Subscription = new Subscription();
-  private workerListenerSubs: Subscription = new Subscription(); 
+  private workerListenerSubs: Subscription = new Subscription();
+  private clientListenerSubs: Subscription = new Subscription();
+  private adminListenerSubs: Subscription = new Subscription();
+
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    //this.userIsAuthenticated = this.authService.getIsAuth();
-    //this.userisWorker = this.authService.getIsWorker();
+    
     console.log("User is authenticated adsfa antes a: " + this.userIsAuthenticated);
 
     this.authListenerSubs = this.authService.getAuthStatusListener().subscribe(isAuthenticated => {
@@ -31,11 +35,20 @@ export class NavBarComponent implements OnInit,OnDestroy {
       
     });
 
-    this.workerListenerSubs = this.authService.getWorkerStatusListener().subscribe(isWorker => {
-      
-      this.userisWorker = isWorker;
-      
+    this.adminListenerSubs = this.authService.getAdminStatusListener().subscribe(isAdmin => {
+      this.userisAdmin = isAdmin;
+    }
+    );
+
+    this.clientListenerSubs = this.authService.getClientStatusListener().subscribe(isClient => {
+      this.userisClient = isClient;
     });
+
+    this.workerListenerSubs = this.authService.getWorkerStatusListener().subscribe(isWorker => {
+      this.userisWorker = isWorker;
+    });
+
+    
     console.log("User is authenticated adsfa despues a: " + this.userIsAuthenticated);
     
   }
@@ -43,7 +56,6 @@ export class NavBarComponent implements OnInit,OnDestroy {
   ngOnDestroy() {
     console.log("NavBarComponent ngOnDestroy called");
     this.authListenerSubs.unsubscribe();
-    this.workerListenerSubs.unsubscribe();
   }
 
   onLogout() {
