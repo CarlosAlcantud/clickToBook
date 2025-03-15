@@ -84,7 +84,7 @@ export class AuthService {
                 this.setRoles(token);
                 this.isAuthenticated = true;
                 if(this.isWorker){
-                    this.router.navigate(['/misCitas']);
+                    this.router.navigate(['/worker']);
                 }
                 else if(this.isClient){
                     this.router.navigate(['/']);

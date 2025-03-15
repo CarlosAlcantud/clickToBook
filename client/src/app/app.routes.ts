@@ -9,6 +9,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule} from '@angular/router';
 import { PrincipalComponent } from './principal/principal.component';
 import { authGuard } from './auth/auth.guard';
+import { WorkerComponent } from './worker/worker.component';
 import { WorkerAppointmentsComponent } from './worker/worker-appointments/worker-appointments.component';
 
 export const routes: Routes = [
@@ -18,9 +19,19 @@ export const routes: Routes = [
     {  path: 'auth/login', component: LoginComponent},
     {  path: 'auth/register', component: SingUpComponent}, 
     { path: 'showappointments', component: ShowAppointmentsComponent, canActivate: [authGuard], data: {roles: [ 'client']}},
-    { path: 'misCitas', component: WorkerAppointmentsComponent, canActivate: [authGuard], data: {roles: ['worker']}}
-
-
+    { 
+        path: 'worker', 
+        component: WorkerComponent, 
+        canActivate: [authGuard], 
+        data: {
+            roles: ['worker']
+        }, 
+        children: [
+            { path: 'appointments', component: WorkerAppointmentsComponent}
+        ]
+    
+    },
+    
     
 ];
 

@@ -1,55 +1,50 @@
 <nav class="navbar">
     <div class="container">
-        <div class="navbar-content">
+        <div class="navbar-content"  >
             <div class="navbar-left">
                 <a routerLink="/"  class="brand">
                     <div class="brand-name">ClBk</div>
                 </a>
             </div>
-            <div class="navbar-right">
-               
-                
-                <ng-container *ngIf="userIsAuthenticated; else notAuthenticated">
-                  
-                    <div class="authenticated" *ngIf="userisClient">
-                        <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">Appointments</a>
-                        <a routerLink="/create" routerLinkActive="active" class="navbar-link">Book</a>
-                        <button class="navbar-link" (click)="onLogout()">LogOut</button>
+            <ng-container *ngIf="userIsAuthenticated; else notAuthenticated">
+
+                <ng-container *ngIf="userisClient">
+                    <div class="navbar-right">
+                        <div class="authenticated"  >
+                            <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">Appointments</a>
+                            <a routerLink="/create" routerLinkActive="active" class="navbar-link">Book</a>
+                            <button class="navbar-link" (click)="onLogout()">LogOut</button>
+                        </div>
                     </div>
 
-                    <div class="authenticated" *ngIf="userisWorker">
-                        <a routerLink="/misCitas" routerLinkActive="active" class="navbar-link">Mis citas</a>
-                        <button class="navbar-link" (click)="onLogout()">LogOut</button>
-                    </div>
-
-                    <div class="authenticated" *ngIf="userisAdmin">
-                        <button class="navbar-link" (click)="onLogout()">LogOut</button>
-                    </div>
                 </ng-container>
                 
-                
-                <ng-template #notAuthenticated>
-                    <div class="authenticated">
-                        <a routerLink="/auth/register" routerLinkActive="active" class="navbar-link">Sign up</a>
-                        <a routerLink="/auth/login" routerLinkActive="active" class="navbar-link">LogIn</a>
-                    </div>
-                </ng-template>
-                
-                
-                <!-- <ng-template #workerView>
-                    <div class="authenticated">
-                        <p>Hola mUENDO</p>
+
+                <ng-container *ngIf="userisWorker">
+                    <div class="authenticated" >
+                        <a routerLink="/worker/appointments" routerLinkActive="active" class="navbar-link">perfil</a>
                         <button class="navbar-link" (click)="onLogout()">LogOut</button>
                     </div>
-                </ng-template> -->
-                
+    
+                </ng-container>
 
-                
-            </div>
-            <div >
-                
-            </div>
-            
+                <ng-container *ngIf="userisAdmin"> >
+
+                    <div class="authenticated" >
+                        <button class="navbar-link" (click)="onLogout()">LogOut</button>
+                    </div>
+    
+                </ng-container>
+
+            </ng-container>
+
+            <ng-template #notAuthenticated>
+                <div class="authenticated" *ngIf="!userIsAuthenticated">
+                    <a routerLink="/auth/register" routerLinkActive="active" class="navbar-link">Sign up</a>
+                    <a routerLink="/auth/login" routerLinkActive="active" class="navbar-link">LogIn</a>
+                </div>  
+
+            </ng-template>
 
         </div>
     </div>
