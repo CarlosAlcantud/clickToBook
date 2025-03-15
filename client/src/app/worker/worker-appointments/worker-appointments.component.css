@@ -1,0 +1,27 @@
+.appointments-container {
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+  
+  .date-container {
+    margin-top: 16px;
+  }
+  
+  @media (min-width: 768px) {
+    .appointments-container {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 0 50px 0 50px;
+    }
+  
+    .date-container {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 0 50px 0 50px;
+    }
+  }
