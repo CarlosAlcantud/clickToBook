@@ -1,14 +1,15 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { AppointmentsService } from '../../appointments.service';
-
+import { AuthService } from '../../../auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgIf],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css'
 })
@@ -21,9 +22,13 @@ export class CalendarComponent implements OnInit{
   weekDays: string[] = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   weeks: number[][] = [];
   nameOfTheDay: string = '';
+  nameOfTheDayUpperCase: string = '';
   @Output() dateSelected = new EventEmitter();
+  userisClient = false;
+  completeDate: string = '';
+  private clientListenerSubs: Subscription = new Subscription();
   
-  constructor( private appointmentsService: AppointmentsService) { 
+  constructor( private appointmentsService: AppointmentsService, private authService: AuthService) { 
 
   }
 
@@ -31,6 +36,9 @@ export class CalendarComponent implements OnInit{
   ngOnInit() {
     this.generateCalendar();
     this.nameDay();
+    this.clientListenerSubs = this.authService.getClientStatusListener().subscribe(isClient => {
+      this.userisClient = isClient;
+    });
   }
 
   generateCalendar() {
@@ -107,6 +115,7 @@ export class CalendarComponent implements OnInit{
     this.nameDay();
     //this.dateSelected.emit(new Date(this.year, this.month, this.selectedDay));
     this.appointmentsService.emitDateSelected(new Date(this.year, this.month, this.selectedDay)); //Emite la fecha seleccionada
+    this.appointmentsService.emitCompleteDate(this.completeDate); //Emite la fecha completa
     this.appointmentsService.gethoursAvailable().subscribe(hours =>{
       this.appointmentsService.updateHoursAvailable(hours) ;
     });
@@ -115,7 +124,9 @@ export class CalendarComponent implements OnInit{
   nameDay(){
     const fecha = new Date(this.year, this.month, this.selectedDay);
     this.nameOfTheDay = fecha.toLocaleString('es-ES', { weekday: 'long' });
-    
+    this.nameOfTheDayUpperCase = this.nameOfTheDay.charAt(0).toUpperCase() + this.nameOfTheDay.slice(1).toLowerCase();
+    this.completeDate = this.nameOfTheDayUpperCase + ' ' + this.selectedDay + ' de ' + this.monthName + ', ' + this.year;
+    this.appointmentsService.emitCompleteDate(this.completeDate); //Emite la fecha completa
   }
 
   get monthName(): string {

@@ -3,6 +3,7 @@ import { Appointment } from "./appointment.model";
 import { Subject, BehaviorSubject} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { create } from "domain";
 
 @Injectable({providedIn: 'root'})
 export class AppointmentsService{
@@ -10,7 +11,9 @@ export class AppointmentsService{
     //Emiter For the appointments 
     appointments: Appointment[] = [];
     private appointmentUpdate = new Subject<Appointment[]>();
-     
+    
+    private completedDate = new Subject<String>();
+    completedDate$ = this.completedDate.asObservable();
     //Emiter for the date 
     private dateSelected = new Subject<Date>();
     dateSelected$ = this.dateSelected.asObservable();
@@ -26,7 +29,10 @@ export class AppointmentsService{
     constructor(private http: HttpClient) {
         this.dateSelected$.subscribe(date => {
             this.urlDate = this.formatDateToLocalString(date);
-      });
+        });
+        this.completedDate$.subscribe(date => {
+            this.completedDate.next(date);
+        });
     }
 
     // Método para actualizar la variable boolean
@@ -104,11 +110,15 @@ export class AppointmentsService{
            });
 
     }
-
-
     //Provide the date selected
     emitDateSelected(date: Date) {
         this.dateSelected.next(date);
     }
+    
+    emitCompleteDate(date: String) {
+        this.completedDate.next(date);
+          
+    }
+
     
 }

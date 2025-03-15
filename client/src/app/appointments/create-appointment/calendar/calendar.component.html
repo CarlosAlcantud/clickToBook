@@ -23,11 +23,16 @@
       </tbody>
     </table>
   </div>
-  
-  <div class = "titulo">Reserva el</div>
-  <div class="frase" >{{nameOfTheDay}} {{selectedDay}} de {{monthName}}, {{year}}</div>
+  <div class="info-container">
 
-</div>
+    <ng-container *ngIf="userisClient" >
+      <div class = "titulo">Reserva el</div>
+      <div class= "frase"> {{completeDate}}</div>
+    </ng-container >
+  </div>
+  
+
+  </div>
   
   
 
