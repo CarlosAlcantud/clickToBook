@@ -1,11 +1,37 @@
 <div class="appointments-container">
     <calendar></calendar>
-    <div class="date-container">
-      <p>{{fecha}}</p>
+    <div *ngIf="show" class="date-container">
+      <p>{{fechaCompleta}}</p>
       
-      
+      <ng-container *ngIf="filteredAppointments.length > 0; else notAppointments">
+        <div *ngFor="let workerAppointment of filteredAppointments; let i = index">
+          <button class ="cita" 
+          [class.expanded]=" expandedIndex === i"
+          (click)="expand(i)">
+          <div class ="cita-info">
+            <p>{{workerAppointment.userName}},</p>
+            <p>{{workerAppointment.hour}}</p>
+            
+          </div>
+              
+            <div *ngIf="expandedIndex === i" class="extra-buttons">
+              <button class="edit-button" (click)="editAppointment(workerAppointment)"> Editar</button>
+              <button class="delete-button" (click)="deleteAppointment(workerAppointment)" >Eliminar</button>
+            </div>
+            
+          </button>
+        </div>
+
+      </ng-container>    
     </div>
-  </div>
+
+    <ng-template #notAppointments>
+      <p class="message">No tienes citas para el día seleccionado</p>
+    </ng-template>
+
+    <router-outlet></router-outlet>
+      
+</div>
 
  
 
