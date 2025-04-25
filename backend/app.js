@@ -102,5 +102,10 @@ app.use("/schedule", scheduleRoutes);
 const userRoutes = require('./routes/user');
 app.use(userRoutes);
 
+const workerRoutes = require('./routes/worker');
+app.use("/worker",workerRoutes);
+
+
+
 app.listen(3000, () => console.log('ClickToBook ready to go!'));
 

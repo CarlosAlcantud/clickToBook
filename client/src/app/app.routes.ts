@@ -11,6 +11,7 @@ import { PrincipalComponent } from './principal/principal.component';
 import { authGuard } from './auth/auth.guard';
 import { WorkerComponent } from './worker/worker.component';
 import { WorkerAppointmentsComponent } from './worker/worker-appointments/worker-appointments.component';
+import { WorkerAddClientComponent } from './worker/worker-add-client/worker-add-client.component';
 
 export const routes: Routes = [
     {  path: '', component: PrincipalComponent},
@@ -27,7 +28,8 @@ export const routes: Routes = [
             roles: ['worker']
         }, 
         children: [
-            { path: 'appointments', component: WorkerAppointmentsComponent}
+            { path: 'appointments', component: WorkerAppointmentsComponent},
+            { path: 'add-client', component: WorkerAddClientComponent}
         ]
     
     },
