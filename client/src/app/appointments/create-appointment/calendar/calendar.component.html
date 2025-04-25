@@ -15,7 +15,7 @@
       <tbody>
         <tr *ngFor="let week of weeks">
           <td *ngFor="let day of week" 
-              [ngClass]="{'today': isToday(day), 'selected': isSelected(day), 'notAvailable': !day}"
+              [ngClass]="getDayClasses(day)"
               (click)="selectDay(day)">
             {{ day }}
           </td>

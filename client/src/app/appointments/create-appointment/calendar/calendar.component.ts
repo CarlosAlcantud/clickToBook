@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { AppointmentsService } from '../../appointments.service';
 import { AuthService } from '../../../auth/auth.service';
 import { Subscription } from 'rxjs';
+import { ReturnStatement } from '@angular/compiler';
 
 @Component({
   selector: 'calendar',
@@ -68,12 +69,18 @@ export class CalendarComponent implements OnInit{
   }
 
   prevMonth() {
+
+    if ( this.userisClient && this.month === this.today.getMonth() && this.year === this.today.getFullYear()) {
+      return; // No permitir seleccionar el mes anterior si es el mes actual
+    }
+
     if (this.month === 0) {
       this.month = 11;
       this.year--;
     } else {
       this.month--;
     }
+
     this.generateCalendar();
   }
 
@@ -108,14 +115,21 @@ export class CalendarComponent implements OnInit{
   }
 
   selectDay(day: number) {
-    if (this.isWeekend(day)) {
+
+    const selectedDate = new Date(this.year, this.month, day);
+    const today = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate());
+
+    // Validación: evitar días pasados
+    if ((this.userisClient && selectedDate < today) || this.isWeekend(day)) {
       return;
     }
+
+
     this.selectedDay = day;
+
+
     this.nameDay();
-    //this.dateSelected.emit(new Date(this.year, this.month, this.selectedDay));
     this.appointmentsService.emitDateSelected(new Date(this.year, this.month, this.selectedDay)); //Emite la fecha seleccionada
-    this.appointmentsService.emitCompleteDate(this.completeDate); //Emite la fecha completa
     this.appointmentsService.gethoursAvailable().subscribe(hours =>{
       this.appointmentsService.updateHoursAvailable(hours) ;
     });
@@ -126,7 +140,7 @@ export class CalendarComponent implements OnInit{
     this.nameOfTheDay = fecha.toLocaleString('es-ES', { weekday: 'long' });
     this.nameOfTheDayUpperCase = this.nameOfTheDay.charAt(0).toUpperCase() + this.nameOfTheDay.slice(1).toLowerCase();
     this.completeDate = this.nameOfTheDayUpperCase + ' ' + this.selectedDay + ' de ' + this.monthName + ', ' + this.year;
-    this.appointmentsService.emitCompleteDate(this.completeDate); //Emite la fecha completa
+    
   }
 
   get monthName(): string {
@@ -145,4 +159,30 @@ export class CalendarComponent implements OnInit{
     return dayOfWeek; // 0 es domingo y 6 es sábado
   }
 
+  isPastDay(day: number): boolean {
+    if (!day) return false; // Día vacío (null)
+    const selectedDate = new Date(this.year, this.month, day);
+    const today = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate());
+    return selectedDate < today;
+  }
+
+
+  getDayClasses(day: number): any {
+    const baseClasses = {
+      'today': this.isToday(day),
+      'selected': this.isSelected(day),
+      'notAvailable': !day,
+      'disabled': this.isWeekend(day)
+    };
+  
+    if (this.userisClient) {
+      return {
+        ...baseClasses,
+        'pastDay': this.isPastDay(day)
+      };
+    }
+  
+    return baseClasses; // Si es trabajador, no incluimos 'pastDay'
+  }
+  
 }
