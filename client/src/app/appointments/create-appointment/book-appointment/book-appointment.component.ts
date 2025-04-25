@@ -46,6 +46,7 @@ export class BookAppointmentComponent {
       this.finalAppointment = {
         id: '',
         date: this.date,
+        hour: this.hourSelected,
         haircut: this.haircutType,
         confirmed: this.confirmed,
         paid: true

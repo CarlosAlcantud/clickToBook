@@ -41,8 +41,14 @@ router.post(
             'date': req.body.date,
             'haircut': req.body.haircut,
             'confirmed': req.body.confirmed,
-            'paid': req.body.paid
+            'paid': req.body.paid,
+            'worker': '67d5ff7b7b98784e9c0cfb4e'
         });
+        
+        // if(req.body.workerId !== undefined){
+        //     appointment.worker =  req.body.workerId
+        // }
+
         console.log(appointment);
         appointment.save();
         res.status(201).json({
@@ -84,8 +90,14 @@ router.patch('/users/:userId/updateAppointment/:appointmentId',
 });
 
 
-router.delete('/users/:userId/deleteAppointment/:appointmentId',
-    checkAuth, verifyUserId, (req, res) => {
+router.delete('/deleteAppointment/:appointmentId',
+    checkAuth, 
+    (req, res) => {
+    if(req.userData.role !== 'worker') {
+        return res.status(401).json({
+            message: 'The role is not valid'
+        });
+    }
     Appointment.findByIdAndDelete(req.params.appointmentId)
         .then(() => {
             return Appointment.find({});

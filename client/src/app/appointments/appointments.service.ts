@@ -2,8 +2,10 @@ import { Injectable } from "@angular/core";
 import { Appointment } from "./appointment.model";
 import { Subject, BehaviorSubject} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { create } from "domain";
+import { WorkerAppointment } from "./workerAppointment.model";
+import { formatDate } from "@angular/common";
 
 @Injectable({providedIn: 'root'})
 export class AppointmentsService{
@@ -12,6 +14,10 @@ export class AppointmentsService{
     appointments: Appointment[] = [];
     private appointmentUpdate = new Subject<Appointment[]>();
     
+    workerAppointments: WorkerAppointment[] = [];
+    private workerAppointmentUpdate = new Subject<WorkerAppointment[]>();
+
+
     private completedDate = new Subject<String>();
     completedDate$ = this.completedDate.asObservable();
     //Emiter for the date 
@@ -29,9 +35,6 @@ export class AppointmentsService{
     constructor(private http: HttpClient) {
         this.dateSelected$.subscribe(date => {
             this.urlDate = this.formatDateToLocalString(date);
-        });
-        this.completedDate$.subscribe(date => {
-            this.completedDate.next(date);
         });
     }
 
@@ -74,22 +77,27 @@ export class AppointmentsService{
         this.http
             .get<{ message: string; appointments: any[] }>(
                 "http://localhost:3000/appointments/forUser", 
-            )
-            .pipe(map((appointmentData) => {
+            ).pipe(
+                map((appointmentData) => {
                
                 return appointmentData.appointments.map(appointment => {
+                    const appointmentDate = new Date(appointment.date);
                     return {
                         id: appointment._id,
-                        date: appointment.date,
+                        date: this.formatDate(appointmentDate),
+                        hour: appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                         haircut: appointment.haircut,
                         confirmed: appointment.confirmed,
-                        paid: appointment.paid
+                        paid: appointment.paid,
+                        rawDate: appointmentDate
                     };
                 }
-                );
+                )
             }))
-            .subscribe(appointments => {
-                this.appointments = appointments;
+            .subscribe(appointment => {
+                this.appointments = appointment.sort((a, b) => {
+                    return a.rawDate.getTime() - b.rawDate.getTime(); // Comparamos timestamps
+                });
                 this.appointmentUpdate.next([...this.appointments]);
         });
 
@@ -97,6 +105,50 @@ export class AppointmentsService{
 
     getAppointmentUpdateListener() {
         return this.appointmentUpdate.asObservable();
+    }
+
+    getWorkerAppointments(fecha: String) {
+        console.log("getWorkerAppointments, la fecha seleccionada es "+ this.urlDate + " y la fecha pasada por parametros es: "+fecha);
+        this.http
+            .get<{ message: string; workerAppointments: any[] }>(
+                "http://localhost:3000/worker/Appointments", 
+            )
+            .pipe(
+                map((appointmentData) => {
+               
+                return appointmentData.workerAppointments.map(workerappointment => {
+                    const appointmentDate = new Date(workerappointment.date);
+                    return {
+                        id: workerappointment._id,
+                        userName: workerappointment.userId.username,
+                        date: appointmentDate.toLocaleDateString(),
+                        hour: appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        haircut: workerappointment.haircut,
+                        confirmed: workerappointment.confirmed,
+                        paid: workerappointment.paid,
+                        rawDate: appointmentDate
+                    };
+                }
+                )
+            }))
+            .subscribe(workerappointment => {
+                this.workerAppointments = workerappointment.sort((a, b) => {
+                    return a.rawDate.getTime() - b.rawDate.getTime(); // Comparamos timestamps
+                });
+                
+                // Removemos rawDate si no lo necesitas en el resultado final
+    
+
+                
+                console.log("Los appointments son: " + JSON.stringify(this.workerAppointments));
+                this.workerAppointmentUpdate.next([...this.workerAppointments]);
+                
+        });
+
+    }
+
+    getWorkerAppointmentUpdateListener() {
+        return this.workerAppointmentUpdate.asObservable();
     }
 
     createAppointment(appointmet: Appointment) {
@@ -110,15 +162,34 @@ export class AppointmentsService{
            });
 
     }
+
+    deleteAppointment(appointmentId: string) {
+        this.http
+            .delete("http://localhost:3000/appointments/deleteAppointment/" + appointmentId)
+            .subscribe(() => {
+                // Eliminar del array de citas del trabajador
+                this.workerAppointments = this.workerAppointments.filter(
+                    appointment => appointment.id !== appointmentId
+                );
+    
+                // Emitir la nueva lista actualizada
+                this.workerAppointmentUpdate.next([...this.workerAppointments]);
+            });
+    }
+
     //Provide the date selected
     emitDateSelected(date: Date) {
         this.dateSelected.next(date);
     }
     
-    emitCompleteDate(date: String) {
-        this.completedDate.next(date);
-          
-    }
-
+    formatDate(date: Date): string {
+        return new Intl.DateTimeFormat('es-ES', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }).format(date);
+    
+      }
     
 }
