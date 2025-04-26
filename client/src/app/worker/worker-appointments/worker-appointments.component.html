@@ -22,7 +22,7 @@
             (click)="setFilter('futuras')">
             Futuras
         </button>
-    </div>
+      </div>
       
       
       <ng-container *ngIf="filteredAppointments.length > 0; else notAppointments">
@@ -53,16 +53,16 @@
 
       </ng-container>  
   
-        
+      <ng-template #notAppointments>
+        <p class="message">No tienes citas para el día {{fechaCompleta}}</p>
+      </ng-template>
     </div>
-
-    <ng-template #notAppointments>
-      <p class="message">No tienes citas para el día {{fechaCompleta}}</p>
-    </ng-template>
-
-    <router-outlet></router-outlet>
-      
+    <div *ngIf="!show">
+      <router-outlet></router-outlet>
+    </div>
+    
 </div>
+
 
  
 

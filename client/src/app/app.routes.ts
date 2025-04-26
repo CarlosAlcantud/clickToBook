@@ -12,6 +12,7 @@ import { authGuard } from './auth/auth.guard';
 import { WorkerComponent } from './worker/worker.component';
 import { WorkerAppointmentsComponent } from './worker/worker-appointments/worker-appointments.component';
 import { WorkerAddClientComponent } from './worker/worker-add-client/worker-add-client.component';
+import { EditAppointmentComponent } from './appointments/edit-appointment/edit-appointment.component';
 
 export const routes: Routes = [
     {  path: '', component: PrincipalComponent},
@@ -28,8 +29,14 @@ export const routes: Routes = [
             roles: ['worker']
         }, 
         children: [
-            { path: 'appointments', component: WorkerAppointmentsComponent},
-            { path: 'add-client', component: WorkerAddClientComponent}
+            { path: 'appointments', 
+                component: WorkerAppointmentsComponent,
+                children: [
+                    { path: 'edit-appointment', component: EditAppointmentComponent}
+                ]
+            },
+            { path: 'add-client', component: WorkerAddClientComponent},
+            
         ]
     
     },

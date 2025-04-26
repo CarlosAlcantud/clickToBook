@@ -5,7 +5,8 @@ import { AppointmentsService } from '../../appointments/appointments.service';
 import { Appointment } from '../../appointments/appointment.model';
 import { Subscription } from 'rxjs';
 import { WorkerAppointment } from '../../appointments/workerAppointment.model';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet, Router} from '@angular/router';
+
 
 @Component({
   selector: 'app-worker-appointments',
@@ -24,6 +25,7 @@ export class WorkerAppointmentsComponent implements OnInit{
   public fecha: String = new Date().toLocaleDateString(); // Fecha actual
   workerAppointments: WorkerAppointment[] = []; // Almacena los appointments y al ser del tipo Appointment no permite otros valores.
   private appointmentsSub!: Subscription;
+  
   show: boolean = true; // Variable para mostrar/ocultar el calendario
   expandedIndex: number | null = null; // Índice del botón expandido
   
@@ -33,12 +35,14 @@ export class WorkerAppointmentsComponent implements OnInit{
     this.expandedIndex = this.expandedIndex === index ? null : index;
   }
 
-  constructor(public appointmentsService: AppointmentsService) {
+  constructor(public appointmentsService: AppointmentsService, private router : Router) {
+    
     this.appointmentsService.dateSelected$.subscribe(date => {
       this.fecha = date.toLocaleDateString();
       // this.fechaCompleta = this.formatDate(date);
       this.fechaCompleta = this.appointmentsService.formatDate(date);
       this.selectedFilter = '';
+      this.show = true; // Muestra el calendario al seleccionar una fecha
       this.applayFilters();
     });
 
@@ -70,6 +74,7 @@ export class WorkerAppointmentsComponent implements OnInit{
     console.log('Editando cita:');
     console.log('Editando cita:', appointment);
     this.show = false; // Oculta el calendario al editar una cita
+    this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointment } });
 
   }
 
@@ -82,6 +87,7 @@ export class WorkerAppointmentsComponent implements OnInit{
   }
 
   applayFilters(){
+    this.expandedIndex = null; // Reinicia el índice del botón expandido al aplicar filtros
     if (this.selectedFilter === 'futuras') {
       this.filteredAppointments = this.workerAppointments.filter(appointment => appointment.rawDate > new Date());
     } else if (this.selectedFilter === 'pasadas') {
