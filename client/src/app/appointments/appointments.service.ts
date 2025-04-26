@@ -21,8 +21,8 @@ export class AppointmentsService{
     private completedDate = new Subject<String>();
     completedDate$ = this.completedDate.asObservable();
     //Emiter for the date 
-    private dateSelected = new Subject<Date>();
-    dateSelected$ = this.dateSelected.asObservable();
+    private dateSelectedSource = new BehaviorSubject<Date>(new Date());
+    dateSelected$ = this.dateSelectedSource.asObservable();
 
     private showComponentSource = new BehaviorSubject<boolean>(false);
     showComponent$ = this.showComponentSource.asObservable();
@@ -181,8 +181,10 @@ export class AppointmentsService{
 
     //Provide the date selected
     emitDateSelected(date: Date) {
-        this.dateSelected.next(date);
-    }
+        console.log('Servicio emitiendo fecha:', date);
+        this.urlDate = this.formatDateToLocalString(date);
+        this.dateSelectedSource.next(date);
+      }
     
     formatDate(date: Date): string {
         return new Intl.DateTimeFormat('es-ES', {

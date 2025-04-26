@@ -1,1 +1,34 @@
-<p>edit-appointment works!</p>
+<div class="edit-container">
+    
+    <div class="title">
+        <p>Editando la cita de: {{userName}}</p>
+    </div>
+    <div *ngIf="hourSelected === ''">
+        <div class="subtitle">
+            <p>Fecha actual: {{appointmentDate}} </p> 
+        </div>
+        <calendar ></calendar>
+    </div>
+    
+
+    <div *ngIf="hourSelected === ''">
+        <hours-available (hourselcted)="hourAdded($event) "/>
+        <button class="volver">Volver</button>
+    </div>
+    
+    <div *ngIf="hourSelected !== ''" >
+        <div class="subtitle">
+            <p>Nueva fecha: {{date}}</p>
+            <p>Nueva hora: {{hourSelected}}</p>
+        </div>
+        
+        <div class="buttons">
+            <button class="cancelar"(click)="cancel()">Cancelar</button>
+            <button class= "actualizar"(click)="updateAppointment()">Actualizar</button>
+            
+        </div>
+
+    </div>
+    
+    
+</div>

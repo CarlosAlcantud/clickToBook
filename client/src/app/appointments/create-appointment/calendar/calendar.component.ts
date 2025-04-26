@@ -40,6 +40,12 @@ export class CalendarComponent implements OnInit{
     this.clientListenerSubs = this.authService.getClientStatusListener().subscribe(isClient => {
       this.userisClient = isClient;
     });
+    this.appointmentsService.dateSelected$.subscribe(date => {
+      this.selectedDay = date.getDate();
+      this.month = date.getMonth();
+      this.year = date.getFullYear();
+      this.generateCalendar(); // Regenerar el calendario al seleccionar una fecha
+    });
   }
 
   generateCalendar() {

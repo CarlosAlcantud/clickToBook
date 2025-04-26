@@ -74,7 +74,8 @@ export class WorkerAppointmentsComponent implements OnInit{
     console.log('Editando cita:');
     console.log('Editando cita:', appointment);
     this.show = false; // Oculta el calendario al editar una cita
-    this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointment } });
+    // this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointment } });
+    this.router.navigate(['worker/edit-appointment'], { queryParams: { appointmentId: appointment.id, userName: appointment.userName, appointmentDate: appointment.date } });
 
   }
 

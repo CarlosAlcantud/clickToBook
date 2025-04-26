@@ -31,12 +31,12 @@ export const routes: Routes = [
         children: [
             { path: 'appointments', 
                 component: WorkerAppointmentsComponent,
-                children: [
-                    { path: 'edit-appointment', component: EditAppointmentComponent}
-                ]
+                // children: [
+                //     { path: 'edit-appointment', component: EditAppointmentComponent}
+                // ]
             },
             { path: 'add-client', component: WorkerAddClientComponent},
-            
+            { path: 'edit-appointment', component: EditAppointmentComponent}
         ]
     
     },

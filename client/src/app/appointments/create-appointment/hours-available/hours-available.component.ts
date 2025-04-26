@@ -19,12 +19,16 @@ export class HoursAvailableComponent implements OnInit {
   constructor(private appointmentsService: AppointmentsService) {}
 
   ngOnInit() {
-    this.appointmentsService.stablishUrlDate();
-    this.appointmentsService.gethoursAvailable().subscribe(hours =>{
-      this.appointmentsService.updateHoursAvailable(hours) ;
-    });
-    this.appointmentsService.hoursAvailable$.subscribe(hours => {
-      this.hoursAvailable = hours;
+
+    this.appointmentsService.dateSelected$.subscribe(date => {
+        
+      // this.appointmentsService.stablishUrlDate();
+      this.appointmentsService.gethoursAvailable().subscribe(hours =>{
+        this.appointmentsService.updateHoursAvailable(hours) ;
+      });
+      this.appointmentsService.hoursAvailable$.subscribe(hours => {
+        this.hoursAvailable = hours;
+      });
     });
     
   }
