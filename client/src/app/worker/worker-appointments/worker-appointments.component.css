@@ -43,6 +43,9 @@
     font-family: Arial, sans-serif;
     border: none;
     flex-direction: column;
+    min-height: 50px; /* Altura mínima para la visualización básica */
+    height: auto; /* Permitir que se ajuste al contenido */
+    
   }
 
   .cita-info {
@@ -50,8 +53,32 @@
     justify-content: space-between; /* Mantiene el texto alineado horizontalmente */
     width: 100%;
   }
+
+  .cita-info-completa{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .cita-info-completa p {
+    margin: 5px 0; /* Espacio entre elementos de texto */
+  }
+  
   .cita.expanded{
-    height: 110px; /* Ajusta la altura según tus necesidades */
+    min-height: 110px; /* Altura mínima cuando está expandido */
+    height: auto; /* Permitir que se ajuste al contenido */
+  }
+
+  /* Ajustar para cuando hay información completa */
+  .cita:has(.cita-info-completa) {
+    min-height: 80px; /* Más espacio para la información completa */
+  }
+
+  .cita.expanded:has(.cita-info-completa) {
+    min-height: 150px; /* Más espacio cuando está expandido y tiene info completa */
   }
 
   .extra-buttons {
