@@ -36,6 +36,12 @@ router.post(
     checkAuth,
     (req, res) => {
     if(req.userData.role === 'client') {
+        const date = new Date();
+        if (req.body.date < date) {
+            return res.status(400).json({
+                message: 'The date is invalid'
+            });
+        }
         const appointment = new Appointment({
             'userId': req.userData.userId,
             'date': req.body.date,

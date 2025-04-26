@@ -1,16 +1,45 @@
 <div class="appointments-container">
     <calendar></calendar>
+    
     <div *ngIf="show" class="date-container">
-      <p>{{fechaCompleta}}</p>
+
+      <div>
+        <button 
+            class="button" 
+            [ngClass]="{ 'active': selectedFilter === 'todas' }" 
+            (click)="setFilter('todas')">
+            Todas
+        </button>
+        <button 
+            class="button" 
+            [ngClass]="{ 'active': selectedFilter === 'pasadas' }" 
+            (click)="setFilter('pasadas')">
+            Pasadas
+        </button>
+        <button 
+            class="button" 
+            [ngClass]="{ 'active': selectedFilter === 'futuras' }" 
+            (click)="setFilter('futuras')">
+            Futuras
+        </button>
+    </div>
+      
       
       <ng-container *ngIf="filteredAppointments.length > 0; else notAppointments">
+        <p *ngIf="selectedFilter === ''">{{fechaCompleta}}</p>
         <div *ngFor="let workerAppointment of filteredAppointments; let i = index">
           <button class ="cita" 
           [class.expanded]=" expandedIndex === i"
           (click)="expand(i)">
-          <div class ="cita-info">
-            <p>{{workerAppointment.userName}},</p>
-            <p>{{workerAppointment.hour}}</p>
+          <div *ngIf="selectedFilter === ''"  class ="cita-info">
+              <p>{{workerAppointment.userName}},</p>
+              <p>{{workerAppointment.hour}}</p>
+          </div>
+          <div *ngIf="selectedFilter !== ''" class="cita-info-completa">
+            
+            <p >{{workerAppointment.fechaCompleta}}</p>
+            <p>a las {{workerAppointment.hour}}</p>
+            <p>{{workerAppointment.userName}}</p>
             
           </div>
               
@@ -22,11 +51,13 @@
           </button>
         </div>
 
-      </ng-container>    
+      </ng-container>  
+  
+        
     </div>
 
     <ng-template #notAppointments>
-      <p class="message">No tienes citas para el día seleccionado</p>
+      <p class="message">No tienes citas para el día {{fechaCompleta}}</p>
     </ng-template>
 
     <router-outlet></router-outlet>

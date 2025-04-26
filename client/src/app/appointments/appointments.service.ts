@@ -85,11 +85,12 @@ export class AppointmentsService{
                     return {
                         id: appointment._id,
                         date: this.formatDate(appointmentDate),
+                        rawDate: appointmentDate,
                         hour: appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                         haircut: appointment.haircut,
                         confirmed: appointment.confirmed,
-                        paid: appointment.paid,
-                        rawDate: appointmentDate
+                        paid: appointment.paid
+                        
                     };
                 }
                 )
@@ -121,6 +122,7 @@ export class AppointmentsService{
                     return {
                         id: workerappointment._id,
                         userName: workerappointment.userId.username,
+                        fechaCompleta: this.formatDate(appointmentDate),
                         date: appointmentDate.toLocaleDateString(),
                         hour: appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                         haircut: workerappointment.haircut,

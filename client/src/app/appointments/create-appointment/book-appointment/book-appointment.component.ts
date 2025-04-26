@@ -43,9 +43,11 @@ export class BookAppointmentComponent {
   pay(){
     console.log("Pagado");
     if (this.appointment && this.hourSelected) {
+      console.log("El valor que se guarda como rawDate: "+this.appointment + " y el valor de date es: "+this.date);
       this.finalAppointment = {
         id: '',
         date: this.date,
+        rawDate: this.appointment,
         hour: this.hourSelected,
         haircut: this.haircutType,
         confirmed: this.confirmed,

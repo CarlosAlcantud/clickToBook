@@ -26,7 +26,9 @@ export class WorkerAppointmentsComponent implements OnInit{
   private appointmentsSub!: Subscription;
   show: boolean = true; // Variable para mostrar/ocultar el calendario
   expandedIndex: number | null = null; // Índice del botón expandido
-
+  
+  selectedFilter: string = '';
+  filteredAppointments: WorkerAppointment[] = [];
   expand(index: number): void {
     this.expandedIndex = this.expandedIndex === index ? null : index;
   }
@@ -36,6 +38,8 @@ export class WorkerAppointmentsComponent implements OnInit{
       this.fecha = date.toLocaleDateString();
       // this.fechaCompleta = this.formatDate(date);
       this.fechaCompleta = this.appointmentsService.formatDate(date);
+      this.selectedFilter = '';
+      this.applayFilters();
     });
 
   }
@@ -48,7 +52,10 @@ export class WorkerAppointmentsComponent implements OnInit{
       .subscribe((appointments: WorkerAppointment[]) => {
         //console.log("Los appointments son: " + appointments);
         this.workerAppointments = appointments;
+       
       });
+      
+      console.log('WorkerAppointmentsComponent inicializado'+ this.workerAppointments );
   }
 
   ngOnDestroy() {
@@ -73,8 +80,29 @@ export class WorkerAppointmentsComponent implements OnInit{
     this.appointmentsService.deleteAppointment(appointment.id);
      
   }
-  
-  get filteredAppointments() {
-    return this.workerAppointments.filter(appointment => appointment.date === this.fecha);
+
+  applayFilters(){
+    if (this.selectedFilter === 'futuras') {
+      this.filteredAppointments = this.workerAppointments.filter(appointment => appointment.rawDate > new Date());
+    } else if (this.selectedFilter === 'pasadas') {
+      this.filteredAppointments = this.workerAppointments.filter(appointment => appointment.rawDate < new Date());
+    } else if (this.selectedFilter === 'todas') {
+      this.filteredAppointments = this.workerAppointments; // Copia todas las citas
+    }else{
+      this.filteredAppointments = this.workerAppointments.filter(appointment => appointment.date === this.fecha);
+    }
+  }
+
+  setFilter(filter: string): void {
+
+    if (this.selectedFilter === filter) {
+      this.selectedFilter = ''; // Si el filtro ya está seleccionado, lo deselecciona
+    }  
+    else {
+      this.selectedFilter = filter;
+      // this.filteredAppointments;
+    }
+    this.applayFilters();
+    
   }
 }

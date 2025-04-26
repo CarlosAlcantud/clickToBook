@@ -1,11 +1,43 @@
-.titulo{
+.box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+ 
+ .titulo{
     margin-top: 50px;
     font-size: 32px;
     font-style: bold;
     text-align: center ;
+}
+
+.button {
+    padding: 10px 35px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    color: black;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
 
-.cita{
+    .button:hover {
+        background-color: grey;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .button.active {
+        background-color: gray;
+        color: white;
+      }
+
+ .date-container {
+    margin-top: 16px;
+ }
+
+  .cita{
+    cursor: pointer;
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
@@ -14,15 +46,54 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
-    width: 300px;
+    width: 250px;
     font-family: Arial, sans-serif;
-}
-
-.box{
-    display: flex;
+    border: none;
     flex-direction: column;
-    align-items: center;
+  }
+
+.cita-info {
+    display: flex;
+    justify-content: space-between; /* Mantiene el texto alineado horizontalmente */
+    width: 100%;
+  }
+  .cita.expanded{
+    height: 110px; /* Ajusta la altura según tus necesidades */
+  }
+
+  .extra-buttons {
     margin-top: 10px;
-}
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px; /* Espaciado entre los botones */
+  }
+  
+  .edit-button {
+    padding: 10px 35px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .delete-button {
+    padding: 10px 30px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .delete-button:hover {
+    background-color: #f1491fcc;
+  }
+  .edit-button:hover {
+    background-color: #0056b3;
+  }
+
 
 
