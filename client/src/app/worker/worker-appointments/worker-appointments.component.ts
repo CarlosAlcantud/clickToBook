@@ -25,14 +25,21 @@ export class WorkerAppointmentsComponent implements OnInit{
   public fecha: String = new Date().toLocaleDateString(); // Fecha actual
   workerAppointments: WorkerAppointment[] = []; // Almacena los appointments y al ser del tipo Appointment no permite otros valores.
   private appointmentsSub!: Subscription;
-  
   show: boolean = true; // Variable para mostrar/ocultar el calendario
   expandedIndex: number | null = null; // Índice del botón expandido
   
   selectedFilter: string = '';
   filteredAppointments: WorkerAppointment[] = [];
-  expand(index: number): void {
-    this.expandedIndex = this.expandedIndex === index ? null : index;
+  expand(index: number, rawDate: Date): void {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Añadir un día
+    tomorrow.setHours(0, 0, 0, 0);
+
+    if( rawDate > tomorrow){
+      this.expandedIndex = this.expandedIndex === index ? null : index;
+
+    }
+    
   }
 
   constructor(public appointmentsService: AppointmentsService, private router : Router) {
@@ -75,7 +82,7 @@ export class WorkerAppointmentsComponent implements OnInit{
     console.log('Editando cita:', appointment);
     this.show = false; // Oculta el calendario al editar una cita
     // this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointment } });
-    this.router.navigate(['worker/edit-appointment'], { queryParams: { appointmentId: appointment.id, userName: appointment.userName, appointmentDate: appointment.date } });
+    this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointmentId: appointment.id, partMessage: appointment.userName, appointmentDate: appointment.date, rawDate: appointment.rawDate } });
 
   }
 
@@ -101,7 +108,7 @@ export class WorkerAppointmentsComponent implements OnInit{
   }
 
   setFilter(filter: string): void {
-
+    this.expandedIndex = null;
     if (this.selectedFilter === filter) {
       this.selectedFilter = ''; // Si el filtro ya está seleccionado, lo deselecciona
     }  

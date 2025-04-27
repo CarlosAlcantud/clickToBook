@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 @Component({
   selector: 'show-appointments',
   standalone: true,
@@ -19,11 +20,11 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
   filteredAppointments: Appointment[] = [];
   show: boolean = true; // Variable para mostrar/ocultar el calendario
   expandedIndex: number | null = null; // Índice del botón expandido
-  
+  message: string = 'Editando la cita del dia ';
   selectedFilter: string = 'futuras'; // Por defecto, el botón "Futuras" está seleccionado
 
   fecha : String = new Date().toLocaleDateString(); // Fecha actual
-  constructor(public appointmentsService: AppointmentsService) {}
+  constructor(public appointmentsService: AppointmentsService, private router : Router) {}
 
   ngOnInit() {
     console.log("Los appointments antes de mostrarlos son: "+this.appointments);
@@ -37,8 +38,6 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
     // Establece el filtro inicial al cargar el componente
     this.appointmentsService.getAppointments();
     
-  
-    
   }
 
   ngOnDestroy(){ 
@@ -47,28 +46,37 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
     
   }
 
-  expand(index: number): void {
-    this.expandedIndex = this.expandedIndex === index ? null : index;
+  expand(index: number, rawDate: Date): void {
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Añadir un día
+
+    if( rawDate > tomorrow){
+      this.expandedIndex = this.expandedIndex === index ? null : index;
+
+    }
+    
   }
 
   editAppointment(appointment: Appointment) {
       // Aquí puedes implementar la lógica para editar la cita
       console.log('Editando cita:');
       console.log('Editando cita:', appointment);
-      this.show = false; // Oculta el calendario al editar una cita
-  
+      
+      this.router.navigate(['showappointments/edit-appointment'], { queryParams: { appointmentId: appointment.id, partMessage: appointment.date, appointmentDate: appointment.date, rawDate: appointment.rawDate } });
     }
   
     deleteAppointment (appointment: Appointment) {
-      // Aquí puedes implementar la lógica para eliminar la cita
-      console.log('Eliminando cita:', appointment.id);
-  
-      this.appointmentsService.deleteAppointment(appointment.id);
-       
+        // Aquí puedes implementar la lógica para eliminar la cita
+        console.log('Eliminando cita:', appointment.id);
+    
+        this.appointmentsService.deleteAppointment(appointment.id);
+         
     }
 
     
     setFilter(filter: string): void {
+      this.expandedIndex = null; // Reinicia el índice expandido al cambiar de filtro
       this.selectedFilter = filter;
       console.log('Filtro seleccionado:', this.selectedFilter);
     

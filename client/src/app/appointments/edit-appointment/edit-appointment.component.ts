@@ -17,17 +17,23 @@ import { AppointmentsService } from '../appointments.service';
 })
 export class EditAppointmentComponent implements OnInit {
   
-  public userName: string = 'John Doe';
+  message: string = 'Editando la cita de ';
   
   appointmentId   : string = '';
   appointmentDate : string = '';
-  date: string = '';
+  fecha: string = '';
+  date: Date = new Date();
   hourSelected = '';
+  rawDate: Date = new Date();
 
-  constructor(private route: ActivatedRoute, public appointmentsService: AppointmentsService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router, 
+    public appointmentsService: AppointmentsService) {
     // Aquí puedes inyectar servicios o realizar otras configuraciones necesarias
     this.appointmentsService.dateSelected$.subscribe(date => {
-      this.date = date.toDateString();
+      this.fecha = date.toDateString();
+      this.date = date;
       
     });
   }
@@ -38,7 +44,8 @@ export class EditAppointmentComponent implements OnInit {
       this.route.queryParams.subscribe(params => {
         this.appointmentId = params['appointmentId'];
         this.appointmentDate = params['appointmentDate'];
-        this.userName = params['userName'];
+        this.message + params['partMessage'];
+        this.rawDate = params['rawDate'];
         // Cargar datos con el ID
         this.hourSelected = '';
         // Convertir la fecha recibida en string a un objeto Date
@@ -70,8 +77,37 @@ export class EditAppointmentComponent implements OnInit {
 
   cancel(){
     this.hourSelected = '';
+    
+  }
+
+  volver() {
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   updateAppointment() {
+    console.log('Actualizando cita... ');
+    console.log('El formato de la fecha que estoy suscrito es ' + this.date + ' y la fecha que estoy pasando es ' + this.fecha);
+    const date = this.appointmentsService.formatDateForDatabase(this.date, this.hourSelected);
+    console.log('El valor final para la fecha sera : ' + date);
+    console.log('El id de la cita es: ' + this.appointmentId);
+    
+    this.appointmentsService.updateAppointment(this.appointmentId, date, this.rawDate)
+    .subscribe({
+      next: (response) => {
+        // Muestra un mensaje de éxito
+        alert(response.message);
+        // Solo navega si la actualización fue exitosa
+        this.router.navigate(['../'], { relativeTo: this.route });
+      },
+      error: (error) => {
+        // Muestra el mensaje de error
+        console.error('Error al actualizar la cita:', error);
+        if (error.error && error.error.message) {
+          alert(error.error.message);
+        } else {
+          alert('Error al actualizar la cita');
+        }
+      }
+    });
   }
 }

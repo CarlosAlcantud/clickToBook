@@ -86,7 +86,7 @@ export class AppointmentsService{
                         id: appointment._id,
                         date: this.formatDate(appointmentDate),
                         rawDate: appointmentDate,
-                        hour: appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        hour: this.formatUTCTime(appointmentDate),
                         haircut: appointment.haircut,
                         confirmed: appointment.confirmed,
                         paid: appointment.paid
@@ -124,7 +124,7 @@ export class AppointmentsService{
                         userName: workerappointment.userId.username,
                         fechaCompleta: this.formatDate(appointmentDate),
                         date: appointmentDate.toLocaleDateString(),
-                        hour: appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        hour: this.formatUTCTime(appointmentDate),
                         haircut: workerappointment.haircut,
                         confirmed: workerappointment.confirmed,
                         paid: workerappointment.paid,
@@ -170,15 +170,38 @@ export class AppointmentsService{
             .delete("http://localhost:3000/appointments/deleteAppointment/" + appointmentId)
             .subscribe(() => {
                 // Eliminar del array de citas del trabajador
+                
                 this.workerAppointments = this.workerAppointments.filter(
                     appointment => appointment.id !== appointmentId
                 );
-    
+                
                 // Emitir la nueva lista actualizada
                 this.workerAppointmentUpdate.next([...this.workerAppointments]);
+
+                this.appointments = this.appointments.filter(
+                    appointment => appointment.id !== appointmentId
+                );
+
+                this.appointmentUpdate.next([...this.appointments]);
             });
     }
 
+    updateAppointment(appointmentId: string, date: string, rawDate: Date) {
+        console.log('Los valores que se pasaran al back son : fecha: ' + date + " y el id: " + appointmentId);
+        
+        const updateData = { 
+          appointmentId: appointmentId,
+          date: date,
+          rawDate: rawDate
+        };
+        
+        return this.http.patch<{message: string, appointment?: any}>(
+            "http://localhost:3000/appointments/updateAppointment", 
+            updateData
+          );
+    }
+
+    
     //Provide the date selected
     emitDateSelected(date: Date) {
         console.log('Servicio emitiendo fecha:', date);
@@ -196,4 +219,31 @@ export class AppointmentsService{
     
       }
     
+      formatDateForDatabase(date: Date, hour: string): string {
+        const [hours, minutes] = hour.split(':').map(Number);
+        console.log('formatDateForDataBase() - La fecha es '+date)
+        
+        // Crear una fecha ISO directamente combinando la fecha y hora
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hourStr = hours.toString().padStart(2, '0');
+        const minutesStr = minutes.toString().padStart(2, '0');
+        
+        // Crear string ISO directamente (YYYY-MM-DDTHH:MM:00Z)
+        const isoString = `${year}-${month}-${day}T${hourStr}:${minutesStr}:00.000Z`;
+        
+        console.log('formatDateForDataBase() - Fecha ISO creada: ' + isoString);
+        return isoString;
+    }
+
+    // Add this method to your AppointmentsService class
+    formatUTCTime(date: Date): string {
+        // Extract hours and minutes from UTC time
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        
+        // Return in HH:MM format
+        return `${hours}:${minutes}`;
+    }
 }

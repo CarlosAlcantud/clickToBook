@@ -19,7 +19,8 @@ export const routes: Routes = [
     //Habilitar esta ruta en un futuro 
     {  path: 'create',  component: CreateAppointmentComponent, canActivate: [authGuard], data: {roles: ['client']}},
     {  path: 'auth/login', component: LoginComponent},
-    {  path: 'auth/register', component: SingUpComponent}, 
+    {  path: 'auth/register', component: SingUpComponent},
+    {  path: 'showappointments/edit-appointment', component: EditAppointmentComponent, canActivate: [authGuard], data: {roles: ['client']}},
     { path: 'showappointments', component: ShowAppointmentsComponent, canActivate: [authGuard], data: {roles: [ 'client']}},
     { 
         path: 'worker', 
@@ -36,7 +37,7 @@ export const routes: Routes = [
                 // ]
             },
             { path: 'add-client', component: WorkerAddClientComponent},
-            { path: 'edit-appointment', component: EditAppointmentComponent}
+            { path: 'appointments/edit-appointment', component: EditAppointmentComponent}
         ]
     
     },

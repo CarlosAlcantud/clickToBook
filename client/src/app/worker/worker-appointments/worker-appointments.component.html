@@ -30,7 +30,7 @@
         <div *ngFor="let workerAppointment of filteredAppointments; let i = index">
           <button class ="cita" 
           [class.expanded]=" expandedIndex === i"
-          (click)="expand(i)">
+          (click)="expand(i, workerAppointment.rawDate)">
           <div *ngIf="selectedFilter === ''"  class ="cita-info">
               <p>{{workerAppointment.userName}},</p>
               <p>{{workerAppointment.hour}}</p>
@@ -45,7 +45,7 @@
               
             <div *ngIf="expandedIndex === i" class="extra-buttons">
               <button class="edit-button" (click)="editAppointment(workerAppointment)"> Editar</button>
-              <button class="delete-button" (click)="deleteAppointment(workerAppointment)" >Eliminar</button>
+              <button class="delete-button" (click)="deleteAppointment(workerAppointment)" >Cancelar</button>
             </div>
             
           </button>

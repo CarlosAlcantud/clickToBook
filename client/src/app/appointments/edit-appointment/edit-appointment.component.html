@@ -1,7 +1,7 @@
 <div class="edit-container">
     
     <div class="title">
-        <p>Editando la cita de: {{userName}}</p>
+        <p>Editando la cita de: {{message}}</p>
     </div>
     <div *ngIf="hourSelected === ''">
         <div class="subtitle">
@@ -13,12 +13,12 @@
 
     <div *ngIf="hourSelected === ''">
         <hours-available (hourselcted)="hourAdded($event) "/>
-        <button class="volver">Volver</button>
+        <button class="volver" (click)="volver()">Volver</button>
     </div>
     
     <div *ngIf="hourSelected !== ''" >
         <div class="subtitle">
-            <p>Nueva fecha: {{date}}</p>
+            <p>Nueva fecha: {{fecha}}</p>
             <p>Nueva hora: {{hourSelected}}</p>
         </div>
         

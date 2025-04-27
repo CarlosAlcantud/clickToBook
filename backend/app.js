@@ -33,7 +33,7 @@ cron.schedule('50 19 * * *', () => {
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*'); // * means all domains are allowed
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     next();
 }); //this allows to make requests from different domains
 
