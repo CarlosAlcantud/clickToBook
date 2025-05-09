@@ -3,11 +3,16 @@ import { HttpClient } from "@angular/common/http";
 import { AuthData } from "./auth-data.model";
 import { BehaviorSubject, Subject } from "rxjs";
 import { Router } from "@angular/router";
+import { Worker} from "./worker.model";
+import { map } from "rxjs/operators";
+import { Client } from "./client.model";
+
+
 @Injectable({providedIn: 'root'})
 export class AuthService {
     private tokenTimer: ReturnType<typeof setTimeout>;
     private token: string;
-
+    private client: Client = {clientId: '', username: '', clientWorker: '', classes: 0};
    
     private isAuthenticated = false;
     private role = '';
@@ -15,14 +20,20 @@ export class AuthService {
     private isClient = false;
     private isAdmin = false;
 
+    
+
     private authStatusListener = new BehaviorSubject<boolean>(this.isAuthenticated);
     private workerStatusListener = new BehaviorSubject<boolean>(this.isWorker);
     private clientStatusListener = new BehaviorSubject<boolean>(this.isClient);
     private adminStatusListener = new BehaviorSubject<boolean>(this.isAdmin);
     
+    workers: Worker[] = [];
+    private workerUpdate = new Subject<Worker[]>();
+
+    clients: Client[] = [];
+    private clientUpdate = new Subject<Client[]>();
 
     constructor(private http:HttpClient, private router: Router) {
-
         this.token = '';
         this.tokenTimer = setTimeout(() => {}, 0);
     }
@@ -56,8 +67,9 @@ export class AuthService {
     }
     
     
-    createUser(email: string, password: string, username: string, phone: string) {
-        const authData: AuthData = {email: email, password: password, username: username, phone: phone};
+    createUser(password: string, username: string, phone: string, workerId: string) {
+        console.log("El valor del workerId cuando se va a crear el alumno es: " + workerId);
+        const authData: AuthData = {password: password, username: username, phone: phone, worker: workerId};
         //console.log('email: ', email, 'password: ', password, 'username: ', username);
         this.http.post('http://localhost:3000/auth/singup', authData)
         .subscribe(response => {
@@ -66,10 +78,10 @@ export class AuthService {
 
     }
 
-    login(email: string, password: string) {
+    login(identifier: string, password: string) {
         console.log("Metodo/ login()");
-        const authData = {email: email, password: password};
-        this.http.post<{token: string, expiresIn: number}>('http://localhost:3000/auth/login',authData)
+        const authData = {identifier: identifier, password: password};
+        this.http.post<{token: string, expiresIn: number}>('http://localhost:3000/auth/login', authData)
         .subscribe(response => {
             const token = response.token;
             console.log("Authenticated = " + token);
@@ -96,6 +108,13 @@ export class AuthService {
         });
     }
 
+    getClient() {
+        return this.client;
+    }   
+
+    setClient(client: Client) {
+        this.client = client;
+    }
     autoAuthUser(){
         console.log("autoAuthUser()");
         const authInformation = this.getAuthData();
@@ -128,6 +147,7 @@ export class AuthService {
     logout() {
         this.token = '';
         this.isAuthenticated = false;
+        this.client = {clientId: '', username: '', clientWorker: '', classes: 0};
         this.role = '';
         this.authStatusListener.next(false);
         this.isWorker = false;
@@ -152,6 +172,10 @@ export class AuthService {
             this.workerStatusListener.next(true);
         }
         if(this.role === 'client') {
+            this.client.username = JSON.parse(atob(token.split('.')[1])).username;
+            this.client.clientId = JSON.parse(atob(token.split('.')[1])).clientId;
+            this.client.clientWorker = JSON.parse(atob(token.split('.')[1])).clientWorker;
+            this.client.classes = JSON.parse(atob(token.split('.')[1])).classes;
             this.isClient = true;
             this.clientStatusListener.next(true);
         }
@@ -184,6 +208,55 @@ export class AuthService {
             }   
         }
 
+    }
+
+    getWorkerUpdateListener() {
+        return this.workerUpdate.asObservable();
+    }
+
+    getClientUpdateListener() {
+        return this.clientUpdate.asObservable();
+    }
+
+    fetchClients() {
+        console.log("fetchClients()");
+        this.http.get<Client[]>('http://localhost:3000/users')
+        .subscribe(
+            clients => {
+                this.clients = clients;
+                this.clientUpdate.next([...this.clients]);
+            },
+            error => {
+                console.error('Error fetching clients:', error);
+            }
+        );
+    }
+
+    fetchWorkers() {
+        console.log("fetchWorkers()");
+        this.http.get<any[]>('http://localhost:3000/workers')
+        .pipe(
+            map((workers) => {
+                // Now workers is directly the array of worker objects
+                return workers.map(worker => {
+                    return {
+                        id: worker._id,
+                        username: worker.username,
+                        email: worker.email,
+                        phone: worker.telephone, // Note the possible difference in property name
+                        role: worker.role
+                    };
+                });
+            })
+        ).subscribe(
+            workers => {
+                this.workers = workers;
+                this.workerUpdate.next([...this.workers]);
+            },
+            error => {
+                console.error('Error fetching workers:', error);
+            }
+        );
     }
 
 }

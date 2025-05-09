@@ -37,18 +37,18 @@ router.post(
     (req, res) => {
     if(req.userData.role === 'client') {
         const date = new Date();
-        if (req.body.date < date) {
-            return res.status(400).json({
-                message: 'The date is invalid'
-            });
-        }
+        // if (req.body.date < date) {
+        //     return res.status(400).json({
+        //         message: 'The date is invalid'
+        //     });
+        // }
         const appointment = new Appointment({
             'userId': req.userData.userId,
-            'date': req.body.date,
-            'haircut': req.body.haircut,
-            'confirmed': req.body.confirmed,
-            'paid': req.body.paid,
-            'worker': '67d5ff7b7b98784e9c0cfb4e'
+            'date': req.body.appointment.date,
+            'haircut': req.body.appointment.haircut,
+            'confirmed': req.body.appointment.confirmed,
+            'paid': req.body.appointment.paid,
+            'worker': req.userData.worker,
         });
         
         // if(req.body.workerId !== undefined){
@@ -60,6 +60,29 @@ router.post(
         res.status(201).json({
             message: 'Appointment created successfully',
         })
+    }else if (req.userData.role === 'worker') {
+        console.log('El usuario es un worker y tiene permisos para crear la cita vamos a crearla');
+        //console.log('El clientId para registrar la cita es: '+req.body.data.user.clientId);
+        if (req.body.user.clientId !== ''){
+            console.log('El clientId es: '+req.body.user.clientId);
+            const appointment = new Appointment({
+                'userId': req.body.user.clientId,
+                'date': req.body.appointment.date,
+                'haircut': req.body.appointment.haircut,
+                'confirmed': req.body.appointment.confirmed,
+                'paid': req.body.appointment.paid,
+                'worker': req.body.user.clientWorker,
+            });
+            appointment.save();
+            res.status(201).json({
+                message: 'Appointment created successfully',
+            })
+        }else{
+            return res.status(400).json({
+                message: 'The clientId is invalid'
+            });
+        }
+
     }else{
         res.status(401).json({
             message: 'The role is not valid'

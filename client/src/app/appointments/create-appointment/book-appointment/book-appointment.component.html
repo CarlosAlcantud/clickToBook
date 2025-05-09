@@ -5,6 +5,8 @@
       <p>{{hourSelected}}</p>
       
 </div>
-<button class = "pay-button" (click)="pay()" routerLink="/showappointments"  >pay</button>  
-  
+
+<button *ngIf="!worker"class = "pay-button" (click)="pay()" routerLink="/showappointments"  >pay</button>
+<button *ngIf="worker" class = "pay-button" (click)="pay()" routerLink="/worker/add-client"  >pay</button>    
+
 

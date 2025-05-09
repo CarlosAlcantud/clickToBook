@@ -7,6 +7,7 @@ import { AppointmentsService } from '../appointments.service';
 import { NgIf } from '@angular/common';
 import { BookAppointmentComponent } from "./book-appointment/book-appointment.component";
 import { ShowAppointmentsComponent } from "../show-appointments/show-appointments.component";
+import { AuthService } from '../../auth/auth.service';
 @Component({
   selector: 'create-appointment',
   standalone: true,
@@ -23,8 +24,8 @@ export class CreateAppointmentComponent implements OnInit {
     // pruebaFecha: Date | null = null;
     appointment: Date | null = null;
     showComponent: boolean = false;
-
-    constructor(private appointmentsService: AppointmentsService) {}
+    classesAvailable: number = 0; // Almacena el número de clases disponibles del cliente
+    constructor(private appointmentsService: AppointmentsService, private authservice: AuthService ) {}
 
     ngOnInit() {
         this.appointmentsService.dateSelected$.subscribe(date => {
@@ -35,6 +36,8 @@ export class CreateAppointmentComponent implements OnInit {
         this.appointmentsService.showComponent$.subscribe(value => {
           this.showComponent = value;
         });
+
+        this.classesAvailable = this.authservice.getClient().classes || 0; // Obtiene el número de clases disponibles del cliente
         
     }
     

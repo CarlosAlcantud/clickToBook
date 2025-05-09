@@ -21,7 +21,6 @@ export class LoginComponent {
     if (loginForm.invalid) {
       return;
     }
-    this.authService.login(loginForm.value.email, loginForm.value.password);
-
+    this.authService.login(loginForm.value.identifier, loginForm.value.password);
   }
 }

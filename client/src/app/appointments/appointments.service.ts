@@ -6,6 +6,7 @@ import { map, take } from 'rxjs/operators';
 import { create } from "domain";
 import { WorkerAppointment } from "./workerAppointment.model";
 import { formatDate } from "@angular/common";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable({providedIn: 'root'})
 export class AppointmentsService{
@@ -32,7 +33,7 @@ export class AppointmentsService{
     hoursAvailable$ = this.hoursAvailableSource.asObservable();
     urlDate: string = '';
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private autService: AuthService) {
         this.dateSelected$.subscribe(date => {
             this.urlDate = this.formatDateToLocalString(date);
         });
@@ -118,6 +119,7 @@ export class AppointmentsService{
                 map((appointmentData) => {
                
                 return appointmentData.workerAppointments.map(workerappointment => {
+                    console.log(" getWorkerAppointments - appointmentsService - El worker appointment despues de traerlo de bbdd es: " + JSON.stringify(workerappointment));
                     const appointmentDate = new Date(workerappointment.date);
                     return {
                         id: workerappointment._id,
@@ -154,13 +156,28 @@ export class AppointmentsService{
     }
 
     createAppointment(appointmet: Appointment) {
+        let data; 
+        if( this.autService.getWorkerStatusListener()) {
+            console.log(' Vamos a añadir el appointment y los datos del cliente',this.autService.getClient());
+            data = {
+                appointment: appointmet,
+                user: this.autService.getClient(),
+
+            }
+            console.log('Los datos que se envian al back son: ', data.user.clientId, data.user.clientWorker, data.appointment);
+        }else{
+            data = appointmet;
+        }
+
         this.http
             .post<{message: string }>(
-                "http://localhost:3000/appointments/createAppointment",appointmet)
+                "http://localhost:3000/appointments/createAppointment",data)
             .subscribe(responseData => {
                 console.log(responseData.message);
                 this.appointments.push(appointmet);
                 this.appointmentUpdate.next([...this.appointments]);
+                
+                    
            });
 
     }
@@ -245,5 +262,17 @@ export class AppointmentsService{
         
         // Return in HH:MM format
         return `${hours}:${minutes}`;
+    }
+
+
+    addClasses(classes: number) {
+        const data = {
+            userId: this.autService.getClient().clientId,
+            classes: classes
+        };
+        console.log("El id del cliente es: " + this.autService.getClient().clientId + " y el numero de clases es: " + classes);
+        return this.http.patch<{message: string}>(
+            "http://localhost:3000/user/addClasses", data
+        );
     }
 }

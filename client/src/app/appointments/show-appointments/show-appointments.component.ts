@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 @Component({
   selector: 'show-appointments',
   standalone: true,
@@ -22,9 +23,10 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
   expandedIndex: number | null = null; // Índice del botón expandido
   message: string = 'Editando la cita del dia ';
   selectedFilter: string = 'futuras'; // Por defecto, el botón "Futuras" está seleccionado
+  username: string = ''; // Almacena el nombre de usuario del cliente // Almacena el número de clases disponibles del cliente
 
   fecha : String = new Date().toLocaleDateString(); // Fecha actual
-  constructor(public appointmentsService: AppointmentsService, private router : Router) {}
+  constructor(public appointmentsService: AppointmentsService, private router : Router, private authservice: AuthService) {}
 
   ngOnInit() {
     console.log("Los appointments antes de mostrarlos son: "+this.appointments);
@@ -37,7 +39,7 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
     });
     // Establece el filtro inicial al cargar el componente
     this.appointmentsService.getAppointments();
-    
+    this.username = this.authservice.getClient().username; // Obtiene el nombre de usuario del cliente
   }
 
   ngOnDestroy(){ 

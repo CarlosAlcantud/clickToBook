@@ -3,10 +3,14 @@ import { DatePipe } from '@angular/common';
 import { Appointment } from '../../appointment.model';
 import { AppointmentsService } from '../../appointments.service';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../auth/auth.service';
+import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { NgIf } from '@angular/common';
 @Component({
   selector: 'book-appointment',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, NgIf],
   templateUrl: './book-appointment.component.html',
   styleUrl: './book-appointment.component.css',
   providers: [DatePipe]
@@ -25,14 +29,19 @@ export class BookAppointmentComponent {
   paid: boolean = false;
   // Variable para mostrar la fecha en el formato deseado
   formatedDate: string = '';
-  
-  constructor(private datePipe: DatePipe, private appointmentsService: AppointmentsService) {}
+  worker: boolean= false; // Almacena los appointments y al ser del tipo Appointment no permite otros valores.
+  private workersub!: Subscription;
+
+  constructor(private datePipe: DatePipe, private appointmentsService: AppointmentsService, private authService: AuthService) {}
 
   ngOnInit(): void {
     if (this.appointment) {
       this.formatedDate = this.datePipe.transform(this.appointment, "d 'de' MMMM yyyy", 'es-ES') || '';
       this.date = this.transformToISO(this.appointment);
     }
+    this.authService.getWorkerStatusListener().subscribe((isWorker: boolean) => {
+      this.worker = isWorker;
+    } );
   }
 
   transformToISO(date: Date): string {

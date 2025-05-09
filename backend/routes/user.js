@@ -7,14 +7,40 @@ const jwt = require('jsonwebtoken');
 // User
 
 router.get('/users', (req, res) => {
-    User.find({})
+    console.log("function get(users).app.js");
+    User.find({ role: 'client' })
+        .select('_id worker username classes') // Solo selecciona los campos específicos
+        .then(users => {
+            // Formatear la respuesta para que tenga exactamente el formato que necesitas
+            const formattedUsers = users.map(user => {
+                console.log("Prueba clases, funciona",user._id, user.worker, user.username, user.classes);
+                return {
+                    clientId: user._id,
+                    clientWorker: user.worker,
+                    username: user.username,
+                    classes: user.classes
+                };
+            });
+            res.send(formattedUsers);
+        })
+        .catch((error) => {
+            console.log(error)
+            res.status(500).send({ error: 'Internal Server Error' });
+        });
+});
+
+// 
+router.get('/workers', (req, res) => {
+    console.log("function get(workers).app.js");
+    User.find({ role: 'worker' })
         .then(users => res.send(users))
         .catch((error) => {
             console.log(error)
             res.status(500).send({ error: 'Internal Server Error' });
         }
         );
-});
+}
+);
 
 
 router.post("/auth/singup", (req,res) => {
@@ -23,10 +49,11 @@ router.post("/auth/singup", (req,res) => {
     .then((hash) => {
         const user = new User({
             username: req.body.username,
-            email: req.body.email,
             telephone: req.body.phone,
             password: hash,
-            role: 'client'
+            role: 'client',
+            worker: req.body.worker,
+            classes: 0
         });
         user.save()
         .then(result => {
@@ -90,42 +117,87 @@ router.delete('/users/:userId', async (req, res) => {
 
 router.post('/auth/login', (req, res) => {
     let fetchedUser;
-    User.findOne({ email: req.body.email })
+    
+    // Comprueba si el campo identifier es un email o un teléfono
+    let query = {};
+    
+    // Si contiene un @ es un email, si no es un teléfono
+    if (req.body.identifier.includes('@')) {
+        query = { email: req.body.identifier };
+    } else {
+        query = { telephone: req.body.identifier };
+    }
+    
+    User.findOne(query)
     .then(user => {
-        
         if(!user) {
             return res.status(401).json({
                 message: 'El usuario no existe'
             });
         }
         fetchedUser = user;
-        return bcrypt.compare(req.body.password, user.password)
-        
-
+        return bcrypt.compare(req.body.password, user.password);
     })
     .then(result => {
+        // Si no hay un usuario encontrado, result será undefined y no debemos continuar
+        if (!fetchedUser) {
+            return;
+        }
         
+        let token; 
         if (!result) {
             return res.status(401).json({
                 message: 'Wrong password'
             });
         }
-        const token = jwt.sign(
-            {email: fetchedUser.email, userId: fetchedUser._id, role: fetchedUser.role},
-            'secret_this_should_be_longer_like_this_longer_to_be_more_secure_i_thimk_now_it_is_long_enough',
-            {expiresIn: '1h'}
-        );
+        if (fetchedUser.role === 'client') {
+            console.log("El usuario es un cliente,por lo tanto tiene worker asociado");
+            token = jwt.sign(
+                {userId: fetchedUser._id, role: fetchedUser.role, worker: fetchedUser.worker, classes: fetchedUser.classes, username: fetchedUser.username},
+                'secret_this_should_be_longer_like_this_longer_to_be_more_secure_i_thimk_now_it_is_long_enough',
+                {expiresIn: '1h'}
+            );
+        } else {
+            token = jwt.sign(
+                {userId: fetchedUser._id, role: fetchedUser.role},
+                'secret_this_should_be_longer_like_this_longer_to_be_more_secure_i_thimk_now_it_is_long_enough',
+                {expiresIn: '1h'}
+            );
+        }
+        
         res.status(200).json({
             token: token,
             expiresIn: 3600,
         });
     })
     .catch(err => {
-        
-        return res.status(401).json({
-            message: 'Auth failed'
-        });
+        console.error(err);
+        // Solo enviar respuesta si no se ha enviado ya
+        if (!res.headersSent) {
+            return res.status(401).json({
+                message: 'Auth failed'
+            });
+        }
     });
 });
 
+
+router.patch('/user/addClasses', (req, res) => {
+    console.log("function post(user/addClasses).app.js");
+    const userId = req.body.userId;
+    const classes = req.body.classes; 
+
+    User.findByIdAndUpdate(userId, { $inc: { classes: classes } }, { new: true })
+        .then(updatedUser => {
+            if (!updatedUser) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            res.status(200).json(updatedUser);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ message: 'Error updating user', error: err });
+        });
+}
+);
 module.exports = router;

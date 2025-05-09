@@ -6,9 +6,9 @@ module.exports = (req, res, next) => {
         //console.log("token del usuario",token);
         const decodedToken = jwt.verify(token, 'secret_this_should_be_longer_like_this_longer_to_be_more_secure_i_thimk_now_it_is_long_enough');
         if(decodedToken.role === 'worker'){
-            req.userData = {email: decodedToken.email, userId: decodedToken.userId, workerId: decodedToken.userId, role: decodedToken.role};
-        }else{
             req.userData = {email: decodedToken.email, userId: decodedToken.userId, role: decodedToken.role};
+        }else{
+            req.userData = {email: decodedToken.email, userId: decodedToken.userId, role: decodedToken.role, worker: decodedToken.worker};
 
         }
         next();

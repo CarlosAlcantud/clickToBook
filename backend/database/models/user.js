@@ -35,13 +35,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         trim: true,
         unique: true,
+        required: true,
         // sparse:true,
         // Validación personalizada para comprobar que al menos uno de email o telefono está presente
         validate: {
             validator: function (value) {
                 return this.email || value; // Devuelve true si el teléfono está presente o si el email está presente
             },
-            message: 'Debe proporcionar al menos un email o un teléfono.'
+            message: 'Debe proporcionar un teléfono.'
         }
     },
     role: {
@@ -49,6 +50,15 @@ const UserSchema = new mongoose.Schema({
         enum: ['admin', 'worker', 'client'],
         required: true,
         
+    },
+    worker: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Worker',
+        required: true,
+    },
+    classes: {
+        type: Number,
+        required: false,
     },
 
 });

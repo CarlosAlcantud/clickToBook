@@ -50,7 +50,7 @@ router.get(
     checkAuth,
     async (req, res) => {
         try{
-            const workerAppointments = await Appointment.find({worker: req.userData.workerId}).populate('userId');
+            const workerAppointments = await Appointment.find({worker: req.userData.userId}).populate('userId');
             console.log("Los appointments del worker en la base de datos son: ", workerAppointments);
             res.status(200).json({
                 message: 'Appointments fetched successfully',
