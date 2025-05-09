@@ -1,28 +1,196 @@
-
-.container {
+.nav-container {
     display: flex;
-    align-items: right;
-    margin-left: 30px;
-    margin-bottom: 30px;
-    max-width: 1200px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Permite que los botones se ajusten en pantallas más pequeñas */
+    gap: 20px; /* Espaciado uniforme entre los botones */
+    padding: 20px;
 }
-.label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #1f2937; /* text-gray-900 */
-    margin-bottom: 8px;
-    margin-right: 10px;
+
+.actions-container {
+    display: flex;
+    flex-direction: column; /* Cambia a column para mejor control de alineación */
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    /* border-radius: 8px;
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    width: 90%; /* Asegura que tome el ancho completo */
+    max-width: 900px; /* Limita el ancho máximo */
+    margin: 0 auto; /* centra el contenedor en sí mismo */
+    
     
 }
 
-.input {
+/* También asegúrate que el botón "volver" esté centrado */
+.actions-container button {
+    align-self: center;
+}
+.navegation-button{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;/* bg-blue-500 */
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-size: 2rem;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    width: 300px;
+    height: 300px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
+
+.return {
+    padding: 10px 35px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+
+  .add-client-button {
+    padding: 10px 35px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
     padding: 8px 12px;
     font-size: 0.875rem;
-    color: #1f2937; /* text-gray-900 */
+    color: #1f2937;
     background-color: white;
     border-radius: 0.375rem;
-    border: none;
+    border: 1px solid #d1d5db;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    border: 1px solid #d1d5db; /* ring-gray-300 */
     transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+.form-error {
+    margin-top: 8px;
+    font-size: 0.875rem;
+    color: #f87171;
+    display: none;
+}
+
+.form-input:invalid:not(:placeholder-shown):not(:focus) ~ .form-error {
+    display: block;
+}
+
+.submit-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    background-color: #4f46e5;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 16px;
+}
+
+.submit-button:hover {
+    background-color: #4338ca;
+}
+
+.submit-button:disabled {
+    background-color: #e5e7eb;
+    cursor: not-allowed;
+}
+
+.appointment-container {
+    position: relative;
+    transition: filter 0.3s ease;
+}
+
+.disabled-container {
+    filter: blur(3px);
+    pointer-events: none; /* Prevents interactions with the blurred content */
+    opacity: 0.7;
+    position: relative;
+}
+
+.selection-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: red;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 10;
+    /* Asegurarse de que este elemento no reciba el filtro de desenfoque */
+    filter: none !important;
+}
+
+.classes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px; /* Espacio interno */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para darle un efecto de elevación */
+    border-radius: 8px; /* Bordes redondeados */
+    max-width: 400px; /* Ancho máximo */
+    margin: 0 auto; /* el contenedor en sí mismo */
+}
+
+/* Estilo para alinear botones en fila */
+.button-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px; /* Espacio entre botones */
+    margin-top: 20px;
+}
+
+/* Estilo para alinear botones en columna (mantiene el comportamiento actual) */
+.button-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

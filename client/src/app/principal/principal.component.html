@@ -1,1 +1,19 @@
-<p>Principal component works!</p>
+<div class="home-container">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="assets/logo.png" alt="ClickToBook Logo" class="logo" />
+    </div>
+  
+    <!-- Título -->
+    <h1 class="title">ClickToBook</h1>
+  
+    <!-- Descripción -->
+    <p class="description">
+      Gestiona citas, clientes y reservas de tu negocio. Dejanos tus datos y contactaremos contigo para elevar tu negocio.
+    </p>
+  
+    <!-- Botones -->
+    <div class="button-group" *ngIf="!userIsAuthenticated"> 
+      <button routerLink="/auth/login" class="btn primary">Iniciar Sesión</button>
+    </div>
+  </div>
