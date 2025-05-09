@@ -13,6 +13,7 @@ import { WorkerComponent } from './worker/worker.component';
 import { WorkerAppointmentsComponent } from './worker/worker-appointments/worker-appointments.component';
 import { WorkerAddClientComponent } from './worker/worker-add-client/worker-add-client.component';
 import { EditAppointmentComponent } from './appointments/edit-appointment/edit-appointment.component';
+import path from 'path';
 
 export const routes: Routes = [
     {  path: '', component: PrincipalComponent},
@@ -36,8 +37,15 @@ export const routes: Routes = [
                 //     { path: 'edit-appointment', component: EditAppointmentComponent}
                 // ]
             },
-            { path: 'add-client', component: WorkerAddClientComponent},
-            { path: 'appointments/edit-appointment', component: EditAppointmentComponent}
+            { path: 'add-client', component: WorkerAddClientComponent, 
+                children: [
+                    {path: 'registerStudent', component: SingUpComponent},
+                    {path: 'bookAppointment', component: CreateAppointmentComponent},
+                ]
+
+            },
+            { path: 'appointments/edit-appointment', component: EditAppointmentComponent},
+            { path: 'student/bookClass', component: CreateAppointmentComponent,}
         ]
     
     },
