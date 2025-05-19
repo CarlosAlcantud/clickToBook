@@ -3,7 +3,8 @@ const router = express.Router();
 const User = require('../database/models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const askConfirmation = require('../askConfirmation');
+const Appointment = require('../database/models/appointments');
 // User
 
 router.get('/users', (req, res) => {
@@ -192,7 +193,11 @@ router.patch('/user/addClasses', (req, res) => {
             if (!updatedUser) {
                 return res.status(404).json({ message: 'User not found' });
             }
-            res.status(200).json(updatedUser);
+            res.status(200).json(
+                {
+                    message: 'Classes added successfully',
+                    user: updatedUser
+                });
         })
         .catch(err => {
             console.error(err);
@@ -200,4 +205,46 @@ router.patch('/user/addClasses', (req, res) => {
         });
 }
 );
+
+router.get('/user/classes', (req, res) => {
+    console.log("function get(user/classes).app.js");
+    User.findById(req.query.clientId).select('classes')
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            res.status(200).json({ classes: user.classes });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ message: 'Error fetching user classes', error: err });
+        });
+
+});
+
+router.get('/confirm-appointment/:token', async (req, res) => {
+    console.log("confirm-apppointmet - Procedemos a confirmar la cita");
+  const token = req.params.token;
+
+  const appointmentId = await askConfirmation.verifyConfirmationToken(token);
+
+  const appointment = await Appointment.findById(appointmentId);
+    console.log("Cita a confirmar:", appointmentId);
+  if (!appointment) {
+    return res.status(404).send('Cita no encontrada');
+  }
+
+  if (appointment.confirmed) {
+    return res.send('Esta cita ya estaba confirmada ✅');
+  }
+
+  appointment.confirmed = true;
+  await appointment.save();
+
+  res.send('¡Tu cita ha sido confirmada correctamente! ✅');
+});
+
+
+
+
 module.exports = router;

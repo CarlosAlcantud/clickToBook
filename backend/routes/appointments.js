@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Appointment = require('../database/models/appointments');
 const checkAuth = require('../middleware/check-auth');
+const axios = require('axios');
 
 const verifyUserId = (req, res, next) => {
     User.findById(req.params.userId)
@@ -21,7 +22,6 @@ router.get(
     if(req.userData.role === 'client') {
         Appointment.find({ userId: req.userData.userId })
             .then(appointments => {
-                console.log(appointments);
                 res.status(200).json({ message: 'Appointments fetched successfully', appointments });
             });
     }else{
@@ -35,7 +35,8 @@ router.post(
     '/createAppointment',
     checkAuth,
     (req, res) => {
-    if(req.userData.role === 'client') {
+        console.log('Inicio metodo createAppointment, '+ req.userData.userId +' vamos ha crear la cita. El numero de clases es: '+req.body.classes);
+    if(req.userData.role === 'client' && req.body.classes > 0) {
         const date = new Date();
         // if (req.body.date < date) {
         //     return res.status(400).json({
@@ -57,8 +58,13 @@ router.post(
 
         console.log(appointment);
         appointment.save();
+        axios.patch('http://localhost:3000/user/addClasses', {
+            userId: req.userData.userId,
+            classes: -1 // Decrease by 1 class
+        });
         res.status(201).json({
             message: 'Appointment created successfully',
+            classes: req.userData.classes - 1,
         })
     }else if (req.userData.role === 'worker') {
         console.log('El usuario es un worker y tiene permisos para crear la cita vamos a crearla');
@@ -74,6 +80,10 @@ router.post(
                 'worker': req.body.user.clientWorker,
             });
             appointment.save();
+            axios.patch('http://localhost:3000/user/addClasses', {
+                userId: req.body.user.clientId,
+                classes: -1 // Decrease by 1 class
+            });
             res.status(201).json({
                 message: 'Appointment created successfully',
             })

@@ -6,6 +6,7 @@ import { Router } from "@angular/router";
 import { Worker} from "./worker.model";
 import { map } from "rxjs/operators";
 import { Client } from "./client.model";
+import { error } from "node:console";
 
 
 @Injectable({providedIn: 'root'})
@@ -41,7 +42,10 @@ export class AuthService {
     getUserRole(){
         return this.role;
     }
-    
+
+    getIsWorker() { 
+        return this.isWorker;
+    }    
     getToken() {
         return this.token;
     }
@@ -115,6 +119,15 @@ export class AuthService {
     setClient(client: Client) {
         this.client = client;
     }
+
+    updateClientClasses(){
+        console.log("updateClientClasses() - se acutalizan las clases del cliente");
+        if(this.client.classes !== undefined && this.client.classes > 0){
+            this.client.classes = this.client.classes - 1;
+        }
+        console.log("El cliente tiene " + this.client.classes + " clases");
+ 
+    }
     autoAuthUser(){
         console.log("autoAuthUser()");
         const authInformation = this.getAuthData();
@@ -173,9 +186,16 @@ export class AuthService {
         }
         if(this.role === 'client') {
             this.client.username = JSON.parse(atob(token.split('.')[1])).username;
-            this.client.clientId = JSON.parse(atob(token.split('.')[1])).clientId;
-            this.client.clientWorker = JSON.parse(atob(token.split('.')[1])).clientWorker;
-            this.client.classes = JSON.parse(atob(token.split('.')[1])).classes;
+            this.client.clientId = JSON.parse(atob(token.split('.')[1])).userId;
+            this.client.clientWorker = JSON.parse(atob(token.split('.')[1])).worker;
+            console.log(this.client.username + "recuperamos las clases. " + this.client.clientId , this.client.clientWorker);
+            this.getClientClasses().then(classes => {
+                this.client.classes = classes;
+            }).catch(error => {
+                console.error('Error getting client classes:', error);
+            });
+            console.log("Aqui el valor de worker es : " + this.isWorker + "Y el valor que devuelve: "+ this.getWorkerStatusListener());
+            console.log("El cliente es: " + this.client.username + " y sus clases: " + this.client.classes);
             this.isClient = true;
             this.clientStatusListener.next(true);
         }
@@ -256,6 +276,36 @@ export class AuthService {
             error => {
                 console.error('Error fetching workers:', error);
             }
+        );
+    }
+
+    getClientClasses(): Promise<number> {
+    console.log("getClientClasses() - Devolvemos las clases del cliente: " + this.client.username);
+    
+    return new Promise((resolve, reject) => {
+        this.http.get<{classes: number}>(
+            "http://localhost:3000/user/classes", 
+            {params: {clientId: this.client.clientId}}
+        ).subscribe(
+            response => {
+                resolve(response.classes);
+            },
+            error => {
+                console.error('Error fetching classes:', error);
+                reject(error);
+            }
+        );
+    });
+}
+
+    addClasses(classes: number) {
+        const data = {
+            userId: this.getClient().clientId,
+            classes: classes
+        };
+        console.log("El id del cliente es: " + this.getClient().clientId + " y el numero de clases es: " + classes);
+        return this.http.patch<{message: string, user: Client}>(
+            "http://localhost:3000/user/addClasses", data
         );
     }
 

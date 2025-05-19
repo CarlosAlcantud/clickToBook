@@ -154,10 +154,9 @@ export class AppointmentsService{
     getWorkerAppointmentUpdateListener() {
         return this.workerAppointmentUpdate.asObservable();
     }
-
     createAppointment(appointmet: Appointment) {
         let data; 
-        if( this.autService.getWorkerStatusListener()) {
+        if( this.autService.getIsWorker()) {
             console.log(' Vamos a añadir el appointment y los datos del cliente',this.autService.getClient());
             data = {
                 appointment: appointmet,
@@ -166,7 +165,12 @@ export class AppointmentsService{
             }
             console.log('Los datos que se envian al back son: ', data.user.clientId, data.user.clientWorker, data.appointment);
         }else{
-            data = appointmet;
+            data = {
+                appointmet: appointmet,
+                classes: this.autService.getClient().classes
+                
+            }
+            console.log('Los datos que se envian al back son: cuando es un cliente son:  ',data.classes);
         }
 
         this.http
@@ -176,7 +180,7 @@ export class AppointmentsService{
                 console.log(responseData.message);
                 this.appointments.push(appointmet);
                 this.appointmentUpdate.next([...this.appointments]);
-                
+                this.autService.updateClientClasses();
                     
            });
 
@@ -265,14 +269,5 @@ export class AppointmentsService{
     }
 
 
-    addClasses(classes: number) {
-        const data = {
-            userId: this.autService.getClient().clientId,
-            classes: classes
-        };
-        console.log("El id del cliente es: " + this.autService.getClient().clientId + " y el numero de clases es: " + classes);
-        return this.http.patch<{message: string}>(
-            "http://localhost:3000/user/addClasses", data
-        );
-    }
+    
 }

@@ -15,7 +15,7 @@ import { AppointmentsService } from '../../appointments/appointments.service';
 @Component({
   selector: 'app-worker-add-client',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterOutlet, RouterModule, CreateAppointmentComponent, SingUpComponent],
+  imports: [FormsModule, CommonModule, RouterOutlet, RouterModule],
   templateUrl: './worker-add-client.component.html',
   styleUrl: './worker-add-client.component.css'
 })
@@ -104,9 +104,9 @@ export class WorkerAddClientComponent implements OnInit {
     // this.newclient = false;
     // this.buyclasses = false;
     console.log("El cliente seleccionado es: ", this.selectedClient.username + "Y sus clases actuales son: " + this.selectedClient.classes);
-    this.appointmentService.addClasses(this.numberofclases).subscribe({
+    this.authService.addClasses(this.numberofclases).subscribe({
       next: (response) => {
-        alert(response.message); // Esto debería mostrar el mensaje
+        alert(response.message + "Para: " + response.user.username); // Esto debería mostrar el mensaje
         
         // Espera un momento antes de navegar para asegurar que el alert se muestre
         

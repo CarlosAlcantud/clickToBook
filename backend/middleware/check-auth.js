@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
         if(decodedToken.role === 'worker'){
             req.userData = {email: decodedToken.email, userId: decodedToken.userId, role: decodedToken.role};
         }else{
-            req.userData = {email: decodedToken.email, userId: decodedToken.userId, role: decodedToken.role, worker: decodedToken.worker};
+            req.userData = {email: decodedToken.email, userId: decodedToken.userId, role: decodedToken.role, worker: decodedToken.worker};  
 
         }
         next();
