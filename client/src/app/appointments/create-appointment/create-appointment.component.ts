@@ -8,6 +8,8 @@ import { NgIf } from '@angular/common';
 import { BookAppointmentComponent } from "./book-appointment/book-appointment.component";
 import { ShowAppointmentsComponent } from "../show-appointments/show-appointments.component";
 import { AuthService } from '../../auth/auth.service';
+import { filter } from 'rxjs';
+
 @Component({
   selector: 'create-appointment',
   standalone: true,
@@ -25,6 +27,7 @@ export class CreateAppointmentComponent implements OnInit {
     appointment: Date | null = null;
     showComponent: boolean = false;
     classesAvailable: number = 0; // Almacena el número de clases disponibles del cliente
+    isWorker:boolean = false; // Almacena si el usuario es un trabajador o no  
     constructor(private appointmentsService: AppointmentsService, private authservice: AuthService ) {}
 
     ngOnInit() {
@@ -37,8 +40,17 @@ export class CreateAppointmentComponent implements OnInit {
           this.showComponent = value;
         });
 
-        this.classesAvailable = this.authservice.getClient().classes || 0; // Obtiene el número de clases disponibles del cliente
+        this.authservice.getWorkerStatusListener().subscribe(isWorker => {
+            this.isWorker = isWorker;
+        });
         
+        this.classesAvailable = this.authservice.getClient().classes || 0; // Obtiene el número de clases disponibles del cliente
+        // Subscribe to client changes
+        this.authservice.clientDataReady$.pipe(
+            filter(ready => ready === true)
+        ).subscribe(() => {
+            this.classesAvailable = this.authservice.getClient().classes || 0;
+        });
     }
     
     //Este metodo recibe la hora seleccionada que emite el componente hours-available y ka guarda en la variable hourSelected

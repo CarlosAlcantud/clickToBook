@@ -1,5 +1,5 @@
 <div class = "box" *ngIf="appointment == null">
-    <p>Actualmente dispones de {{classesAvailable}} clases.</p>
+    <p *ngIf = "!isWorker">Actualmente dispones de {{classesAvailable}} clases.</p>
     <calendar />
     <!-- Recibe la hora seleccionada que emite el componente hours-available y se recibe en el metodo hourAdded -->
     <hours-available (hourselcted)="hourAdded($event) "/>

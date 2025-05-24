@@ -62,4 +62,18 @@ export class NavBarComponent implements OnInit,OnDestroy {
     console.log("Logout clicked");
     this.authService.logout();
   }
+
+  createSchedules() {
+    this.authService.createSchedules().subscribe({
+      next: (response) => {
+        alert(response); // Esto debería mostrar el mensaje
+        
+      },
+      error: (error) => {
+        console.error('Error al añadir clases:', error);
+        alert('Ha ocurrido un error al crear los horarios: ' + 
+              (error.error?.message || 'Error desconocido'));
+      }
+    });
+  }
 }

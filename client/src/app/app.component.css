@@ -9,3 +9,36 @@ main{
 .bar{
     margin-bottom: 50px;
 }
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    padding: 0 30px;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-content {
+    padding: 0 50px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .main-content {
+    max-width: 1400px;
+  }
+}

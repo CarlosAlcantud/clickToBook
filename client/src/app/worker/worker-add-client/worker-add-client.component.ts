@@ -120,10 +120,6 @@ export class WorkerAddClientComponent implements OnInit {
     });
   }
 
-    
-
-  
-
   selectStudent() {
     console.log("El estudiante seleccionado es: ", this.selectedClientObj.clientId);
     if (this.selectedClientObj){
@@ -133,6 +129,7 @@ export class WorkerAddClientComponent implements OnInit {
         username: this.selectedClientObj.username,
         classes: this.selectedClientObj.classes
       }
+      console.log("Setting client with worker ID:", this.selectedClient.clientWorker);
       this.authService.setClient(this.selectedClient);
     }
 

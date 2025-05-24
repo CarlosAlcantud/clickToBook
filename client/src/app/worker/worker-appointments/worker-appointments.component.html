@@ -24,38 +24,43 @@
         </button>
       </div>
       
-      
-      <ng-container *ngIf="filteredAppointments.length > 0; else notAppointments">
-        <p *ngIf="selectedFilter === ''">{{fechaCompleta}}</p>
-        <div *ngFor="let workerAppointment of filteredAppointments; let i = index">
-          <button class ="cita" 
-          [class.expanded]=" expandedIndex === i"
-          (click)="expand(i, workerAppointment.rawDate)">
-          <div *ngIf="selectedFilter === ''"  class ="cita-info">
-              <p>{{workerAppointment.userName}},</p>
-              <p>{{workerAppointment.hour}}</p>
-          </div>
-          <div *ngIf="selectedFilter !== ''" class="cita-info-completa">
-            
-            <p >{{workerAppointment.fechaCompleta}}</p>
-            <p>a las {{workerAppointment.hour}}</p>
-            <p>{{workerAppointment.userName}}</p>
-            
-          </div>
-              
-            <div *ngIf="expandedIndex === i" class="extra-buttons">
-              <button class="edit-button" (click)="editAppointment(workerAppointment)"> Editar</button>
-              <button class="delete-button" (click)="deleteAppointment(workerAppointment)" >Cancelar</button>
-            </div>
-            
-          </button>
-        </div>
+      <div class="appointments-list">
 
-      </ng-container>  
-  
-      <ng-template #notAppointments>
-        <p class="message">No tienes citas para el día {{fechaCompleta}}</p>
-      </ng-template>
+        <ng-container *ngIf="filteredAppointments.length > 0; else notAppointments">
+          <p *ngIf="selectedFilter === ''">{{fechaCompleta}}</p>
+          <div *ngFor="let workerAppointment of filteredAppointments; let i = index">
+            <button class ="cita" 
+            [class.expanded]=" expandedIndex === i"
+            (click)="expand(i, workerAppointment.rawDate)">
+            <div *ngIf="selectedFilter === ''"  class ="cita-info">
+                <p>{{workerAppointment.userName}},</p>
+                <p>{{workerAppointment.hour}}</p>
+            </div>
+            <div *ngIf="selectedFilter !== ''" class="cita-info-completa">
+              
+              <p >{{workerAppointment.fechaCompleta}}</p>
+              <p>a las {{workerAppointment.hour}}</p>
+              <p>{{workerAppointment.userName}}</p>
+              
+            </div>
+                
+              <div *ngIf="expandedIndex === i" class="extra-buttons">
+                <button class="edit-button" (click)="editAppointment(workerAppointment)"> Editar</button>
+                <button class="delete-button" (click)="deleteAppointment(workerAppointment)" >Cancelar</button>
+              </div>
+              
+            </button>
+          </div>
+
+        </ng-container>  
+    
+        <ng-template #notAppointments>
+          <p class="message" *ngIf="!selectedFilter">No tienes citas para el día {{fechaCompleta}}</p>
+          <p class="message" *ngIf="selectedFilter === 'pasadas'">No tienes citas pasadas</p>
+          <p class="message" *ngIf="selectedFilter === 'futuras'">No tienes citas futuras</p>
+          <p class="message" *ngIf="selectedFilter === 'todas'">No tienes citas</p>
+        </ng-template>
+      </div>
     </div>
 
     <!-- <router-outlet *ngIf="!show"></router-outlet> -->

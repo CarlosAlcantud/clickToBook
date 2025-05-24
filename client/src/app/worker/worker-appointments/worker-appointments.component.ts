@@ -57,14 +57,16 @@ export class WorkerAppointmentsComponent implements OnInit{
   
   ngOnInit() {
     
-    this.appointmentsService.getWorkerAppointments(this.fecha);
     
     this.appointmentsSub = this.appointmentsService.getWorkerAppointmentUpdateListener()
       .subscribe((appointments: WorkerAppointment[]) => {
         //console.log("Los appointments son: " + appointments);
         this.workerAppointments = appointments;
-       
+        this.applayFilters();
       });
+
+      this.appointmentsService.getWorkerAppointments(this.fecha);
+    
       
       console.log('WorkerAppointmentsComponent inicializado'+ this.workerAppointments );
   }
