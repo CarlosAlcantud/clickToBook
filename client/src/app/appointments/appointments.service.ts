@@ -63,10 +63,23 @@ export class AppointmentsService{
         return `${year}-${month}-${day}`;
     }
     
-    gethoursAvailable() {
-        console.log("Se llama a coger las horas disponibles para la fecha: "+this.urlDate);
-        return this.http.get<{ hour: string }[]>(`http://localhost:3000/schedule/${this.urlDate}`);
+    gethoursAvailable(clientData?: any) {
+        console.log("Se llama a coger las horas disponibles para la fecha: " + this.urlDate);
+
         
+        // Si es un worker y hay datos de cliente, usar POST para enviar datos en el body
+        if (this.autService.getIsWorker() && clientData) {
+            console.log("Enviando petición con datos de cliente:", clientData);
+            return this.http.get<{ hour: string }[]>(
+                `http://localhost:3000/schedule/${this.urlDate}`,
+                { params: {clientWorker: clientData.clientWorker } }
+            );
+        } else {
+            // Para usuarios normales, usar GET
+            return this.http.get<{ hour: string }[]>(
+                `http://localhost:3000/schedule/${this.urlDate}`,
+            );
+        }
     }
 
     updateHoursAvailable(hours: { hour: string }[]) {
@@ -154,19 +167,19 @@ export class AppointmentsService{
     getWorkerAppointmentUpdateListener() {
         return this.workerAppointmentUpdate.asObservable();
     }
-    createAppointment(appointmet: Appointment) {
+    createAppointment(appointment: Appointment) {
         let data; 
         if( this.autService.getIsWorker()) {
             console.log(' Vamos a añadir el appointment y los datos del cliente',this.autService.getClient());
             data = {
-                appointment: appointmet,
+                appointment: appointment,
                 user: this.autService.getClient(),
 
             }
             console.log('Los datos que se envian al back son: ', data.user.clientId, data.user.clientWorker, data.appointment);
         }else{
             data = {
-                appointmet: appointmet,
+                appointment: appointment,
                 classes: this.autService.getClient().classes
                 
             }
@@ -178,7 +191,7 @@ export class AppointmentsService{
                 "http://localhost:3000/appointments/createAppointment",data)
             .subscribe(responseData => {
                 console.log(responseData.message);
-                this.appointments.push(appointmet);
+                this.appointments.push(appointment);
                 this.appointmentUpdate.next([...this.appointments]);
                 this.autService.updateClientClasses();
                     

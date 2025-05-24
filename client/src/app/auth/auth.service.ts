@@ -21,6 +21,9 @@ export class AuthService {
     private isClient = false;
     private isAdmin = false;
 
+    // Observable para notificar cambios en el cliente seleccionado
+    private clientSelectedSource = new Subject<Client>();
+    public clientSelected$ = this.clientSelectedSource.asObservable();
     
 
     private authStatusListener = new BehaviorSubject<boolean>(this.isAuthenticated);
@@ -70,6 +73,10 @@ export class AuthService {
         return this.adminStatusListener.asObservable();
     }
     
+    private clientDataReadySource = new BehaviorSubject<boolean>(false);
+    clientDataReady$ = this.clientDataReadySource.asObservable();
+
+
     
     createUser(password: string, username: string, phone: string, workerId: string) {
         console.log("El valor del workerId cuando se va a crear el alumno es: " + workerId);
@@ -118,6 +125,8 @@ export class AuthService {
 
     setClient(client: Client) {
         this.client = client;
+        //Emite los cambios en el cliente 
+        this.clientSelectedSource.next(client);
     }
 
     updateClientClasses(){
@@ -189,8 +198,10 @@ export class AuthService {
             this.client.clientId = JSON.parse(atob(token.split('.')[1])).userId;
             this.client.clientWorker = JSON.parse(atob(token.split('.')[1])).worker;
             console.log(this.client.username + "recuperamos las clases. " + this.client.clientId , this.client.clientWorker);
+            // Prueba para esperar a que los datos esten listos. 
             this.getClientClasses().then(classes => {
                 this.client.classes = classes;
+                this.clientDataReadySource.next(true); // Señal de que los datos están listos
             }).catch(error => {
                 console.error('Error getting client classes:', error);
             });
@@ -306,6 +317,13 @@ export class AuthService {
         console.log("El id del cliente es: " + this.getClient().clientId + " y el numero de clases es: " + classes);
         return this.http.patch<{message: string, user: Client}>(
             "http://localhost:3000/user/addClasses", data
+        );
+    }
+
+    createSchedules() {
+
+        return this.http.post<{message: string}>(
+            "http://localhost:3000/schedule/bulk", {}
         );
     }
 
