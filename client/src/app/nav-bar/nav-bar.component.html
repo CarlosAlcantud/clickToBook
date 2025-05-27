@@ -11,9 +11,9 @@
                 <ng-container *ngIf="userisClient">
                     <div class="navbar-right">
                         <div class="authenticated"  >
-                            <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">Appointments</a>
-                            <a routerLink="/create" routerLinkActive="active" class="navbar-link">Book</a>
-                            <button class="navbar-link" (click)="onLogout()">LogOut</button>
+                            <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">Clases</a>
+                            <a routerLink="/create" routerLinkActive="active" class="navbar-link">Reservar</a>
+                            <button class="navbar-link" (click)="onLogout()">Cerrar Sesion</button>
                         </div>
                     </div>
 
@@ -24,7 +24,7 @@
                     <div class="authenticated" >
                         <!-- <button class="navbar-link" (click)="createSchedules()">Schedule</button> -->
                         <a routerLink="/worker" routerLinkActive="active" class="navbar-link">Gestiones</a>
-                        <button class="navbar-link" (click)="onLogout()">LogOut</button>
+                        <button class="navbar-link" (click)="onLogout()">Cerrar Sesion</button>
                     </div>
     
                 </ng-container>

@@ -47,12 +47,18 @@
     text-decoration: none;
 }
 
+.button.disabled {
+  pointer-events: none; /* evita clics */
+  
+  cursor: default;
+
+}
 .button:hover {
-    background-color: #374151;
-    color: #f3f4f6;
+    background-color: #9CD139;
+    color: black;
 }
 
 .active {
-    background-color: #374151;
-    color: #f3f4f6;
+    background-color: #9CD139;
+    color: black;
 }

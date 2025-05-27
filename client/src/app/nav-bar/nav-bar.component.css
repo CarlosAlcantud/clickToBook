@@ -47,7 +47,7 @@
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: #d1d5db;
+    color: #9CD139;
     font-size: 1.25rem;
     font-weight: 600;
 }
@@ -61,6 +61,21 @@
     margin-right: 16px;
 }
 
+button.navbar-link {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    color: #ff3037;
+    text-decoration: none;
+    background-color:#d1d5db ;
+    border: none;
+    border-radius: 4px;
+    transition: background 0.3s, color 0.3s;
+    cursor: pointer;
+}
+button.navbar-link:hover {
+    background-color: #bebfc0 ;
+    color: #ff3037;
+}
 /* Navbar links */
 .navbar-link {
     padding: 8px 16px;
@@ -72,8 +87,8 @@
 }
 
 .navbar-link:hover {
-    background-color: #374151;
-    color: #f3f4f6;
+    background-color: #9CD139;
+    color: black;
 }
 
 /* Position navbar-right absolutely to stick to the right */
@@ -94,8 +109,8 @@
 }
 
 .active {
-    background-color: #374151;
-    color: #f3f4f6;
+    background-color: #9CD139;
+    color: black;
 }
 
 .authenticated {

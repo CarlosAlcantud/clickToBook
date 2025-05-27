@@ -2,9 +2,23 @@
     <div class = "container">
         <div class="menu">
             <!-- <div class="button">Mis citas</div> -->
-            <a routerLink="/worker/appointments" routerLinkActive="active" class="button">Mis citas</a>
-            <div class = "separator"></div>
-            <a routerLink="/worker/add-client" routerLinkActive="active" class="button">Apuntar Alumno</a>
+            <a 
+                routerLink="/worker/appointments" 
+                routerLinkActive="active" 
+                class="button" 
+                [class.disabled]="isLinkActive('/worker/appointments')">
+                Mis citas
+            </a>
+
+            <div class="separator"></div>
+
+            <a 
+                routerLink="/worker/add-client" 
+                routerLinkActive="active" 
+                class="button" 
+                [class.disabled]="isLinkActive('/worker/add-client')">
+                Apuntar Alumno
+            </a>
             <!-- <div class="button">Apuntar Alumno</div> -->
         </div>
         
