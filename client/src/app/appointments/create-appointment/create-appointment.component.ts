@@ -30,6 +30,7 @@ export class CreateAppointmentComponent implements OnInit {
     isWorker:boolean = false; // Almacena si el usuario es un trabajador o no  
     constructor(private appointmentsService: AppointmentsService, private authservice: AuthService ) {}
 
+
     ngOnInit() {
         this.appointmentsService.dateSelected$.subscribe(date => {
             this.date = date;
@@ -43,16 +44,42 @@ export class CreateAppointmentComponent implements OnInit {
         this.authservice.getWorkerStatusListener().subscribe(isWorker => {
             this.isWorker = isWorker;
         });
+
+        this.authservice.clientSelected$.subscribe(() => {
+            if (this.isWorker) {
+                const selectedClient = this.authservice.getClient();
+                if (selectedClient) {
+                    this.classesAvailable = selectedClient.classes || 0;
+                    // Forzar actualización del estado de visibilidad
+                    
+                }
+            }
+        });
         
-        this.classesAvailable = this.authservice.getClient().classes || 0; // Obtiene el número de clases disponibles del cliente
         // Subscribe to client changes
         this.authservice.clientDataReady$.pipe(
             filter(ready => ready === true)
         ).subscribe(() => {
             this.classesAvailable = this.authservice.getClient().classes || 0;
+            
+        });
+
+        // // Inicializa las clases disponibles
+        this.updateClassesAvailable();
+        
+        // // Se subscribe a cambios en los datos del cliente
+        this.authservice.clientDataReady$.subscribe(() => {
+            this.updateClassesAvailable();
         });
     }
     
+    // Método separado para actualizar las clases disponibles
+    updateClassesAvailable() {
+        const client = this.authservice.getClient();
+        if (client) {
+            this.classesAvailable = client.classes || 0;
+        }
+    }
     //Este metodo recibe la hora seleccionada que emite el componente hours-available y ka guarda en la variable hourSelected
     hourAdded(hour: string) {
       this.hourSelected = hour;
@@ -73,6 +100,10 @@ export class CreateAppointmentComponent implements OnInit {
       }
     }
 
-    
+    resetSelection() {
+        this.appointment = null;
+        this.hourSelected = '';
+    // Aquí puedes añadir cualquier otra lógica necesaria para reiniciar el estado
+    }
 
 }

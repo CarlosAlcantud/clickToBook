@@ -1,24 +1,25 @@
 <div class = "box" *ngIf="appointment == null">
-    <p *ngIf = "!isWorker">Actualmente dispones de {{classesAvailable}} clases.</p>
-    <calendar />
+    <p *ngIf="!isWorker && classesAvailable !==0">Actualmente dispones de {{classesAvailable}} clases.</p>
+    
+    <p *ngIf="classesAvailable === 0" class="message">Actualmente no dispones de clases disponibles, por favor contacta con tu profesor.</p>
+    
+    
+    <div class="calendar-container" [class.disabled-calendar]="classesAvailable === 0">
+        <!-- Overlay para prevenir clicks cuando está deshabilitado -->
+        <div class="calendar-overlay" *ngIf="classesAvailable === 0"></div>
+        <calendar />
+    </div>
     <!-- Recibe la hora seleccionada que emite el componente hours-available y se recibe en el metodo hourAdded -->
-    <hours-available (hourselcted)="hourAdded($event) "/>
+    <div class="hours-container" [class.disabled-calendar]="classesAvailable === 0">
+        <!-- Overlay para prevenir clicks cuando está deshabilitado -->
+        <div class="calendar-overlay" *ngIf="classesAvailable === 0"></div>
+        <!-- Recibe la hora seleccionada que emite el componente hours-available y se recibe en el metodo hourAdded -->
+        <hours-available (hourselcted)="hourAdded($event)" />
+    </div>
     
 </div>
 <div class = "box" *ngIf="appointment !== null">
-    <!-- 
-    La varuable entre corchetes [appointment] es ek nombre de la variable en el destino (book-appointment) y la que va en 
-    comillas "appointment" es la de origen (create-appointment)
-    Lo que hace: [appointment]="appointment" es pasar el objeto appointment al componente book-appointment 
-    y lo que hace: 
-    [hourSelected] = "hourSelected" es pasar la hora seleccionada al componente book-appointment -->
-    <book-appointment [appointment]="appointment" [hourSelected] = "hourSelected"  /> 
+  
+    <book-appointment [appointment]="appointment" [hourSelected] = "hourSelected" (reset)="resetSelection()"></book-appointment> 
 </div>
 
-
-<!-- <div>Esta es la fecha por obserbables {{date}}</div> -->
- <!-- <div>Esta es la fecha url {{date}}</div> -->
-<!-- <div>Esta es la fecha por service {{pruebaFecha}}</div> --> 
-<!-- <textarea [(ngModel)] = "value"></textarea>
-<button (click)="onCreateAppointment()">create</button>
-<p>{{newAppointment}}</p> -->

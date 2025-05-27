@@ -7,7 +7,6 @@ import { AuthService } from '../../../auth/auth.service';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'book-appointment',

@@ -47,6 +47,28 @@
     margin-bottom: 15px;
 }
 
+.cancel-button {
+
+
+    margin-top: 10px;  
+  background-color: red; /* Fondo blanco */
+  color: #000; /* Color del texto */
+  font-size: 16px; /* Tamaño del texto */
+  padding: 10px; /* Espaciado interno */
+  width: 120px; /* Ancho fijo */
+  height: 40px; /* Alto fijo */
+  border: none; /* Sin borde */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Sombra suave */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+  font-family: Arial, sans-serif; /* Fuente del texto */
+  outline: none; /* Elimina el contorno al hacer clic */
+  box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+}
+
+  .cancel-button:hover {
+    background-color: #dc2626; /* rojo más oscuro al pasar el mouse */
+  }
 .return {
     padding: 10px 35px;
     background-color: red;
@@ -60,8 +82,8 @@
 
   .add-client-button {
     padding: 10px 35px;
-    background-color: green;
-    color: white;
+    background-color: #9CD139;
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -70,13 +92,25 @@
   }
 
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    max-width: 400px;
+.form-group {
+   display: flex;
+  align-items: center;  /* Cambia flex-start a center para centrar botón y select */
+  gap: 20px;
+  max-width: 600px;
 }
 
+.form {
+  display: flex;
+  flex-direction: column; /* Apila label, select y error verticalmente */
+  gap: 2px; /* Pequeño espacio entre ellos */
+  flex: 1; /* Para que tome el máximo ancho posible */
+}
+
+.form-group label,
+.form-group select,
+.form-group button {
+  margin: 0;
+}
 .form-label {
     font-size: 0.875rem;
     font-weight: 500;
@@ -103,7 +137,7 @@
 }
 
 .form-error {
-    margin-top: 8px;
+    margin-top: 2px;
     font-size: 0.875rem;
     color: #f87171;
     display: none;

@@ -129,10 +129,16 @@ export class AuthService {
         this.clientSelectedSource.next(client);
     }
 
-    updateClientClasses(){
+    updateClientClasses(method: string) {
         console.log("updateClientClasses() - se acutalizan las clases del cliente");
-        if(this.client.classes !== undefined && this.client.classes > 0){
-            this.client.classes = this.client.classes - 1;
+        if(this.client.classes !== undefined && this.client.classes >= 0){
+            if(method === 'deleteAppointment') {
+                this.client.classes = this.client.classes + 1;
+            }else if(method === 'createAppointment') {
+                this.client.classes = this.client.classes - 1;
+            }
+
+            
         }
         console.log("El cliente tiene " + this.client.classes + " clases");
  

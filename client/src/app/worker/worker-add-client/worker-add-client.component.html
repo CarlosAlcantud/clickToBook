@@ -4,7 +4,7 @@
     </button>
 
     <button class= "navegation-button" (click)="bookAppointment()">
-        Apuntar Cita
+        Apuntar Clases
     </button>
 
     <button class= "navegation-button" (click)="buyClasses()">
@@ -13,28 +13,38 @@
 
 </div>
 <div *ngIf="!nav" [ngClass] = "{'actions-container': !buyclasses, 'classes-container': buyclasses }" >
-    <h2 class="title">{{bookappointment ? 'Apuntar Cita' : buyclasses ? 'Añadir Clases' : 'Registrar nuevo alumno'}}</h2>
-    <div class="form-group" *ngIf="bookappointment || buyclasses">
-        <label for="student" class="form-label">Alumno</label>
-        <select 
-            [(ngModel)]="selectedClientObj"
-            id="student" 
-            name="student" 
-            required 
-            class="form-input"
-            #studentInput="ngModel"
-            (change)="selectStudent()"
-        >
-            <option value="" disabled selected>Selecciona un alumno</option>
-            <option *ngFor="let client of clients" [ngValue]="client">{{client.username}}</option>
-        </select>
-        <p class="form-error" *ngIf="studentInput.invalid">Por favor selecciona un alumno.</p>
-        
-    </div>
+    <h2 class="title">{{bookappointment ? 'Reservar clase' : buyclasses ? 'Añadir Clases' : 'Registrar nuevo alumno'}}</h2>
 
+        <div class="form-group" *ngIf="bookappointment || buyclasses">
+            <div class="form">
+                <label for="student" class="form-label">Alumno</label>
+                <select 
+                    [(ngModel)]="selectedClientObj"
+                    id="student" 
+                    name="student" 
+                    required 
+                    class="form-input"
+                    #studentInput="ngModel"
+                    (change)="selectStudent()"
+                    >
+                    <option value="" disabled selected>Selecciona un alumno</option>
+                    <option *ngFor="let client of clients" [ngValue]="client">{{client.username}}</option>
+                </select>
+                <p class="form-error" *ngIf="studentInput.invalid">Por favor selecciona un alumno.</p>
+            </div>
+            
+            
+            <button *ngIf="bookappointment" class="cancel-button" (click)="goBack()">Cancelar</button>
+        </div>
+        
+        
+
+    
+    
+    
     <p *ngIf="selectedClientObj">Sus clases actuales: {{selectedClient.classes || 0}}</p>
 
-    <div class= "form-group" *ngIf= "buyclasses">
+    <div class= "form" *ngIf= "buyclasses">
         <label for="date" class="form-label">Clases</label>
             <input 
                 type="number" 
@@ -55,16 +65,16 @@
         <router-outlet></router-outlet>
         
     </div>
-    <div *ngIf="!selectedClientObj && bookappointment" class="selection-message">
+    <!-- <div *ngIf="!selectedClientObj && bookappointment" class="selection-message">
         Selecciona un alumno primero
-    </div>
+    </div> -->
     
     <div [ngClass]="{'button-row': buyclasses, 'button-column': !buyclasses}">
         <!-- Botón Añadir (solo visible en buyclasses) -->
         <button *ngIf="buyclasses" class="add-client-button" (click)="addClasses()">Añadir</button>
         
         <!-- Botón Volver (siempre visible) -->
-        <button class="return" (click)="goBack()">volver</button>
+        <button *ngIf="!bookappointment" class="return" (click)="goBack()">volver</button>
     </div>
 </div>
 

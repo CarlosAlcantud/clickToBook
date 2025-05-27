@@ -210,8 +210,17 @@ router.delete('/deleteAppointment/:appointmentId',
             }
 
             if(autoriced){
+                const userId = appointment.userId;
+
                 Appointment.findByIdAndDelete(req.params.appointmentId)
-                    .then(() => {
+                .then(() => {
+                        // Llamamos a addClasses para sumar una clase
+                        return axios.patch('http://localhost:3000/user/addClasses', {
+                            userId: userId,
+                            classes: 1 // Incrementar en 1 clase
+                        });
+                }) 
+                .then(() => {
                         return Appointment.find({});
                     })
                     .then(appointments => res.send(appointments))
@@ -220,6 +229,7 @@ router.delete('/deleteAppointment/:appointmentId',
                         res.status(500).send({ error: 'Internal Server Error' });
                     }
                     );
+                
             }else{
                 res.status(401).json({
                     message: 'Unauthorized to update this appointment'
