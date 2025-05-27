@@ -14,13 +14,13 @@
             class="button" 
             [ngClass]="{ 'active': selectedFilter === 'pasadas' }" 
             (click)="setFilter('pasadas')">
-            Pasadas
+            Anteriores
         </button>
         <button 
             class="button" 
             [ngClass]="{ 'active': selectedFilter === 'futuras' }" 
             (click)="setFilter('futuras')">
-            Futuras
+            Proximas
         </button>
       </div>
       
@@ -61,6 +61,17 @@
           <p class="message" *ngIf="selectedFilter === 'todas'">No tienes citas</p>
         </ng-template>
       </div>
+    </div>
+
+    <div class="modal" *ngIf="showConfirmDialog">
+        <div class="modal-content">
+            <h2>Confirmar cancelación</h2>
+            <p>¿Estás seguro de que deseas cancelar esta cita?</p>
+            <div class="modal-buttons">
+                <button class="edit-button" (click)="confirmDelete()">Sí, cancelar</button>
+                <button class="delete-button" (click)="closeConfirmDialog()">No, mantener</button>
+            </div>
+        </div>
     </div>
 
     <!-- <router-outlet *ngIf="!show"></router-outlet> -->

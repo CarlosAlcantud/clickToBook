@@ -30,6 +30,13 @@ export class WorkerAppointmentsComponent implements OnInit{
   
   selectedFilter: string = '';
   filteredAppointments: WorkerAppointment[] = [];
+
+  showConfirmDialog = false;
+  appointmentToDelete: any = null;
+
+
+
+
   expand(index: number, rawDate: Date): void {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1); // Añadir un día
@@ -84,17 +91,32 @@ export class WorkerAppointmentsComponent implements OnInit{
     console.log('Editando cita:', appointment);
     this.show = false; // Oculta el calendario al editar una cita
     // this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointment } });
-    this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointmentId: appointment.id, partMessage: appointment.userName, appointmentDate: appointment.date, rawDate: appointment.rawDate } });
+    let message = appointment.userName + ' del dia ' + this.appointmentsService.formatDate(appointment.rawDate);
+    this.router.navigate(['worker/appointments/edit-appointment'], { queryParams: { appointmentId: appointment.id, partMessage: message, appointmentDate: appointment.date, rawDate: appointment.rawDate } });
 
   }
 
-  deleteAppointment (appointment: WorkerAppointment) {
-    // Aquí puedes implementar la lógica para eliminar la cita
-    console.log('Eliminando cita:', appointment.id);
+  deleteAppointment (appointment: Appointment) {
+        // Aquí puedes implementar la lógica para eliminar la cita
+        console.log('Eliminando cita:', appointment.id);
+        this.appointmentToDelete = appointment;
+        this.showConfirmDialog = true;
 
-    this.appointmentsService.deleteAppointment(appointment.id);
-     
-  }
+        
+         
+    }
+
+  confirmDelete() {
+      if (this.appointmentToDelete) {
+          this.appointmentsService.deleteAppointment(this.appointmentToDelete.id);
+      }
+      this.closeConfirmDialog();
+    }
+
+    closeConfirmDialog() {
+        this.showConfirmDialog = false;
+        this.appointmentToDelete = null;
+    }
 
   applayFilters(){
     this.expandedIndex = null; // Reinicia el índice del botón expandido al aplicar filtros
@@ -121,4 +143,6 @@ export class WorkerAppointmentsComponent implements OnInit{
     this.applayFilters();
     
   }
+
+
 }
