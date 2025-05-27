@@ -1,12 +1,14 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Appointment } from '../../appointment.model';
 import { AppointmentsService } from '../../appointments.service';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../auth/auth.service';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'book-appointment',
   standalone: true,
@@ -20,23 +22,25 @@ export class BookAppointmentComponent {
   // Variables para recibir valores del componente create appointment
   @Input() appointment: Date | null = null; 
   @Input() hourSelected: string = '';
-
+  @Output() reset = new EventEmitter<void>();
 
   finalAppointment: Appointment | null = null;
   date: string = '';
   haircutType : string = 'Corte de pelo';
   confirmed : boolean = false;
   paid: boolean = false;
-  // Variable para mostrar la fecha en el formato deseado
-  formatedDate: string = '';
+  
+  dateToShow: string = '';
   worker: boolean= false; // Almacena los appointments y al ser del tipo Appointment no permite otros valores.
   private workersub!: Subscription;
-
-  constructor(private datePipe: DatePipe, private appointmentsService: AppointmentsService, private authService: AuthService) {}
+  showResponseDialog: boolean = false; // Variable para mostrar/ocultar el diálogo de respuesta
+  messageDialog: string = ''; // Mensaje del diálogo de respuesta
+  constructor(private datePipe: DatePipe, private appointmentsService: AppointmentsService, private authService: AuthService, private router: Router) {}
+  finalData: any = null;
 
   ngOnInit(): void {
     if (this.appointment) {
-      this.formatedDate = this.datePipe.transform(this.appointment, "d 'de' MMMM yyyy", 'es-ES') || '';
+      this.dateToShow = this.appointmentsService.formatDate(this.appointment);
       this.date = this.transformToISO(this.appointment);
     }
     this.authService.getWorkerStatusListener().subscribe((isWorker: boolean) => {
@@ -50,9 +54,7 @@ export class BookAppointmentComponent {
   }
 
   pay(){
-    console.log("Pagado");
     if (this.appointment && this.hourSelected) {
-      console.log("El valor que se guarda como rawDate: "+this.appointment + " y el valor de date es: "+this.date);
       this.finalAppointment = {
         id: '',
         date: this.date,
@@ -62,9 +64,31 @@ export class BookAppointmentComponent {
         confirmed: this.confirmed,
         paid: true
       }
-      this.appointmentsService.createAppointment(this.finalAppointment);
-      this.appointmentsService.setShowComponent(true);
+      
+      this.finalData = this.appointmentsService.createAppointment(this.finalAppointment).subscribe({
+        next: (response) => {
+          this.showResponseDialog = true; // Mostrar el diálogo de respuesta
+          this.messageDialog = response.message; // Asignar el mensaje de respuesta
+           // Asignar la fecha formateada
+        },
+        error: (error) => {
+          this.showResponseDialog = true; // Mostrar el diálogo de respuesta
+          this.messageDialog = error.message;
+        },  
+      });
     }
+  }
+
+
+  reRoute() {
+    this.router.navigate(['/showappointments']);
+  }
+
+  volver() {
+    this.appointment = null;
+    this.hourSelected = '';
+    this.reset.emit();
+  
   }
   
 }

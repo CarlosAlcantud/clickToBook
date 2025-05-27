@@ -63,7 +63,7 @@ router.post(
             classes: -1 // Decrease by 1 class
         });
         res.status(201).json({
-            message: 'Appointment created successfully',
+            message: 'Clase reservada con éxito',
             classes: req.userData.classes - 1,
         })
     }else if (req.userData.role === 'worker') {
@@ -85,7 +85,7 @@ router.post(
                 classes: -1 // Decrease by 1 class
             });
             res.status(201).json({
-                message: 'Appointment created successfully',
+                message: 'Clase creada correctamente',
             })
         }else{
             return res.status(400).json({

@@ -1,12 +1,25 @@
-<p class = "titulo">CONFIRMA TU CITA</p>
-<div class = "cita">
-      
-      <p>{{formatedDate}}</p>
-      <p>{{hourSelected}}</p>
-      
+<p class="titulo">CONFIRMA TU RESERVA</p>
+<div class="cita">
+    <p><strong>Para el día:</strong> <span class="variable-text">{{dateToShow}}</span></p>
+    <p><strong>A las:</strong> <span class="variable-text">{{hourSelected}}</span></p>
+    <div class="buttons-container">
+        <button *ngIf="!worker" class="pay-button" (click)="pay()" >Reserva</button>
+        <button *ngIf="worker" class="pay-button" (click)="pay()" >Reserva</button>   
+        <button *ngIf="!worker" class="volver-button" (click)="volver()">Cancelar</button>
+    </div>
 </div>
 
-<button *ngIf="!worker"class = "pay-button" (click)="pay()" routerLink="/showappointments"  >pay</button>
-<button *ngIf="worker" class = "pay-button" (click)="pay()" routerLink="/worker/add-client"  >pay</button>    
+<div class="modal" *ngIf="showResponseDialog">
+        <div class="modal-content">
+            <h2>{{messageDialog}}</h2>
+            <p></p>
+            <div class="modal-buttons">
+                <button *ngIf="!worker"class="Ok-button" (click)="reRoute()">Ok</button>
+                <button *ngIf="worker" class="Ok-button" routerLink="/worker/appointments">Ok</button>
+            </div>
+        </div>
+    </div>
+
+ 
 
 

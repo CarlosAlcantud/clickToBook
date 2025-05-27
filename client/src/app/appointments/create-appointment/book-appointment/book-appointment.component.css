@@ -13,38 +13,41 @@
   text-align: center ;
 }
 
-.cita{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
-  max-width: 400px;
-  font-family: Arial, sans-serif;
+.cita {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    max-width: 400px;
+    font-family: Arial, sans-serif;
+    margin: 0 auto;
 }
 
-.description{
-  font-size: 14px;
-  color: #757575;
-  margin: 0;
+.cita p {
+    margin: 0;
+    text-align: left;
+    width: 100%;
 }
 
-.date{
-  font-weight: bold;
-  color: #000000;
+.variable-text {
+    margin-left: 10px;
+    font-weight: normal;
 }
 
-.hour{
-  font-size: 18px;
-  font-weight: bold;
-  color: #000000;
-  margin: 0;
+.buttons-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
 }
+
 .pay-button {
   margin-top: 10px;  
-  background-color: #fff; /* Fondo blanco */
+  background-color: #9CD139; /* Fondo blanco */
   color: #000; /* Color del texto */
   font-size: 16px; /* Tamaño del texto */
   padding: 10px; /* Espaciado interno */
@@ -66,4 +69,65 @@
 .pay-button:active {
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Sombra más suave al hacer clic */
   transform: translateY(1px); /* Efecto de presionar */
+}
+
+.volver-button {
+  margin-top: 10px;  
+  background-color: red; /* Fondo blanco */
+  color: #000; /* Color del texto */
+  font-size: 16px; /* Tamaño del texto */
+  padding: 10px; /* Espaciado interno */
+  width: 320px; /* Ancho fijo */
+  height: 40px; /* Alto fijo */
+  border: none; /* Sin borde */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Sombra suave */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+  font-family: Arial, sans-serif; /* Fuente del texto */
+  outline: none; /* Elimina el contorno al hacer clic */
+  box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+}   
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.Ok-button{
+  margin-top: 10px;  
+  background-color: #abacab; /* Fondo blanco */
+  color: #000; /* Color del texto */
+  font-size: 16px; /* Tamaño del texto */
+  padding: 10px; /* Espaciado interno */
+  width: 120px; /* Ancho fijo */
+  height: 40px; /* Alto fijo */
+  border: none; /* Sin borde */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Sombra suave */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+  font-family: Arial, sans-serif; /* Fuente del texto */
+  outline: none; /* Elimina el contorno al hacer clic */
+  box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+}   
+
+.Ok-button:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más intensa al pasar el mouse */
 }

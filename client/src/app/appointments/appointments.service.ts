@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Appointment } from "./appointment.model";
-import { Subject, BehaviorSubject} from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { map, take } from 'rxjs/operators';
-import { create } from "domain";
+import { Subject, BehaviorSubject, Observable, throwError} from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { map, take, tap, catchError} from 'rxjs/operators';
 import { WorkerAppointment } from "./workerAppointment.model";
-import { formatDate } from "@angular/common";
 import { AuthService } from "../auth/auth.service";
 import { Router } from "@angular/router";
 
@@ -170,7 +168,9 @@ export class AppointmentsService{
     getWorkerAppointmentUpdateListener() {
         return this.workerAppointmentUpdate.asObservable();
     }
-    createAppointment(appointment: Appointment) {
+
+    
+    createAppointment(appointment: Appointment): Observable<{message: string}> {
         let data; 
         if( this.autService.getIsWorker()) {
             console.log(' Vamos a añadir el appointment y los datos del cliente',this.autService.getClient());
@@ -188,18 +188,21 @@ export class AppointmentsService{
             }
             console.log('Los datos que se envian al back son: cuando es un cliente son:  ',data.classes);
         }
-
-        this.http
-            .post<{message: string }>(
-                "http://localhost:3000/appointments/createAppointment",data)
-            .subscribe(responseData => {
-                console.log(responseData.message);
+        return this.http.post<{ message: string }>(
+        "http://localhost:3000/appointments/createAppointment", data
+        ).pipe(
+            tap(
+                responseData => {
                 this.appointments.push(appointment);
                 this.appointmentUpdate.next([...this.appointments]);
-                this.autService.updateClientClasses();
-                    
-           });
-
+                this.autService.updateClientClasses("createAppointment");
+                
+            }),
+            catchError((error: HttpErrorResponse) => {
+            console.error('Error creando la cita:', error);
+            return throwError(() => error);
+        })
+    );
     }
 
     deleteAppointment(appointmentId: string) {
@@ -220,6 +223,7 @@ export class AppointmentsService{
                 );
 
                 this.appointmentUpdate.next([...this.appointments]);
+                this.autService.updateClientClasses("deleteAppointment");
             });
     }
 
