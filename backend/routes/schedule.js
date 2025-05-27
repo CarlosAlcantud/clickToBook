@@ -20,12 +20,15 @@ router.get('/:date', checkAuth, async (req, res) => {
         if (req.userData.role === 'worker') {
             if (req.query.clientWorker) {
                 workerId = req.query.clientWorker;
-                console.log("If() - Trabajador loggeado, con id: " +workerId);
-            }else {
-                console.log("Else() - Trabajador loggeado, con id: " +workerId);
+                console.log("Trabajador loggeado, con id: " +workerId);
+            }else if (!req.query.clientWorker && req.query.currentRoute === '/worker/add-client/bookAppointment') {
+                console.log("Trabajador no ha seleccionado un cliente ");
                 return res.send([]);
+            }else{
+                console.log("Schedule.js - get() : El trabajador loggeado es: ", req.userData);
+                workerId = req.userData.userId;
             }
-
+            
             
         }else if (req.userData.role === 'client') {
             
@@ -41,7 +44,12 @@ router.get('/:date', checkAuth, async (req, res) => {
         if (!workerData) {
             return res.status(404).send({ message: 'Trabajador no encontrado' });
         }
+
+        console.log("Schedule.js - get() : El trabajador seleccionado es: ", workerData);
         
+        if (workerData.schedule.start === '' || workerData.days.length === 0 || workerData.schedule.end === '' || workerData.schedule.break === '') {
+            return res.status(400).send({ message: 'Horario del trabajador no definido' });
+        }
         // Verificar si el día seleccionado está en los días de trabajo del trabajador
         const dayOfWeek = date.getDay(); // 0 (Domingo) a 6 (Sábado)
         
@@ -56,7 +64,7 @@ router.get('/:date', checkAuth, async (req, res) => {
         const [breakHour, breakMinute] = workerData.schedule.break ? 
             workerData.schedule.break.split(':').map(Number) : [null, null];
         // Generar horas disponibles en intervalos de 60 minutos (ajusta según necesites)
-
+        console.log("Schedule.js - get() : El horario del trabajador es: ", workerData.schedule);
         for (let h = startHour; h < endHour; h++) {
             const hourStr = `${h.toString().padStart(2, '0')}:00`;
             hoursavailable.add(hourStr);

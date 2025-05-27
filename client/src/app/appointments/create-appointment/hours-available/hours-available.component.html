@@ -1,9 +1,26 @@
-<div class = "scrollable" *ngIf= "hoursAvailable.length > 0">
-    <div  *ngFor = "let hourAvailable of hoursAvailable" class = "hours" >
-        <button class= "hour-button" (click) = "onClickHour(hourAvailable)">{{hourAvailable}}</button>
+<div class="scroll-container" *ngIf="hoursAvailable.length > 0">
+  <div
+    class="scrollable"
+    #scrollArea
+    (scroll)="checkScroll(scrollArea)"
+  >
+    <div *ngFor="let hourAvailable of hoursAvailable" class="hours">
+      <button class="hour-button" (click)="onClickHour(hourAvailable)">
+        {{ hourAvailable }}
+      </button>
     </div>
+  </div>
+
+  <!-- Gradiente condicional -->
+  <div class="fade-bottom" *ngIf="!isAtBottom && hoursAvailable.length > 0 "></div>
+</div>
+<div class="scroll-hint" *ngIf="hoursAvailable.length > 0 && !isAtBottom">
+    <svg width="24" height="24" viewBox="0 0 24 24" class="arrow-svg">
+    <path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke="black" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
 </div>
 
-<p class = "message" *ngIf = "hoursAvailable.length <=0"> No appoiments available for the day</p>
-<p class = "link" *ngIf = "hoursAvailable.length <= 0"> Want to recive an email if there is an opening on this day? Click here</p>
+<p class = "message" *ngIf="messageToShow !== ''">{{messageToShow}}</p>
+<!-- <p class = "message" *ngIf= "hoursAvailable.length <=0">{{messageToShow}}</p> -->
+<!-- <p class = "link" *ngIf = "hoursAvailable.length <= 0"> Want to recive an email if there is an opening on this day? Click here</p> -->
 

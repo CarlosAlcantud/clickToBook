@@ -7,6 +7,8 @@ import { create } from "domain";
 import { WorkerAppointment } from "./workerAppointment.model";
 import { formatDate } from "@angular/common";
 import { AuthService } from "../auth/auth.service";
+import { Router } from "@angular/router";
+
 
 @Injectable({providedIn: 'root'})
 export class AppointmentsService{
@@ -33,7 +35,7 @@ export class AppointmentsService{
     hoursAvailable$ = this.hoursAvailableSource.asObservable();
     urlDate: string = '';
 
-    constructor(private http: HttpClient, private autService: AuthService) {
+    constructor(private http: HttpClient, private autService: AuthService, private router:Router) {
         this.dateSelected$.subscribe(date => {
             this.urlDate = this.formatDateToLocalString(date);
         });
@@ -65,14 +67,15 @@ export class AppointmentsService{
     
     gethoursAvailable(clientData?: any) {
         console.log("Se llama a coger las horas disponibles para la fecha: " + this.urlDate);
-
+        const currentRoute = this.router.url;
+        console.log("La ruta actual es: " + currentRoute);
         
         // Si es un worker y hay datos de cliente, usar POST para enviar datos en el body
         if (this.autService.getIsWorker() && clientData) {
             console.log("Enviando petición con datos de cliente:", clientData);
             return this.http.get<{ hour: string }[]>(
                 `http://localhost:3000/schedule/${this.urlDate}`,
-                { params: {clientWorker: clientData.clientWorker } }
+                { params: {clientWorker: clientData.clientWorker, currentRoute } }
             );
         } else {
             // Para usuarios normales, usar GET

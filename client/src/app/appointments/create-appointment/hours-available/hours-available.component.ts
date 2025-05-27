@@ -4,6 +4,7 @@ import { AppointmentsService } from '../../appointments.service';
 import { AuthService } from '../../../auth/auth.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject, merge } from 'rxjs';
+import { ViewChild, ElementRef, OnDestroy } from '@angular/core';
 @Component({
   selector: 'hours-available',
   standalone: true,
@@ -14,7 +15,7 @@ import { Subject, merge } from 'rxjs';
 export class HoursAvailableComponent implements OnInit {
 
   @Output() hourselcted = new EventEmitter();
-  
+  messageToShow = '';
   hoursAvailable: { hour: string }[] = [];
   private destroy$ = new Subject<void>();
   private refreshInProgress = false;
@@ -23,6 +24,7 @@ export class HoursAvailableComponent implements OnInit {
 
   ngOnInit() {
       // Combine all events that should trigger a refresh into a single stream
+      this.messageToShow = '';
       merge(
           this.appointmentsService.dateSelected$,
           this.authservice.clientSelected$,
@@ -58,9 +60,16 @@ export class HoursAvailableComponent implements OnInit {
                   this.appointmentsService.updateHoursAvailable(hours);
                   this.hoursAvailable = hours;
                   this.refreshInProgress = false;
+                  if (hours.length === 0) {
+                    this.messageToShow = 'No hay clases disponibles';
+                  }else {
+                    this.messageToShow = '';
+                  }
               },
-              error: () => {
+              error: (error) => {
                   this.refreshInProgress = false;
+                  this.messageToShow = error.error.message;
+                  this.hoursAvailable = [];
               }
           });
       } else {
@@ -71,8 +80,10 @@ export class HoursAvailableComponent implements OnInit {
                   this.hoursAvailable = hours;
                   this.refreshInProgress = false;
               },
-              error: () => {
-                  this.refreshInProgress = false;
+              error: (error) => {
+                console.log("Error getting hours:", error.message);
+                this.messageToShow = error.error.message + '  Contacta con tu profesor por favor';
+                this.refreshInProgress = false;
               }
           });
       }
@@ -81,4 +92,12 @@ export class HoursAvailableComponent implements OnInit {
   onClickHour(hour: {hour: string}) {
     this.hourselcted.emit(hour);
   }
+
+    isAtBottom = false;
+
+    checkScroll(element: HTMLElement): void {
+    const threshold = 5; // margen de tolerancia
+    const isBottom = element.scrollHeight - element.scrollTop - element.clientHeight <= threshold;
+    this.isAtBottom = isBottom;
+    }
 }
