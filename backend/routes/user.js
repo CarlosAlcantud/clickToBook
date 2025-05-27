@@ -148,7 +148,7 @@ router.post('/auth/login', (req, res) => {
         let token; 
         if (!result) {
             return res.status(401).json({
-                message: 'Wrong password'
+                message: 'Contraseña incorrecta'
             });
         }
         if (fetchedUser.role === 'client') {

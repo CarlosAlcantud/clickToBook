@@ -90,33 +90,37 @@ export class AuthService {
     }
 
     login(identifier: string, password: string) {
-        console.log("Metodo/ login()");
-        const authData = {identifier: identifier, password: password};
-        this.http.post<{token: string, expiresIn: number}>('http://localhost:3000/auth/login', authData)
-        .subscribe(response => {
-            const token = response.token;
-            console.log("Authenticated = " + token);
-            if(token) {
-                const expiresInDuration = response.expiresIn;
-                this.setAuthTimer(expiresInDuration);
-                this.token = token;
-                const expirationDate = new Date(new Date().getTime() + expiresInDuration * 1000);
-                this.saveAuthData(token, expirationDate);
-                console.log("Session expires's in: " + expirationDate);
-                this.authStatusListener.next(true);
-                this.setRoles(token);
-                this.isAuthenticated = true;
-                if(this.isWorker){
-                    this.router.navigate(['/worker']);
+    console.log("Metodo/ login()");
+    const authData = {identifier: identifier, password: password};
+    return this.http.post<{token: string, expiresIn: number, message?: string}>('http://localhost:3000/auth/login', authData)
+        .pipe(
+            map(response => {
+                const token = response.token;
+                console.log("Authenticated = " + token);
+                if(token) {
+                    const expiresInDuration = response.expiresIn;
+                    this.setAuthTimer(expiresInDuration);
+                    this.token = token;
+                    const expirationDate = new Date(new Date().getTime() + expiresInDuration * 1000);
+                    this.saveAuthData(token, expirationDate);
+                    console.log("Session expires's in: " + expirationDate);
+                    this.authStatusListener.next(true);
+                    this.setRoles(token);
+                    this.isAuthenticated = true;
+                    if(this.isWorker){
+                        this.router.navigate(['/worker']);
+                    }
+                    else if(this.isClient){
+                        this.router.navigate(['/']);
+                    }
+                    else{
+                        this.router.navigate(['/']);
+                    }
+                    return { success: true, message: 'Login successful' };
                 }
-                else if(this.isClient){
-                    this.router.navigate(['/']);
-                }
-                else{
-                    this.router.navigate(['/']);
-                }
-            }
-        });
+                return { success: false, message: response.message || 'Unknown error' };
+            })
+        );
     }
 
     getClient() {
