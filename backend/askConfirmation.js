@@ -3,9 +3,11 @@ const User = require('./database/models/user');
 const axios = require('axios');
 const mongoose = require('mongoose');
 const sendEmail = require('./email'); // Importar la función sendEmail
+const sendWhatsApp = require('./whatsapp'); // Importar la función sendWhatsApp
 const jwt = require('jsonwebtoken');
 // Function to check unconfirmed appointments and send WhatsApp notifications
 const secretKey = "jfqweijro ijqewrlk qjweklrjñ qlkwejr klqjwekñrl jqweklrj lñqjre klñjqrkl jñq w";
+
 async function checkUnconfirmedAppointments() {
     console.log("askConfirmation.js - Checking unconfirmed appointments...");
     try {
@@ -38,25 +40,17 @@ async function checkUnconfirmedAppointments() {
             console.log(`User found: ${user.username} (${user.telephone}) and email: ${user.email}`);
             // Update appointment with confirmation token and expiration
             
-            // // Send WhatsApp message (using a WhatsApp API service)
-            // await sendWhatsAppNotification(
-            //     appointment.userId.phone,
-            //     `Hola ${appointment.userId.name}, tienes una cita programada para el ${new Date(appointment.date).toLocaleString('es-ES')}. 
-            //     Por favor, confirma tu asistencia en las próximas 24 horas haciendo clic en este enlace: 
-            //     http://localhost:4200/confirm-appointment/${confirmationToken}
-            //     De lo contrario, tu cita será cancelada automáticamente.`
-            // );
-
             token = await generateConfirmationToken(appointment._id);
             confirmationLink = `http://localhost:3000/confirm-appointment/${token}`;
             console.log( "La cita para el: " ,appointment.date.toISOString());
+            message = "Hola " + user.username + ", tienes una cita sin confirmar para el dia " + appointment.date.toISOString() + ". ¡Confirma tu cita aqui! " + confirmationLink;
             sendEmail(
                 user.email,
                 'Confirma tu cita',
-                `Hola ${user.username}, Tienes una cita sin confirmar para el dia . ¡Confirmala aqui! ${confirmationLink}`
+                message
             );
             
-            // console.log(`Sent WhatsApp notification to ${appointment.userId.name} (${appointment.userId.phone})`);
+            console.log(`Sent WhatsApp notification to ${appointment.userId.name} (${appointment.userId.phone})`);
         }
         
         // Check for expired confirmation tokens and delete those appointments
@@ -91,31 +85,6 @@ async function checkUnconfirmedAppointments() {
     }
 }
 
-// WhatsApp notification function (you'll need to integrate with a WhatsApp Business API provider)
-async function sendWhatsAppNotification(phoneNumber, message) {
-    try {
-        // This is a placeholder - you'll need to implement with an actual WhatsApp API
-        // Example with Twilio WhatsApp API:
-        /*
-        const accountSid = process.env.TWILIO_ACCOUNT_SID;
-        const authToken = process.env.TWILIO_AUTH_TOKEN;
-        const client = require('twilio')(accountSid, authToken);
-        
-        await client.messages.create({
-            body: message,
-            from: 'whatsapp:+14155238886', // Your Twilio WhatsApp number
-            to: `whatsapp:${phoneNumber}`
-        });
-        */
-        
-        console.log(`WhatsApp message to ${phoneNumber}: ${message}`);
-        // For now, just log the message
-        return true;
-    } catch (error) {
-        console.error('Error sending WhatsApp notification:', error);
-        return false;
-    }
-}
 
 function generateConfirmationToken(appointmentId) {
     // Generate a JWT token with the appointment ID as payload

@@ -22,14 +22,14 @@ localhost:4200 - front-end
 */
 
 const Appointment = require('./database/models/appointments');
-const Schedule = require('./database/models/schedule');
+// const Schedule = require('./database/models/schedule');
 
-cron.schedule('50 19 * * *', () => {
-    console.log('BUSCANDO CITAS...');
-    checkAvailableAppointmentsAndNotify.checkAvailableAppointmentsAndNotify(); // Llamar a la función para verificar y notificar
-});
+// cron.schedule('50 19 * * *', () => {
+//     console.log('BUSCANDO CITAS...');
+//     checkAvailableAppointmentsAndNotify.checkAvailableAppointmentsAndNotify(); // Llamar a la función para verificar y notificar
+// });
 
-cron.schedule('0 * * * *', async () => {
+cron.schedule('15 * * * *', async () => {
   console.log("App.js - Se procede a pedir confirmacion de citas no confirmadas")
   askConfirmation.checkUnconfirmedAppointments();
 
