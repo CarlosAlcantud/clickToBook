@@ -1,7 +1,7 @@
 <!-- <p>show-appointments works!</p> -->
 <div class = "box" >
-    <p class = "titulo" >TUS RESERVAS, {{username}}</p>
-    <div>
+    <p class = "titulo" >TUS CLASES, {{username}}</p>
+    <div class="date-container">
         <button 
             class="button" 
             [ngClass]="{ 'active': selectedFilter === 'todas' }" 
@@ -12,16 +12,17 @@
             class="button" 
             [ngClass]="{ 'active': selectedFilter === 'pasadas' }" 
             (click)="setFilter('pasadas')">
-            Pasadas
+            Anteriores
         </button>
         <button 
             class="button" 
             [ngClass]="{ 'active': selectedFilter === 'futuras' }" 
             (click)="setFilter('futuras')">
-            Futuras
+            Proximas
         </button>
     </div>
-    <div *ngIf="show" class="date-container">
+    <div *ngIf="show" class="appointments-list">
+      <ng-container *ngIf="filteredAppointments.length > 0; else notAppointments">
         <div *ngFor="let appointment of filteredAppointments; let i = index">
             <button class ="cita" 
             [class.expanded]=" expandedIndex === i"
@@ -35,11 +36,27 @@
                 <button class="edit-button" (click)="editAppointment(appointment)"> Editar</button>
                 <button class="delete-button" (click)="deleteAppointment(appointment)" >Cancelar</button>
               </div>
-              
+
             </button>
-          </div>
+        </div>
+      </ng-container>
+      <ng-template #notAppointments>
+        <p class="message" *ngIf="selectedFilter === 'pasadas'">No tienes clases anteriores</p>
+        <p class="message" *ngIf="selectedFilter === 'futuras'">No tienes proximas clases</p>
+        <p class="message" *ngIf="selectedFilter === 'todas'">No tienes clases</p>
+      </ng-template>
 
+    </div>
 
+    <div class="modal" *ngIf="showConfirmDialog">
+        <div class="modal-content">
+            <h2>Confirmar cancelación</h2>
+            <p>¿Estás seguro de que deseas cancelar esta cita?</p>
+            <div class="modal-buttons">
+                <button class="edit-button" (click)="confirmDelete()">Sí, cancelar</button>
+                <button class="delete-button" (click)="closeConfirmDialog()">No, mantener</button>
+            </div>
+        </div>
     </div>
     
     <router-outlet></router-outlet>

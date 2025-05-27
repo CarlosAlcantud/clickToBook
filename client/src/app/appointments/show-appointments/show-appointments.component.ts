@@ -23,8 +23,9 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
   expandedIndex: number | null = null; // Índice del botón expandido
   message: string = 'Editando la cita del dia ';
   selectedFilter: string = 'futuras'; // Por defecto, el botón "Futuras" está seleccionado
-  username: string = ''; // Almacena el nombre de usuario del cliente // Almacena el número de clases disponibles del cliente
-
+  username: string = ''; // Almacena el nombre de usuario del cliente 
+  showConfirmDialog = false;
+  appointmentToDelete: any = null;
   fecha : String = new Date().toLocaleDateString(); // Fecha actual
   constructor(public appointmentsService: AppointmentsService, private router : Router, private authservice: AuthService) {}
 
@@ -71,10 +72,26 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
     deleteAppointment (appointment: Appointment) {
         // Aquí puedes implementar la lógica para eliminar la cita
         console.log('Eliminando cita:', appointment.id);
-    
-        this.appointmentsService.deleteAppointment(appointment.id);
+        this.appointmentToDelete = appointment;
+        this.showConfirmDialog = true;
+
+        
          
     }
+
+    confirmDelete() {
+      if (this.appointmentToDelete) {
+          this.appointmentsService.deleteAppointment(this.appointmentToDelete.id);
+      }
+      this.closeConfirmDialog();
+    }
+
+    closeConfirmDialog() {
+        this.showConfirmDialog = false;
+        this.appointmentToDelete = null;
+    }
+
+
 
     
     setFilter(filter: string): void {

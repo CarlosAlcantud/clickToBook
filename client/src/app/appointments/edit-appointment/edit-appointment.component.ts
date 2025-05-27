@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WorkerAppointment } from '../../appointments/workerAppointment.model';
 import { HoursAvailableComponent } from '../create-appointment/hours-available/hours-available.component';
 import { AppointmentsService } from '../appointments.service';
+import { AuthService } from '../../auth/auth.service';
 @Component({
   selector: 'app-edit-appointment',
   standalone: true,
@@ -17,22 +18,28 @@ import { AppointmentsService } from '../appointments.service';
 })
 export class EditAppointmentComponent implements OnInit {
   
-  message: string = 'Editando la cita de ';
-  
+  message: string = '';
+  partMessage: string = '';
   appointmentId   : string = '';
   appointmentDate : string = '';
   fecha: string = '';
   date: Date = new Date();
   hourSelected = '';
   rawDate: Date = new Date();
+  isWorker:boolean = false; 
+  showResponseDialog: boolean = false; // Variable para mostrar/ocultar el diálogo de respuesta
+  messageDialog: string = ''; 
+
 
   constructor(
     private route: ActivatedRoute,
     private router: Router, 
-    public appointmentsService: AppointmentsService) {
+    private appointmentsService: AppointmentsService,
+    private authService: AuthService 
+    ) {
     // Aquí puedes inyectar servicios o realizar otras configuraciones necesarias
     this.appointmentsService.dateSelected$.subscribe(date => {
-      this.fecha = date.toDateString();
+      this.fecha = this.appointmentsService.formatDate(date);
       this.date = date;
       
     });
@@ -40,11 +47,12 @@ export class EditAppointmentComponent implements OnInit {
   ngOnInit() {
     // Aquí puedes realizar la lógica de inicialización del componente
     // Por ejemplo, cargar datos desde un servicio o inicializar variables
+    this.isWorker = this.authService.getIsWorker();
     
       this.route.queryParams.subscribe(params => {
         this.appointmentId = params['appointmentId'];
         this.appointmentDate = params['appointmentDate'];
-        this.message + params['partMessage'];
+        this.partMessage =  params['partMessage'];
         this.rawDate = params['rawDate'];
         // Cargar datos con el ID
         this.hourSelected = '';
@@ -68,6 +76,7 @@ export class EditAppointmentComponent implements OnInit {
         }
       }
       });
+      this.generateMessage();
     
   }
   
@@ -83,7 +92,13 @@ export class EditAppointmentComponent implements OnInit {
   volver() {
     this.router.navigate(['../'], { relativeTo: this.route });
   }
-
+  generateMessage() {
+    if (this.isWorker) {
+      this.message = 'Edita la cita del cliente: ';
+    } else {
+      this.message = 'Editando tu cita del dia:';
+    }
+  }
   updateAppointment() {
     console.log('Actualizando cita... ');
     console.log('El formato de la fecha que estoy suscrito es ' + this.date + ' y la fecha que estoy pasando es ' + this.fecha);
@@ -95,19 +110,24 @@ export class EditAppointmentComponent implements OnInit {
     .subscribe({
       next: (response) => {
         // Muestra un mensaje de éxito
-        alert(response.message);
-        // Solo navega si la actualización fue exitosa
-        this.router.navigate(['../'], { relativeTo: this.route });
+        this.showResponseDialog = true; // Mostrar el diálogo de respuesta
+        this.messageDialog = response.message; // Asignar el mensaje de respuesta
+
       },
       error: (error) => {
         // Muestra el mensaje de error
         console.error('Error al actualizar la cita:', error);
         if (error.error && error.error.message) {
-          alert(error.error.message);
+          this.messageDialog = error.error.message;
         } else {
-          alert('Error al actualizar la cita');
+          this.messageDialog = 'Error al actualizar la cita';
         }
+        this.showResponseDialog = true; // Mostrar el diálogo de respuesta
       }
     });
+  }
+
+  reRoute() {
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 }

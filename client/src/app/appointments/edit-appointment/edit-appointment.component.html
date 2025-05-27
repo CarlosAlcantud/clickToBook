@@ -1,12 +1,13 @@
 <div class="edit-container">
     
-    <div class="title">
-        <p>Editando la cita de: {{message}}</p>
+    <div >
+        <p class="title">{{message}}</p>
+        <p>{{partMessage}}</p>
     </div>
     <div *ngIf="hourSelected === ''">
-        <div class="subtitle">
+        <!-- <div class="subtitle">
             <p>Fecha actual: {{appointmentDate}} </p> 
-        </div>
+        </div> -->
         <calendar ></calendar>
     </div>
     
@@ -16,19 +17,23 @@
         <button class="volver" (click)="volver()">Volver</button>
     </div>
     
-    <div *ngIf="hourSelected !== ''" >
-        <div class="subtitle">
-            <p>Nueva fecha: {{fecha}}</p>
-            <p>Nueva hora: {{hourSelected}}</p>
-        </div>
-        
+    <div class="cita" *ngIf="hourSelected !== ''" >
+        <p><strong>Nueva fecha el:</strong> <span class="variable-text">{{fecha}}</span></p>
+        <p><strong>A las:</strong> <span class="variable-text">{{hourSelected}}</span></p>
         <div class="buttons">
-            <button class="cancelar"(click)="cancel()">Cancelar</button>
             <button class= "actualizar"(click)="updateAppointment()">Actualizar</button>
+            <button class="cancelar"(click)="cancel()">Cancelar</button>
             
         </div>
 
     </div>
     
     
+</div>
+<div class="modal" *ngIf="showResponseDialog">
+    <div class="modal-content">
+        <h2>{{messageDialog}}</h2>
+        <p></p>
+        <button class="Ok-button" (click)="reRoute()">Ok</button>     
+    </div>
 </div>
