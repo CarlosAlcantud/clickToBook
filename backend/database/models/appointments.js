@@ -14,7 +14,6 @@ const AppointmentSchema = new mongoose.Schema({
         date: {
             type: Date,
             required: true,
-            unique: true,
             trim: true,
             // validate: {
             //     validator: async function (value) {
@@ -41,6 +40,8 @@ const AppointmentSchema = new mongoose.Schema({
             default: false
         },
 });
+
+AppointmentSchema.index({ date: 1, worker: 1 }, { unique: true });
 
 const Appointment = mongoose.model('Appointment', AppointmentSchema);
 
