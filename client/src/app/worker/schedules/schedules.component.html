@@ -1,0 +1,106 @@
+<div class="schedule-container">
+    <div class="schedule-card">
+        <!-- Header -->
+        <div class="card-header">
+            <h1>Mi Horario Laboral</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="card-content">
+            <!-- Horario Cards -->
+            <div class="schedule-grid">
+                <!-- Hora inicio -->
+                <div class="time-card time-card-start">
+                    <div class="icon-circle">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Hora de inicio</h3>
+                    <div *ngIf="!isEditing">
+                        <p>{{schedule?.schedule?.start || 'No definido'}}</p>
+                    </div>
+                    <div *ngIf="isEditing">
+                        <input type="time" 
+                               [(ngModel)]="editableSchedule.start" 
+                               class="time-input">
+                    </div>
+                </div>
+
+                <!-- Hora descanso -->
+                <div class="time-card time-card-break">
+                    <div class="icon-circle">
+                        <i class="fas fa-coffee"></i>
+                    </div>
+                    <h3>Descanso</h3>
+                    <div *ngIf="!isEditing">
+                        <p>{{schedule?.schedule?.break || 'No definido'}}</p>
+                    </div>
+                    <div *ngIf="isEditing">
+                        <input type="time" 
+                               [(ngModel)]="editableSchedule.break" 
+                               class="time-input">
+                    </div>
+                </div>
+
+                <!-- Hora fin -->
+                <div class="time-card time-card-end">
+                    <div class="icon-circle">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <h3>Hora de fin</h3>
+                    <div *ngIf="!isEditing">
+                        <p>{{schedule?.schedule?.end || 'No definido'}}</p>
+                    </div>
+                    <div *ngIf="isEditing">
+                        <input type="time" 
+                               [(ngModel)]="editableSchedule.end" 
+                               class="time-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Días laborables -->
+            <div class="working-days">
+                <h3>Días laborables</h3>
+                <div class="days-grid">
+                    <div *ngFor="let day of weekDays" 
+                         class="day-badge"
+                         [ngClass]="{'active': isDayActive(day.id)}"
+                         (click)="isEditing && toggleDay(day.id)">
+                        {{ day.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <button *ngIf="!isEditing" 
+                    (click)="startEditing()" 
+                    class="edit-button">
+                <i class="fas fa-edit"></i>
+                Editar horario
+            </button>
+            <div *ngIf="isEditing" class="edit-actions">
+                <button (click)="cancelEditing()" 
+                        class="cancel-button">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button (click)="saveSchedule()" 
+                        class="save-button">
+                    <i class="fas fa-save"></i>
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="showResponseDialog">
+    <div class="modal-content">
+        
+        <p *ngIf="!error" class="messageSucces">{{messageDialog}}</p>
+        <p *ngIf="error" class="messageError">{{messageDialog}}</p>
+        <button class="Ok-button" (click)="reRoute()">Ok</button>     
+    </div>
+</div>

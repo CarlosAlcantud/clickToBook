@@ -1,0 +1,85 @@
+<div class="schedule-container">
+    <div class="schedule-card">
+        <div class="card-header">
+            <h1>Modificar Horarios de Trabajadores</h1>
+            <p class="text-gray-600">Los cambios se aplicarán a todos los trabajadores</p>
+        </div>
+
+        <div class="card-content">
+            <form (ngSubmit)="updateAllSchedules()" #scheduleForm="ngForm">
+                <div class="schedule-grid">
+                    <!-- Hora inicio -->
+                    <div class="time-card time-card-start">
+                        <div class="icon-circle">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Hora de inicio</h3>
+                        <input type="time" 
+                               [(ngModel)]="scheduleData.start" 
+                               name="start"
+                               required
+                               class="time-input">
+                    </div>
+
+                    <!-- Hora descanso -->
+                    <div class="time-card time-card-break">
+                        <div class="icon-circle">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <h3>Descanso</h3>
+                        <input type="time" 
+                               [(ngModel)]="scheduleData.break" 
+                               name="break"
+                               required
+                               class="time-input">
+                    </div>
+
+                    <!-- Hora fin -->
+                    <div class="time-card time-card-end">
+                        <div class="icon-circle">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                        <h3>Hora de fin</h3>
+                        <input type="time" 
+                               [(ngModel)]="scheduleData.end" 
+                               name="end"
+                               required
+                               class="time-input">
+                    </div>
+                </div>
+
+                <!-- Días laborables -->
+                <div class="working-days">
+                    <h3>Días laborables</h3>
+                    <div class="days-grid">
+                        <div *ngFor="let day of weekDays" 
+                             class="day-badge"
+                             [ngClass]="{'active': isDaySelected(day.id)}"
+                             (click)="toggleDay(day.id)">
+                            {{ day.name }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="form-actions">
+                    <button type="submit" 
+                            class="save-button" 
+                            [disabled]="!scheduleForm.form.valid || scheduleData.days.length === 0">
+                        <i class="fas fa-save"></i>
+                        Actualizar Horarios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="showResponseDialog">
+    <div class="modal-content">
+        
+        <p *ngIf="!error" class="messageSucces">{{messageDialog}}</p>
+        <p *ngIf="error" class="messageError">{{messageDialog}}</p>
+        <button class="Ok-button" (click)="reRoute()">Ok</button>     
+    </div>
+</div>

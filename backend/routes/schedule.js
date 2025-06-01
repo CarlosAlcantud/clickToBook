@@ -251,4 +251,126 @@ router.post(
     }
 );
 
+router.put(
+    '/update',
+    checkAuth,
+    async (req, res) => {
+        try {
+            // Verify the user is authorized
+            if (req.userData.role !== 'worker') {
+                return res.status(403).send({ message: 'No tienes permisos para realizar esta acción' });
+            }
+
+            const updatedWorker = await Worker.findOneAndUpdate(
+                { user: req.userData.userId },
+                {
+                    schedule: {
+                        start: req.body.schedule.start,
+                        break: req.body.schedule.break,
+                        end: req.body.schedule.end
+                    },
+                    days: req.body.days
+                },
+                { new: true, runValidators: true }
+            );
+
+            if (!updatedWorker) {
+                return res.status(404).send({ message: 'Horario no encontrado' });
+            }
+
+            res.status(200).send(updatedWorker);
+        } catch (error) {
+            console.error('Error updating worker schedule:', error);
+            
+            if (error.name === 'ValidationError') {
+                const messages = Object.values(error.errors).map(val => val.message);
+                return res.status(400).send({ 
+                    message: 'Error de validación', 
+                    errors: messages 
+                });
+            }
+            
+            res.status(500).send({ message: 'Error interno del servidor' });
+        }
+    }
+);
+
+
+router.get(
+    '',
+    checkAuth,
+    async (req, res) => {
+        try {
+            // Verify the user is authorized
+            if (req.userData.role !== 'worker') {
+                return res.status(403).send({ message: 'No tienes permisos para realizar esta acción' });
+            }
+
+            const worker = await Worker.findOne({ user: req.userData.userId });
+
+            if (!worker) {
+                return res.status(404).send({ message: 'Horario no encontrado' });
+            }
+
+            res.status(200).send(worker);
+        } catch (error) {
+            console.error('Error fetching worker schedule:', error);
+            res.status(500).send({ message: 'Error interno del servidor' });
+        }
+    }
+);
+
+router.put(
+    '/update/all',
+    checkAuth,
+    async (req, res) => {
+        try {
+            // Verify the user is an admin
+            if (req.userData.role !== 'worker') {
+                return res.status(403).send({ message: 'Solo los administradores pueden actualizar todos los horarios' });
+            }
+
+            const result = await Worker.updateMany(
+                {}, // Empty filter to match all documents
+                {
+                    schedule: {
+                        start: req.body.schedule.start,
+                        break: req.body.schedule.break,
+                        end: req.body.schedule.end
+                    },
+                    days: req.body.days
+                },
+                { 
+                    new: true, 
+                    runValidators: true 
+                }
+            );
+
+            if (result.modifiedCount === 0) {
+                return res.status(404).send({ 
+                    message: 'No se encontraron horarios para actualizar' 
+                });
+            }
+
+            res.status(200).send({ 
+                message: `Se actualizaron ${result.modifiedCount} horarios correctamente`,
+                modifiedCount: result.modifiedCount,
+                matchedCount: result.matchedCount
+            });
+
+        } catch (error) {
+            console.error('Error updating worker schedules:', error);
+            
+            if (error.name === 'ValidationError') {
+                const messages = Object.values(error.errors).map(val => val.message);
+                return res.status(400).send({ 
+                    message: 'Error de validación', 
+                    errors: messages 
+                });
+            }
+            
+            res.status(500).send({ message: 'Error interno del servidor' });
+        }
+    }
+);
 module.exports = router;
