@@ -6,6 +6,8 @@ import { map, take, tap, catchError} from 'rxjs/operators';
 import { WorkerAppointment } from "./workerAppointment.model";
 import { AuthService } from "../auth/auth.service";
 import { Router } from "@angular/router";
+import { Exam } from "./exam.model";
+import { ExamUser } from "./exam.model";
 
 
 @Injectable({providedIn: 'root'})
@@ -15,6 +17,9 @@ export class AppointmentsService{
     appointments: Appointment[] = [];
     private appointmentUpdate = new Subject<Appointment[]>();
     
+    exams: Exam[] = [];
+    private examUpdate = new Subject<Exam[]>();
+
     workerAppointments: WorkerAppointment[] = [];
     private workerAppointmentUpdate = new Subject<WorkerAppointment[]>();
 
@@ -288,6 +293,125 @@ export class AppointmentsService{
         return `${hours}:${minutes}`;
     }
 
+    notifyExam(examDate: Date, limit: number): Observable<any> {
+        console.log('Notificando examen para la fecha:', examDate);
+        
+        // Make sure examDate is a Date object
+        const dateObject = new Date(examDate);
+        
+        console.log('Fecha del examen formateada:', dateObject.toISOString());
+        const formattedDate = this.formatDateForDatabase(dateObject, '09:00');
+        
+        return this.http.post<{ message: string }>(
+            "http://localhost:3000/exams/createExam", 
+            { examDate: formattedDate, limit }
+        ).pipe(
+            tap(response => {
+                console.log('Respuesta del servidor al notificar examen:', response);
+            }),
+            catchError((error: HttpErrorResponse) => {
+                console.error('Error al notificar examen:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 
+    getExamsUpdateListener() {
+        return this.examUpdate.asObservable();
+    }
+
+    getExams(){
+        console.log("getExams - Se llama a coger los exams");
+        this.http
+            .get<{ message: string; exams: any[] }>(
+                "http://localhost:3000/exams", 
+            ).pipe(
+                map((examsData) => {
+               
+                return examsData.exams.map(exam => {
+
+                    const examDate = new Date(exam.date);
+                    
+                    // Map enrolled users to UsersExam interface
+                    const enrolledUsers = exam.enrolledUsers.map((user: ExamUser) => ({
+                        username: user.username
+                    }));
+
+                    // Map possible users to UsersExam interface
+                    const posibleUsers = exam.posibleUsers.map((user: ExamUser) => ({
+                        username: user.username
+                    }));
+
+                    return {
+                        id: exam._id,
+                        rawDate: examDate,
+                        date: this.formatDate(examDate),
+                        enrolledUsers: enrolledUsers,
+                        posibleUsers: posibleUsers
+                    };
+                }
+                )
+            }))
+            .subscribe(exam => {
+                this.exams = exam.sort((a, b) => {
+                    return a.rawDate.getTime() - b.rawDate.getTime(); // Comparamos timestamps
+                });
+                this.examUpdate.next([...this.exams]);
+        });
+
+    }
+
+    getPossibleExams() {
+    console.log("getPossibleExams - Se llama a coger los exams posibles");
+    return this.http.get<{ message: string; exams: any[] }>(
+        `http://localhost:3000/exams/possibleExams`
+    ).pipe(
+        map((response) => {
+            if (!response.exams) {
+                console.warn('No exams found in response:', response);
+                return [];
+            }
+            return response.exams.map(exam => {
+                const examDate = new Date(exam.date);
+                return {
+                    id: exam._id,
+                    date: this.formatDate(examDate)
+                };
+            });
+        }),
+        catchError(error => {
+            console.error('Error fetching possible exams:', error);
+            return [];
+        })
+    );
+    }
+
+    getEnrolledExam() {
+    return this.http.get<string[]>(
+        "http://localhost:3000/exams/enrolledExam"
+    ).pipe(
+        map((enrolledExamData) => {
+            this.upperCase = true;
+            console.log("getEnrolledExam - Se llama a coger los exams en los que esta inscrito el cliente");
+            return enrolledExamData.map(examDate => this.formatDate(new Date(examDate)));
+        })
+    );
+    }
+
+    enrollToExam(examId: string): Observable<{ message: string }> {
+        console.log("Se llama a inscribirse al examen con id: " + examId);
+        return this.http.post<{ message: string }>(
+            `http://localhost:3000/exams/enroll`, 
+            { examId: examId }
+        ).pipe(
+            tap(response => {
+                console.log('Respuesta del servidor al inscribirse al examen:', response);
+            }),
+            catchError((error: HttpErrorResponse) => {
+                console.error('Error al inscribirse al examen:', error);
+                return throwError(() => error);
+            })
+        );
+    }
     
 }

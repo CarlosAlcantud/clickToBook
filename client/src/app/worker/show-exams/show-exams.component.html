@@ -1,0 +1,60 @@
+<div class="box">
+  <div class="exam-card">
+    <div class="exam-header">
+      <h1>PROXIMOS EXAMENES</h1>
+    </div>
+    
+    <div class="exams-list">
+      <ng-container *ngIf="exams.length > 0; else notAppointments">
+        <div *ngFor="let exam of exams; let i = index">
+          <button class="exam" [class.expanded]="expandedIndex === i" (click)="expand(i)">
+            <div class="cita-info">
+              <p class="date_text">El dia {{exam.date}}</p>
+            </div>
+            <div *ngIf="expandedIndex === i" class="expanded-exam">
+              <!-- Enrolled Students Section -->
+              <div class="students-section">
+                <ng-container *ngIf="exam.enrolledUsers.length > 0; else noEnrolled">
+                  <button class="section-header" [class.expanded]="expandedEnrolledStudents === i" (click)="expandEnrolledStudents(i)">
+                    <svg class="arrow" [class.rotated]="expandedEnrolledStudents === i" width="16" height="16" viewBox="0 0 24 24">
+                      <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
+                    </svg>
+                    Alumnos apuntados
+                  </button>
+                  <div class="students-list" *ngIf="expandedEnrolledStudents === i">
+                    <p class="user-name" *ngFor="let user of exam.enrolledUsers">{{user.username}}</p>
+                  </div>
+                </ng-container>
+                <ng-template #noEnrolled>
+                  <p class="no-students">No hay alumnos apuntados todavía</p>
+                </ng-template>
+              </div>
+              <!-- Potential Students Section -->
+              <div class="students-section">
+                <ng-container *ngIf="exam.posibleUsers.length > 0; else noPotential">
+                  <button class="section-header" [class.expanded]="expandedPotentialStudents === i" (click)="expandPotentialStudents(i)">
+                    <svg class="arrow" [class.rotated]="expandedPotentialStudents === i" width="16" height="16" viewBox="0 0 24 24">
+                      <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
+                    </svg>
+                    Alumnos que pueden apuntarse
+                  </button>
+                  <div class="students-list" *ngIf="expandedPotentialStudents === i">
+                    <p class="user-name" *ngFor="let user of exam.posibleUsers">{{user.username}}</p>
+                  </div>
+                </ng-container>
+                <ng-template #noPotential>
+                  <p class="no-students">No hay alumnos que puedan apuntarse</p>
+                </ng-template>
+              </div>
+            </div>
+          </button>
+        </div>
+      </ng-container>
+      <ng-template #notAppointments>
+        <p class="message">No hay examenes definidos todavia</p>
+      </ng-template>
+    </div>
+
+  </div>
+  
+</div>

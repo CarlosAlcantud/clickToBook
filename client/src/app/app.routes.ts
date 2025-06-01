@@ -14,13 +14,25 @@ import { WorkerAppointmentsComponent } from './worker/worker-appointments/worker
 import { WorkerAddClientComponent } from './worker/worker-add-client/worker-add-client.component';
 import { EditAppointmentComponent } from './appointments/edit-appointment/edit-appointment.component';
 import path from 'path';
+import { CreateExamComponent } from './worker/create-exam/create-exam.component';
+import { ShowExamsComponent } from './worker/show-exams/show-exams.component';
 
+
+import { ConfirmationComponent } from './confirmation/confirmation/confirmation.component';
+import { SchedulesComponent } from './worker/schedules/schedules.component';
+import { ModifySchedulesComponent } from './worker/modify-schedules/modify-schedules.component';
+import { RegisterWorkerComponent } from './auth/register-worker/register-worker.component';
 export const routes: Routes = [
     {  path: '', component: PrincipalComponent},
     //Habilitar esta ruta en un futuro 
+    {
+        path: 'confirmation/:type/:token',
+        component: ConfirmationComponent,
+    },
     {  path: 'create',  component: CreateAppointmentComponent, canActivate: [authGuard], data: {roles: ['client']}},
     {  path: 'auth/login', component: LoginComponent},
     {  path: 'auth/register', component: SingUpComponent, canActivate: [authGuard], data: {roles: ['worker']}},
+    { path: 'auth/register-worker', component: RegisterWorkerComponent, canActivate: [authGuard], data: {roles: ['worker']}},
     {  path: 'showappointments/edit-appointment', component: EditAppointmentComponent, canActivate: [authGuard], data: {roles: ['client']}},
     { path: 'showappointments', component: ShowAppointmentsComponent, canActivate: [authGuard], data: {roles: [ 'client']}},
     { 
@@ -31,6 +43,18 @@ export const routes: Routes = [
             roles: ['worker']
         }, 
         children: [
+            {path: 'exams',
+                children: [
+                    {path: 'create-exam', component: CreateExamComponent},
+                    {path: 'list-exams', component: ShowExamsComponent,}
+                ] 
+            },
+            {
+                path: 'schedules/create-consult', component: SchedulesComponent,
+            },
+            {
+                path: 'schedules/modify-schedule', component: ModifySchedulesComponent
+            },
             { path: 'appointments', 
                 component: WorkerAppointmentsComponent,
                 // children: [

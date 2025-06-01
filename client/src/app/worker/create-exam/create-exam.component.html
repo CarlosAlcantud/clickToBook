@@ -1,0 +1,67 @@
+<form *ngIf="!showConfirmDialog" class="form" (submit) ="notifyExamForm(ExamForm)" ngForm #ExamForm="ngForm" >
+    <div class="form-header">
+        <img src="assets/notificar.png" alt="icono citas" class="icon">
+        <p class="sub-title">Registra la fecha del proximo examen</p>  
+    </div>
+    
+
+        <div class="form-group" >
+            <label for="examDate" class="form-label">Fecha</label>
+            <input 
+                ngModel
+                id="examDate" 
+                name="examDate" 
+                type="date"
+                [min]="today"
+                required 
+                class="form-input"
+            />
+        </div>
+        <div class="form-group form-selection" >
+            <label for="limit" class="form-label">Vacantes</label>
+            <input 
+                ngModel
+                id="limit" 
+                name="limit" 
+                type="number"
+                placeholder="10"
+                min = "1"  
+                #limit="ngModel"
+                class="form-input"            
+            />
+        <span class="error-message" *ngIf="limit.invalid && limit.touched">
+            El número de vacantes debe ser mayor o igual a 1
+        </span>
+        </div>
+    
+   
+    <div class="form-group">
+        <button type="submit" class="submit-button" >
+            <i class="fas fa-save"></i>
+            Registrar</button>
+    </div>
+    
+</form>
+<div class="modal" *ngIf="showConfirmDialog">
+        <div class="modal-content">
+            <h2>Confirmar examen</h2>
+            <p>Dia: {{examDate}}</p>
+            <p>Vacantes: {{limit}}</p>
+            <div class="modal-buttons">
+                <button class="edit-button" (click)="notifyExam()">
+                    <i class="fas fa-save"></i>
+                    Notificar</button>
+                <button class="delete-button" (click)="closeConfirmDialog()">
+                    <i class="fas fa-times"></i>
+                    Cancelar</button>
+            </div>
+        </div>
+</div>
+
+<div class="modal" *ngIf="showResponseDialog">
+    <div class="modal-content">
+        <h2 [ngClass]="{'success-message': isSuccess, 'error-message': !isSuccess}">{{messageDialog}}</h2>
+        <p></p>
+        <button class="Ok-button" (click)="reRoute()">Ok</button>     
+    </div>
+</div>

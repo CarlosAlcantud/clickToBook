@@ -110,6 +110,8 @@ app.use(userRoutes);
 const workerRoutes = require('./routes/worker');
 app.use("/worker",workerRoutes);
 
+const examRoutes = require('./routes/exam');
+app.use("/exams", examRoutes);
 
 
 app.listen(3000, () => console.log('ClickToBook ready to go!'));

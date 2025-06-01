@@ -29,6 +29,9 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
   fecha : String = new Date().toLocaleDateString(); // Fecha actual
   constructor(public appointmentsService: AppointmentsService, private router : Router, private authservice: AuthService) {}
 
+  enrolledExam: string[] = []; 
+  private enrolledExamSub!: Subscription;
+
   ngOnInit() {
     console.log("Los appointments antes de mostrarlos son: "+this.appointments);
     this.appointmentsService.getAppointments();
@@ -41,12 +44,24 @@ export class ShowAppointmentsComponent implements OnInit, OnDestroy{
     // Establece el filtro inicial al cargar el componente
     this.appointmentsService.getAppointments();
     this.username = this.authservice.getClient().username; // Obtiene el nombre de usuario del cliente
+    this.appointmentsService.getEnrolledExam()
+        .subscribe({
+            next: (enrolledExam: string[]) => {
+                this.enrolledExam = enrolledExam;
+                console.log("Exámenes inscritos:", this.enrolledExam);
+            },
+            error: (error) => {
+                console.error("Error al obtener exámenes:", error);
+                this.enrolledExam = []; // Set empty array on error
+            }
+        });
+    
   }
 
   ngOnDestroy(){ 
    
       this.appointmentsSub.unsubscribe();
-    
+      
   }
 
   expand(index: number, rawDate: Date): void {

@@ -1,6 +1,19 @@
 <!-- <p>show-appointments works!</p> -->
 <div class = "box" >
     <p class = "titulo" >TUS CLASES, {{username}}</p>
+    <div class="exams-container" *ngIf="enrolledExam.length > 0">
+        <h3 class="exams-title">¡¡¡¡Recuerda tu examen!!!! </h3>
+        <div class="exams-grid">
+            <div *ngFor="let exam of enrolledExam" class="exam-card">
+                <!-- <div class="exam-icon">🚗</div> -->
+                <img src="assets/exam.png" alt="" class="exam-icon">
+                <div class="exam-info">
+                    <p class="exam-date">{{exam}}</p>
+                    <p class="exam-reminder">¡Mucha suerte!</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="date-container">
         <button 
             class="button" 

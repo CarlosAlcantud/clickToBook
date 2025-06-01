@@ -1,0 +1,117 @@
+.box {
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.exam-card{
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+}
+ 
+ .exam-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+}
+
+.exams-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1.5rem;
+
+  }
+
+  .exam{
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f8fafc;
+    width: 450px;
+    font-family: Arial, sans-serif;
+    border: none;
+    flex-direction: column;
+  }
+
+.cita-info {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+  .date_text {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 25px;
+  font-weight: 800;
+  color: #3d3d3d;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem;
+}
+  .cita.expanded{
+    min-height: 110px; /* Altura mínima cuando está expandido */
+    height: auto; /* Permitir que se ajuste al contenido */
+  }
+
+.students-section {
+  text-align: left;
+  margin: 10px 0;
+  border-bottom: 1px solid #e3e4e6;
+    padding: 1rem;
+}
+
+.section-header {
+  width: 100%;
+  text-align: left;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight:700;
+  font-size: 18px;
+  color: #464646;
+  font-style: italic;
+}
+
+.arrow {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg); /* Añade esta línea para rotar inicialmente */
+}
+
+.arrow.rotated {
+  transform: rotate(0deg); /* Cambia a 0 grados cuando está expandido */
+}
+
+.students-list {
+  margin-left: 20px;
+  padding: 8px;
+}
+
+.user-name {
+  margin: 4px 0;
+  font-size: 16px;
+}
+
+.no-students {
+  color: #f1b3b3;
+  margin-left: 8px;
+  font-size: 18px;
+  font-style: italic;
+}
