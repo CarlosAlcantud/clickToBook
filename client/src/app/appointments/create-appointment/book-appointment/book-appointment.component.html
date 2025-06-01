@@ -3,9 +3,16 @@
     <p><strong>Para el día:</strong> <span class="variable-text">{{dateToShow}}</span></p>
     <p><strong>A las:</strong> <span class="variable-text">{{hourSelected}}</span></p>
     <div class="buttons-container">
-        <button *ngIf="!worker" class="pay-button" (click)="pay()" >Reserva</button>
-        <button *ngIf="worker" class="pay-button" (click)="pay()" >Reserva</button>   
-        <button *ngIf="!worker" class="volver-button" (click)="volver()">Cancelar</button>
+        <button *ngIf="!worker" class="volver-button" (click)="volver()">
+            <i class="fas fa-times"></i>
+            Cancelar</button>
+        <button *ngIf="!worker" class="pay-button" (click)="pay()" >
+            <i class="fas fa-calendar-check"></i>
+            Reserva</button>
+        <button *ngIf="worker" class="pay-button" (click)="pay()" >
+            <i class="fas fa-calendar-check"></i>
+            Reserva</button>   
+        
     </div>
 </div>
 

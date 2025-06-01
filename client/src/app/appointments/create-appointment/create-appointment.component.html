@@ -1,7 +1,19 @@
 <div class = "box" *ngIf="appointment == null">
-    <p *ngIf="!isWorker && classesAvailable !==0">Actualmente dispones de {{classesAvailable}} clases.</p>
+    <div class="classes-info-container"s>
+        <div class="classes-card">
+            
+            <img src="assets/payClasses.png" alt="Añadir clases" class="classes-icon" />
+            <div *ngIf="classesAvailable > 0" class="classes-info">
+                <p class="classes-count">{{classesAvailable}} clases disponibles</p>
+            </div>
+            <div *ngIf="classesAvailable === 0" class= "classes-info">
+                <p class="message" *ngIf="!isWorker">Actualmente no dispones de clases disponibles, por favor contacta con tu profesor.</p>
+                <p class="message" *ngIf="isWorker">No tiene clases disponibles</p>
+            </div>
+            
+        </div>
+    </div>
     
-    <p *ngIf="classesAvailable === 0" class="message">Actualmente no dispones de clases disponibles, por favor contacta con tu profesor.</p>
     
     
     <div class="calendar-container" [class.disabled-calendar]="classesAvailable === 0">

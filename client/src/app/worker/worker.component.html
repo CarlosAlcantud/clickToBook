@@ -2,22 +2,60 @@
     <div class = "container">
         <div class="menu">
             <!-- <div class="button">Mis citas</div> -->
-            <a 
+            <a *ngIf="!isExamsRoute() && !isSchedulesActive()"
                 routerLink="/worker/appointments" 
                 routerLinkActive="active" 
                 class="button" 
                 [class.disabled]="isLinkActive('/worker/appointments')">
-                Mis citas
+                <img src="assets/citas.png" alt="icono citas" class="icon">
+                <span>Mis clases</span>
+            </a>
+
+            <a *ngIf="isExamsRoute()"
+                routerLink="/worker/exams/create-exam" 
+                routerLinkActive="active" 
+                class="button" 
+                [class.disabled]="isLinkActive('/worker/exams/create-exam')">
+                <img src="assets/notificar.png" alt="icono citas" class="icon">
+                <span>Notificar examen</span>
+            </a>
+
+            <a *ngIf="isSchedulesActive() && !isExamsRoute()"
+                routerLink="/worker/schedules/create-consult" 
+                routerLinkActive="active" 
+                class="button" 
+                [class.disabled]="isLinkActive('/worker/schedules/create-consult')">
+                <img src="assets/examenes.png" alt="icono citas" class="icon">
+                <span>Horario</span>
             </a>
 
             <div class="separator"></div>
 
-            <a 
+            <a *ngIf="isSchedulesActive() && !isExamsRoute()"
+                routerLink="/worker/schedules/modify-schedule" 
+                routerLinkActive="active" 
+                class="button" 
+                [class.disabled]="isLinkActive('/worker/schedules/modify-schedule')">
+                <img src="assets/examenes.png" alt="icono citas" class="icon">
+                <span>Modificar horario</span>
+            </a>
+
+            <a *ngIf="isExamsRoute()"
+                routerLink="/worker/exams/list-exams" 
+                routerLinkActive="active" 
+                class="button" 
+                [class.disabled]="isLinkActive('/worker/exams/list-exams')">
+                <img src="assets/examenes.png" alt="icono citas" class="icon">
+                <span>Examenes</span>
+            </a>
+
+            <a *ngIf="!isExamsRoute() && !isSchedulesActive()"
                 routerLink="/worker/add-client" 
                 routerLinkActive="active" 
                 class="button" 
                 [class.disabled]="isLinkActive('/worker/add-client')">
-                Apuntar Alumno
+                <img src="assets/alumnos.png" alt="icono citas" class="icon">
+                <span>Alumnos</span>
             </a>
             <!-- <div class="button">Apuntar Alumno</div> -->
         </div>

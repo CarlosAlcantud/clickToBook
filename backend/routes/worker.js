@@ -6,7 +6,9 @@ const Worker = require('../database/models/worker');
 const Appointment = require('../database/models/appointments');
 const checkAuth = require('../middleware/check-auth');
 
-router.post("/createWorker", async (req, res) => {
+router.post("/createWorker", 
+    checkAuth,
+    async (req, res) => {
     try {
         const hash = await bcrypt.hash(req.body.password, 10);
         const worker = new User({
@@ -24,6 +26,7 @@ router.post("/createWorker", async (req, res) => {
                 user: savedWorker._id,
                 schedule: {
                     start: req.body.schedule.start,
+                    break: req.body.schedule.break,
                     end: req.body.schedule.end
                 },
                 days: req.body.days
@@ -51,7 +54,7 @@ router.get(
     async (req, res) => {
         try{
             const workerAppointments = await Appointment.find({worker: req.userData.userId}).populate('userId');
-            console.log("Los appointments del worker en la base de datos son: ", workerAppointments);
+            // console.log("Los appointments del worker en la base de datos son: ", workerAppointments);
             res.status(200).json({
                 message: 'Appointments fetched successfully',
                 

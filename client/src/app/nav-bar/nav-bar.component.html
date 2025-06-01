@@ -9,10 +9,14 @@
             <ng-container *ngIf="userIsAuthenticated; else notAuthenticated">
 
                 <ng-container *ngIf="userisClient">
-                    <div class="navbar-right">
+                     <div class="hamburger" (click)="toggleMenu()">
+                        <span class="material-icons">
+                            {{isMobileMenuOpen ? 'close' : 'menu'}}
+                        </span>
+                     </div>
+                    <div class="navbar-right" [class.mobile]="isMobileMenuOpen" [class.show]="isMobileMenuOpen">
                         <div class="authenticated"  >
                             <button class="navbar-link exam-available-btn" *ngIf="posibleExams.length>0" (click)="openExamsModal()">Examen disponible</button>
-            
                             <a (click)="isMobileMenuOpen = false" routerLink="/showappointments" routerLinkActive="activated" class="navbar-link">Clases</a>
                             <a (click)="isMobileMenuOpen = false" routerLink="/create" routerLinkActive="activated" class="navbar-link">Reservar</a>
                             <button class="navbar-link" (click)="onLogout()">Cerrar Sesion</button>
@@ -23,12 +27,32 @@
                 
 
                 <ng-container *ngIf="userisWorker">
-                    <div class="authenticated" >
-                        <!-- <button class="navbar-link" (click)="createSchedules()">Schedule</button> -->
-                        <a routerLink="/worker" routerLinkActive="active" class="navbar-link">Gestiones</a>
-                        <button class="navbar-link" (click)="onLogout()">Cerrar Sesion</button>
+                    <div class="hamburger" (click)="toggleMenu()">
+                        <span class="material-icons">
+                            {{isMobileMenuOpen ? 'close' : 'menu'}}
+                        </span>
                     </div>
-    
+                    <div class="navbar-right" [class.mobile]="isMobileMenuOpen" [class.show]="isMobileMenuOpen">
+                        <div class="authenticated">
+                            <a routerLink="/auth/register-worker"
+                            [class.active]="!isGestionesActive()"
+                            (click)="isMobileMenuOpen = false"
+                            class="navbar-link">Registrar trabajador</a>
+                            <a routerLink="/worker/schedules/create-consult"
+                            [class.active]="!isGestionesActive()"
+                            (click)="isMobileMenuOpen = false"
+                            class="navbar-link">Horario</a>
+                            <a routerLink="/worker/exams"
+                            [class.active]="!isGestionesActive()"
+                            (click)="isMobileMenuOpen = false"
+                            class="navbar-link">Examenes</a>
+                            <a routerLink="/worker"
+                            [class.active]="isGestionesActive()"
+                            (click)="isMobileMenuOpen = false"
+                            class="navbar-link">Gestiones</a>
+                            <button class="navbar-link" (click)="onLogout()">Cerrar Sesion</button>
+                        </div>
+                    </div>
                 </ng-container>
 
                 <ng-container *ngIf="userisAdmin"> >

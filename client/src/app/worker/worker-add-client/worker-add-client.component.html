@@ -1,13 +1,16 @@
 <div *ngIf="nav" class="nav-container">
-    <button class= "navegation-button" (click)="registerClient()">
-        Registrar nuevo alumno
+    <button class="navegation-button" (click)="registerClient()">
+    <img src="../assets/registerStudent.png" alt="Registrar alumno" class="icono-boton" />
+    Registrar nuevo alumno
     </button>
 
-    <button class= "navegation-button" (click)="bookAppointment()">
-        Apuntar Clases
+    <button class="navegation-button" (click)="bookAppointment()">
+        <img src="../assets/bookClasses.png" alt="Apuntar clases" class="icono-boton" />
+        Reservar Clases
     </button>
 
-    <button class= "navegation-button" (click)="buyClasses()">
+    <button class="navegation-button" (click)="buyClasses()">
+        <img src="assets/payClasses.png" alt="Añadir clases" class="icono-boton" />
         Añadir clases
     </button>
 
@@ -34,15 +37,10 @@
             </div>
             
             
-            <button *ngIf="bookappointment" class="cancel-button" (click)="goBack()">Cancelar</button>
+            <button *ngIf="bookappointment" class="return" (click)="goBack()">
+                <i class="fas fa-arrow-left"></i>
+                volver</button>
         </div>
-        
-        
-
-    
-    
-    
-    <p *ngIf="selectedClientObj">Sus clases actuales: {{selectedClient.classes || 0}}</p>
 
     <div class= "form" *ngIf= "buyclasses">
         <label for="date" class="form-label">Clases</label>
@@ -51,6 +49,7 @@
                 id="number" 
                 name="number" 
                 required 
+                [min]="1"
                 class="form-input"
                 [(ngModel)]="numberofclases"
                 #dateInput="ngModel"
@@ -58,8 +57,6 @@
             
     </div>
     <!-- <button *ngIf= "buyclasses" class="return" (click)="addClasses()">Añadir</button> -->
-    
-    
 
     <div [ngClass]="{'appointment-container': true, 'disabled-container': bookappointment && !selectedClientObj }">
         <router-outlet></router-outlet>
@@ -71,10 +68,14 @@
     
     <div [ngClass]="{'button-row': buyclasses, 'button-column': !buyclasses}">
         <!-- Botón Añadir (solo visible en buyclasses) -->
-        <button *ngIf="buyclasses" class="add-client-button" (click)="addClasses()">Añadir</button>
+        <button *ngIf="buyclasses" class="add-client-button" (click)="addClasses()">
+            <i class="fas fa-plus-circle"></i>
+            Añadir</button>
         
         <!-- Botón Volver (siempre visible) -->
-        <button *ngIf="!bookappointment" class="return" (click)="goBack()">volver</button>
+        <button *ngIf="!bookappointment" class="return" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i>
+            volver</button>
     </div>
 </div>
 

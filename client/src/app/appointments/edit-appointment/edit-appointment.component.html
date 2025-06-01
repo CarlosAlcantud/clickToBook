@@ -21,8 +21,13 @@
         <p><strong>Nueva fecha el:</strong> <span class="variable-text">{{fecha}}</span></p>
         <p><strong>A las:</strong> <span class="variable-text">{{hourSelected}}</span></p>
         <div class="buttons">
-            <button class= "actualizar"(click)="updateAppointment()">Actualizar</button>
-            <button class="cancelar"(click)="cancel()">Cancelar</button>
+            <button class="cancelar"(click)="cancel()">
+                <i class="fas fa-times"></i>
+                Cancelar</button>
+            <button class= "actualizar"(click)="updateAppointment()">
+                <i class="fas fa-calendar-check"></i>
+                Actualizar</button>
+            
             
         </div>
 

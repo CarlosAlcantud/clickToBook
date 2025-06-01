@@ -48,7 +48,7 @@
 .pay-button {
   margin-top: 10px;  
   background-color: #9CD139; /* Fondo blanco */
-  color: #000; /* Color del texto */
+  color: white; /* Color del texto */
   font-size: 16px; /* Tamaño del texto */
   padding: 10px; /* Espaciado interno */
   width: 320px; /* Ancho fijo */
@@ -60,6 +60,7 @@
   font-family: Arial, sans-serif; /* Fuente del texto */
   outline: none; /* Elimina el contorno al hacer clic */
   box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+  gap: 0.5rem;
 }   
 
 .pay-button:hover {
@@ -74,7 +75,7 @@
 .volver-button {
   margin-top: 10px;  
   background-color: red; /* Fondo blanco */
-  color: #000; /* Color del texto */
+  color: white; /* Color del texto */
   font-size: 16px; /* Tamaño del texto */
   padding: 10px; /* Espaciado interno */
   width: 320px; /* Ancho fijo */
@@ -86,6 +87,7 @@
   font-family: Arial, sans-serif; /* Fuente del texto */
   outline: none; /* Elimina el contorno al hacer clic */
   box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+  gap: 0.5rem;
 }   
 
 .modal {

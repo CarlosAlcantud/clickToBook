@@ -46,9 +46,12 @@
             </div>
                 
               <div *ngIf="expandedIndex === i" class="extra-buttons">
-                <button class="edit-button" (click)="editAppointment(appointment)"> Editar</button>
-                <button class="delete-button" (click)="deleteAppointment(appointment)" >Cancelar</button>
-              </div>
+                <button class="delete-button" (click)="deleteAppointment(appointment)" >
+                <i class="fas fa-times"></i>
+                Eliminar</button>
+                <button class="edit-button" (click)="editAppointment(appointment)">
+                <i class="fas fa-edit"></i>
+                 Editar</button></div>
 
             </button>
         </div>

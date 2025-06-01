@@ -6,13 +6,14 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth/auth-interceptor';
 import { AppRoutes } from './app.routes';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes), 
     provideClientHydration(),
     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
-    importProvidersFrom(AppRoutes)
+    importProvidersFrom(AppRoutes), provideAnimationsAsync(), provideAnimationsAsync()
   ]
 
 };

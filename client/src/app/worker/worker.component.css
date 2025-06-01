@@ -33,6 +33,10 @@
 }
 
 .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     margin-left: 10px;
     margin-right: 10px;
     flex: 1;
@@ -61,4 +65,10 @@
 .active {
     background-color: #9CD139;
     color: black;
+}
+
+.icon {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
 }
