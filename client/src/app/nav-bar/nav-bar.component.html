@@ -11,8 +11,10 @@
                 <ng-container *ngIf="userisClient">
                     <div class="navbar-right">
                         <div class="authenticated"  >
-                            <a routerLink="/showappointments" routerLinkActive="active" class="navbar-link">Clases</a>
-                            <a routerLink="/create" routerLinkActive="active" class="navbar-link">Reservar</a>
+                            <button class="navbar-link exam-available-btn" *ngIf="posibleExams.length>0" (click)="openExamsModal()">Examen disponible</button>
+            
+                            <a (click)="isMobileMenuOpen = false" routerLink="/showappointments" routerLinkActive="activated" class="navbar-link">Clases</a>
+                            <a (click)="isMobileMenuOpen = false" routerLink="/create" routerLinkActive="activated" class="navbar-link">Reservar</a>
                             <button class="navbar-link" (click)="onLogout()">Cerrar Sesion</button>
                         </div>
                     </div>
@@ -49,4 +51,39 @@
 
         </div>
     </div>
+    <div class="modal" *ngIf="showModal">
+        <div class="modal-content">
+            <span class="close" (click)="closeModal()">&times;</span>
+            <h2>Tienes exámenes Disponibles</h2>
+            <div class="exam-list">
+                <div *ngFor="let exam of posibleExams; let i = index" class="exam-item" >
+                    <button class ="cita" 
+                        [class.expanded]=" expandedIndex === i"
+                        (click)="expand(i)">
+                        <div class ="cita-info">
+                            <p>{{exam.date}}</p>
+                        </div>
+                            
+                        <div *ngIf="expandedIndex === i" class="extra-buttons">
+                            <button class="edit-button" (click)="enrollToExam(exam.id)">Apuntarme </button>
+                        </div>
+
+                        </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="modal-message" *ngIf="showResponseDialog">
+        <div class="modal-message-content">
+            <p *ngIf="news" class="newstitle">¡¡¡¡Importante!!!</p>
+            <p *ngIf="news" class="newscontent">{{messageDialog}}</p>
+            <p *ngIf="!news" class="message-dialog">{{messageDialog}}</p>
+
+            <p></p>
+            <div class="modal-buttons">
+                <button class="Ok-button" (click)="ok()">Ok</button>
+            </div>
+        </div>
+    </div>
+
 </nav>

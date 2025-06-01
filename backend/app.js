@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 
 const checkAuth = require('./middleware/check-auth');
 const askConfirmation = require('./askConfirmation');
+const examNotification = require('./examNotifications');
 /*  
 
 CORS - Cross Origin Request Security
@@ -24,15 +25,23 @@ localhost:4200 - front-end
 const Appointment = require('./database/models/appointments');
 // const Schedule = require('./database/models/schedule');
 
-// cron.schedule('50 19 * * *', () => {
+// Verificar citas disponibles y enviar correos de recordatorio cada hora
+// cron.schedule('48 * * * *', () => {
 //     console.log('BUSCANDO CITAS...');
 //     checkAvailableAppointmentsAndNotify.checkAvailableAppointmentsAndNotify(); // Llamar a la función para verificar y notificar
 // });
 
-cron.schedule('15 * * * *', async () => {
+//Pedir confirmacion de citas no confirmadas
+cron.schedule('0 * * * *', async () => {
   console.log("App.js - Se procede a pedir confirmacion de citas no confirmadas")
   askConfirmation.checkUnconfirmedAppointments();
 
+});
+
+//Notificar examenes sin notificar a los usuarios.
+cron.schedule('0 15 * * *', async () => {
+  console.log("App.js - Se procede a buscar examenes sin notificar")
+  examNotification.checkExams();
 });
 
 app.use((req, res, next) => {

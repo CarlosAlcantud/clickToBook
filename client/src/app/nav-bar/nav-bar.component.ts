@@ -3,12 +3,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
-import { NgIf } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
+import { Router } from '@angular/router';
+import { AppointmentsService } from '../appointments/appointments.service';
 
 @Component({
   selector: 'nav-bar',
   standalone: true,
-  imports: [MatToolbarModule, RouterModule, NgIf],
+  imports: [MatToolbarModule, RouterModule, NgIf, NgFor],
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css']
 })
@@ -23,7 +25,13 @@ export class NavBarComponent implements OnInit,OnDestroy {
   private clientListenerSubs: Subscription = new Subscription();
   private adminListenerSubs: Subscription = new Subscription();
 
-  constructor(private authService: AuthService) {}
+  posibleExams: any[] = [];
+  expandedIndex: number | null = null; // Para el acordeón
+  showModal = false;
+  showResponseDialog = false; 
+  messageDialog = '';
+  news = false; // Para mostrar el mensaje de noticias
+  constructor(private authService: AuthService, private router: Router, private appointmentsService: AppointmentsService) {}
 
   ngOnInit() {
     
@@ -48,8 +56,28 @@ export class NavBarComponent implements OnInit,OnDestroy {
       this.userisWorker = isWorker;
     });
 
+    if (this.userIsAuthenticated && this.userisClient) {
+        console.log("User is authenticated llamamos a coger los examenes posibles: " );
+        this.appointmentsService.getPossibleExams()
+        .subscribe({
+            next: (exams: any[]) => {
+                this.posibleExams = exams;
+                if( this.posibleExams.length > 0) {
+                  this.showResponseDialog = true; // Abrir el modal si hay exámenes disponibles
+                  this.messageDialog = "Ya estas preparado para apuntarte al examen. Puedes apuntarte haciendo click en el boton de Examen disponible";
+                  this.news = true;
+                }
+                
+                console.log("Exámenes posibles:", this.posibleExams);
+            },
+            error: (error) => {
+                console.error("Error al obtener exámenes:", error);
+                this.posibleExams = []; 
+            }
+        });
+
+      }
     
-    console.log("User is authenticated adsfa despues a: " + this.userIsAuthenticated);
     
   }
 
@@ -76,4 +104,61 @@ export class NavBarComponent implements OnInit,OnDestroy {
       }
     });
   }
+
+  isGestionesActive(): boolean {
+  const currentUrl = this.router.url;
+
+  // Si la URL comienza con '/worker/exams', retornar false
+  if (currentUrl.startsWith('/worker/exams')) {
+    return false;
+  }
+
+  // Para todas las demás URLs, retornar true
+  return true;
+}
+
+
+  expand(index: number): void {
+      this.expandedIndex = this.expandedIndex === index ? null : index;
+  }
+
+
+    openExamsModal() {
+        this.showModal = true;
+        this.isMobileMenuOpen = false
+    }
+
+    closeModal() {
+        this.showModal = false;
+    }
+
+    enrollToExam(examId: string) {
+        this.appointmentsService.enrollToExam(examId).subscribe({
+            next: (response) => {
+                this.messageDialog = response.message;
+                this.showResponseDialog = true;
+                
+                this.posibleExams = [];
+                this.closeModal(); // Cerrar el modal después de inscribirse
+            },
+            error: (error) => {
+                console.error('Error al inscribirse al examen:', error);
+                alert('Ha ocurrido un error al inscribirse al examen: ' + 
+                      (error.error?.message || 'Error desconocido'));
+            }
+        });
+    }
+
+    isMobileMenuOpen = false;
+
+    toggleMenu() {
+        this.isMobileMenuOpen = !this.isMobileMenuOpen;
+        const hamburger = document.querySelector('.hamburger');
+        hamburger?.classList.toggle('active');
+    }
+    ok(){
+        this.showResponseDialog = false;
+        this.messageDialog = '';
+        this.news = false; 
+    }
 }

@@ -11,16 +11,18 @@
     top: 0;
     z-index: 50;
     width: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Para soporte en Safari */
     transition: background 0.3s, backdrop-filter 0.3s;
 }
 
 /* Responsive styles for small screens */
 @media (min-width: 640px) {
     .navbar {
-        background: transparent;
-        backdrop-filter: none;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 }
 
@@ -100,7 +102,123 @@ button.navbar-link:hover {
     gap: 16px;
     padding-right: 24px; /* Space from the right edge */
 }
+h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
 
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
+    position: relative;
+    text-align: center;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+.exam-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos de la lista */
+    gap: 10px; 
+}
+
+.exam-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.exam-item:last-child {
+    border-bottom: none;
+}
+
+.cita{
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    width: 250px;
+    font-family: Arial, sans-serif;
+    border: none;
+    flex-direction: column;
+  }
+
+.cita-info {
+    display: flex;
+    justify-content: space-between; /* Mantiene el texto alineado horizontalmente */
+    width: 100%;
+  }
+
+  .cita.expanded{
+    min-height: 110px; /* Altura mínima cuando está expandido */
+    height: auto; /* Permitir que se ajuste al contenido */
+  }
+
+  .edit-button {
+    padding: 10px 35px;
+    background-color: #9CD139;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+.exam-available-btn {
+    background-color: #9CD139 !important;
+    color: black !important;
+    font-weight: 600;
+    border: 2px solid #86b52f !important;
+    animation: pulse 2s infinite;
+}
+
+.exam-available-btn:hover {
+    background-color: #86b52f !important;
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(156, 209, 57, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(156, 209, 57, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(156, 209, 57, 0);
+    }
+}
 /* Ensure container has full width in small screens */
 @media (max-width: 640px) {
     .container {
@@ -108,7 +226,7 @@ button.navbar-link:hover {
     }
 }
 
-.active {
+.activated {
     background-color: #9CD139;
     color: black;
 }
@@ -120,4 +238,138 @@ button.navbar-link:hover {
     padding-right: 24px; 
 }
 
+.navbar-right.mobile {
+    display: none;
+    position: absolute;
+    top: 64px;
+    right: 0;
+    background: rgba(255, 255, 255);
+    backdrop-filter: blur(50px);
+    width: 200px;
+    padding: 16px;
+    border-radius: 0 0 8px 8px;
+    animation: slideIn 0.3s ease-out;
+}
 
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hamburger {
+    display: none;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.hamburger .material-icons {
+    color: #9CD139;
+    font-size: 30px;
+    transition: transform 0.3s ease;
+}
+
+.hamburger:hover .material-icons {
+    transform: scale(1.1);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .navbar-right {
+        display: none;
+        width: 100%;
+        position: absolute;
+        top: 64px;
+        right: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+    }
+
+    .navbar-right.show {
+        display: block;
+    }
+
+    .authenticated {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-right: 0;
+    }
+
+    .navbar-link {
+        width: 100%;
+        padding: 12px 16px;
+        text-align: left;
+    }
+}
+.modal-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-message-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.Ok-button{
+  margin-top: 10px;  
+  background-color: #abacab; /* Fondo blanco */
+  color: #000; /* Color del texto */
+  font-size: 16px; /* Tamaño del texto */
+  padding: 10px; /* Espaciado interno */
+  width: 120px; /* Ancho fijo */
+  height: 40px; /* Alto fijo */
+  border: none; /* Sin borde */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Sombra suave */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+  font-family: Arial, sans-serif; /* Fuente del texto */
+  outline: none; /* Elimina el contorno al hacer clic */
+  box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+}   
+
+.Ok-button:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más intensa al pasar el mouse */
+}
+
+.message-dialog {
+    color: #28a745;
+  }
+
+  .newstitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e70404;
+    margin-bottom: 20px;
+  }
+  
+  .newscontent {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 10px;
+  }

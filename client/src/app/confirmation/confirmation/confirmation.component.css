@@ -1,0 +1,66 @@
+.confirmation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+
+  .logo {
+    max-width: 200px;
+    margin-bottom: 2rem;
+  }
+
+  .content {
+    width: 100%;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .success-message, .error-message {
+    i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .success-message {
+    color: #28a745;
+  }
+
+  .error-message {
+    color: #dc3545;
+  }
+
+  .btn {
+    padding: 0.9rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .primary {
+    background-color: #9CD139;
+    color: black;
+  }
+
+  .loading {
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

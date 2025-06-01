@@ -7,6 +7,9 @@ import { Worker} from "./worker.model";
 import { map } from "rxjs/operators";
 import { Client } from "./client.model";
 import { error } from "node:console";
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { Schedules } from "./schedule.model";
 
 
 @Injectable({providedIn: 'root'})
@@ -336,5 +339,46 @@ export class AuthService {
             "http://localhost:3000/schedule/bulk", {}
         );
     }
+
+    getSchedules(){
+        return this.http.get<Schedules>(
+            "http://localhost:3000/schedule"
+        );
+    }
+    updateSchedule(scheduleData: any) {
+        return this.http.put<Schedules>(
+            "http://localhost:3000/schedule/update",
+            scheduleData
+        );
+        }
+        updateAllSchedules(scheduleData: any) {
+        return this.http.put(
+            "http://localhost:3000/schedule/update/all",
+            scheduleData
+        );
+        }
+
+   private isEnrolling = false;
+
+    confirmExam(token: string) {
+        if (this.isEnrolling) {
+            return new Observable(observer => {
+                observer.error({ message: 'Ya se está procesando una inscripción' });
+            });
+        }
+
+        this.isEnrolling = true;
+
+        return this.http.post<any>(`http://localhost:3000/exams/enroll/${token}`, {})
+            .pipe(
+                finalize(() => {
+                    this.isEnrolling = false;
+                })
+            );
+    }
+        
+        confirmAppointment(token: string) {
+            return this.http.post<any>(`http://localhost:3000/confirm-appointment/${token}`, {});
+        }
 
 }

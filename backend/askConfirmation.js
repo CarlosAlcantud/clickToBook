@@ -7,6 +7,8 @@ const sendWhatsApp = require('./whatsapp'); // Importar la función sendWhatsApp
 const jwt = require('jsonwebtoken');
 // Function to check unconfirmed appointments and send WhatsApp notifications
 const secretKey = "jfqweijro ijqewrlk qjweklrjñ qlkwejr klqjwekñrl jqweklrj lñqjre klñjqrkl jñq w";
+const message = require('./messages'); // Assuming you have a messages.js file for email templates
+
 
 async function checkUnconfirmedAppointments() {
     console.log("askConfirmation.js - Checking unconfirmed appointments...");
@@ -41,16 +43,17 @@ async function checkUnconfirmedAppointments() {
             // Update appointment with confirmation token and expiration
             
             token = await generateConfirmationToken(appointment._id);
-            confirmationLink = `http://localhost:3000/confirm-appointment/${token}`;
+            confirmationLink =  `http://localhost:4200/confirmation/appointment/${token}`;
             console.log( "La cita para el: " ,appointment.date.toISOString());
-            message = "Hola " + user.username + ", tienes una cita sin confirmar para el dia " + appointment.date.toISOString() + ". ¡Confirma tu cita aqui! " + confirmationLink;
+            // message = "Hola " + user.username + ", tienes una cita sin confirmar para el dia " + appointment.date.toISOString() + ". ¡Confirma tu cita aqui! " + confirmationLink;
+            messageToSend = await message.getAppointmentConfirmationMessage(user.username, appointment.date, confirmationLink);
             sendEmail(
                 user.email,
                 'Confirma tu cita',
-                message
+                messageToSend,
+                true
             );
-            
-            console.log(`Sent WhatsApp notification to ${appointment.userId.name} (${appointment.userId.phone})`);
+        
         }
         
         // Check for expired confirmation tokens and delete those appointments

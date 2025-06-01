@@ -38,6 +38,7 @@ export class AppointmentsService{
     hoursAvailable$ = this.hoursAvailableSource.asObservable();
     urlDate: string = '';
 
+    upperCase: boolean = false; // Variable para controlar el formato de fecha
     constructor(private http: HttpClient, private autService: AuthService, private router:Router) {
         this.dateSelected$.subscribe(date => {
             this.urlDate = this.formatDateToLocalString(date);
@@ -127,6 +128,8 @@ export class AppointmentsService{
     getAppointmentUpdateListener() {
         return this.appointmentUpdate.asObservable();
     }
+
+    
 
     getWorkerAppointments(fecha: String) {
         console.log("getWorkerAppointments, la fecha seleccionada es "+ this.urlDate + " y la fecha pasada por parametros es: "+fecha);
@@ -256,14 +259,19 @@ export class AppointmentsService{
       }
     
     formatDate(date: Date): string {
-        return new Intl.DateTimeFormat('es-ES', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
+    const formattedDate = new Intl.DateTimeFormat('es-ES', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
         }).format(date);
-    
-      }
+
+        if (this.upperCase) {
+            return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        }
+        
+        return formattedDate;
+    }
     
       formatDateForDatabase(date: Date, hour: string): string {
         const [hours, minutes] = hour.split(':').map(Number);

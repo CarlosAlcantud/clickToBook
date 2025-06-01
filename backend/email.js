@@ -8,12 +8,12 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendEmail = (email, subject, text) => {
+const sendEmail = (email, subject, content, isHtml = false) => {
     const mailOptions = {
         from: 'clickToBook.bookings@gmail.com',
         to: email,
         subject: subject,
-        text: text
+        [isHtml ? 'html' : 'text']: content
     };
 
     return new Promise ((resolve, reject) => {
