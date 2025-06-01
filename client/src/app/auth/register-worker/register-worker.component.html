@@ -1,0 +1,88 @@
+<div class="register-container">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <h2>Registro de Trabajador</h2>
+    
+    <div class="form-group">
+      <label for="username">Nombre de usuario</label>
+      <input type="text" id="username" formControlName="username">
+      <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="error-message">
+        <span>El nombre de usuario es requerido</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email">
+      <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
+        <span>Ingrese un email válido</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Teléfono</label>
+      <input type="tel" id="phone" formControlName="phone">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" formControlName="password">
+      <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
+        <span>La contraseña es requerida</span>
+      </div>
+    </div>
+
+    <div class="schedule-group">
+  <h3>Horario de trabajo</h3>
+  <div class="form-group">
+    <label for="startTime">Hora de inicio</label>
+    <input type="time" id="startTime" formControlName="startTime">
+  </div>
+  <div class="form-group">
+    <label for="breakTime">Hora de descanso</label>
+    <input type="time" id="breakTime" formControlName="breakTime">
+  </div>
+  <div class="form-group">
+    <label for="endTime">Hora de fin</label>
+    <input type="time" id="endTime" formControlName="endTime">
+  </div>
+</div>
+
+    <div class="days-group">
+      <h3>Días laborables</h3>
+      <div class="checkbox-group" formGroupName="days">
+        <label>
+          <input type="checkbox" formControlName="monday"> Lunes
+        </label>
+        <label>
+          <input type="checkbox" formControlName="tuesday"> Martes
+        </label>
+        <label>
+          <input type="checkbox" formControlName="wednesday"> Miércoles
+        </label>
+        <label>
+          <input type="checkbox" formControlName="thursday"> Jueves
+        </label>
+        <label>
+          <input type="checkbox" formControlName="friday"> Viernes
+        </label>
+        <label>
+          <input type="checkbox" formControlName="saturday"> Sábado
+        </label>
+        <label>
+          <input type="checkbox" formControlName="sunday"> Domingo
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="registerForm.invalid">Registrar Trabajador</button>
+  </form>
+</div>
+
+<div class="modal" *ngIf="showResponseDialog">
+    <div class="modal-content">
+        
+        <p *ngIf="!error" class="messageSucces">{{messageDialog}}</p>
+        <p *ngIf="error" class="messageError">{{messageDialog}}</p>
+        <button class="Ok-button" (click)="reRoute()">Ok</button>     
+    </div>
+</div>

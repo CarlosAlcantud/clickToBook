@@ -54,7 +54,7 @@ const UserSchema = new mongoose.Schema({
     worker: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Worker',
-        required: true,
+        required: false,
     },
     classes: {
         type: Number,
