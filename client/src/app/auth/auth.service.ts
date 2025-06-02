@@ -10,10 +10,10 @@ import { error } from "node:console";
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { Schedules } from "./schedule.model";
-
+import { BaseService } from "../base.service";
 
 @Injectable({providedIn: 'root'})
-export class AuthService {
+export class AuthService extends BaseService {
     private tokenTimer: ReturnType<typeof setTimeout>;
     private token: string;
     private client: Client = {clientId: '', username: '', clientWorker: '', classes: 0};
@@ -41,6 +41,7 @@ export class AuthService {
     private clientUpdate = new Subject<Client[]>();
 
     constructor(private http:HttpClient, private router: Router) {
+        super();
         this.token = '';
         this.tokenTimer = setTimeout(() => {}, 0);
     }
@@ -85,7 +86,7 @@ export class AuthService {
         console.log("El valor del workerId cuando se va a crear el alumno es: " + workerId);
         const authData: AuthData = {password: password, username: username, phone: phone, worker: workerId};
         //console.log('email: ', email, 'password: ', password, 'username: ', username);
-        this.http.post('http://localhost:3000/auth/singup', authData)
+        this.http.post(`${this.baseUrl}/api/auth/singup`, authData)
         .subscribe(response => {
             console.log("Function authservice.createUser()" + response);
         });
@@ -95,7 +96,7 @@ export class AuthService {
     login(identifier: string, password: string) {
     console.log("Metodo/ login()");
     const authData = {identifier: identifier, password: password};
-    return this.http.post<{token: string, expiresIn: number, message?: string}>('http://localhost:3000/auth/login', authData)
+    return this.http.post<{token: string, expiresIn: number, message?: string}>(`${this.baseUrl}/api/auth/login`, authData)
         .pipe(
             map(response => {
                 const token = response.token;
@@ -264,7 +265,7 @@ export class AuthService {
 
     fetchClients() {
         console.log("fetchClients()");
-        this.http.get<Client[]>('http://localhost:3000/users')
+        this.http.get<Client[]>(`${this.baseUrl}/api/users`)
         .subscribe(
             clients => {
                 this.clients = clients;
@@ -278,7 +279,7 @@ export class AuthService {
 
     fetchWorkers() {
         console.log("fetchWorkers()");
-        this.http.get<any[]>('http://localhost:3000/workers')
+        this.http.get<any[]>(`${this.baseUrl}/api/workers`)
         .pipe(
             map((workers) => {
                 // Now workers is directly the array of worker objects
@@ -308,7 +309,7 @@ export class AuthService {
     
     return new Promise((resolve, reject) => {
         this.http.get<{classes: number}>(
-            "http://localhost:3000/user/classes", 
+            `${this.baseUrl}/api/user/classes`, 
             {params: {clientId: this.client.clientId}}
         ).subscribe(
             response => {
@@ -329,31 +330,31 @@ export class AuthService {
         };
         console.log("El id del cliente es: " + this.getClient().clientId + " y el numero de clases es: " + classes);
         return this.http.patch<{message: string, user: Client}>(
-            "http://localhost:3000/user/addClasses", data
+            `${this.baseUrl}/api/user/addClasses`, data
         );
     }
 
     createSchedules() {
 
         return this.http.post<{message: string}>(
-            "http://localhost:3000/schedule/bulk", {}
+            `${this.baseUrl}/api/schedule/bulk`, {}
         );
     }
 
     getSchedules(){
         return this.http.get<Schedules>(
-            "http://localhost:3000/schedule"
+            `${this.baseUrl}/api/schedule`
         );
     }
     updateSchedule(scheduleData: any) {
         return this.http.put<Schedules>(
-            "http://localhost:3000/schedule/update",
+            `${this.baseUrl}/api/schedule/update`,
             scheduleData
         );
         }
         updateAllSchedules(scheduleData: any) {
         return this.http.put(
-            "http://localhost:3000/schedule/update/all",
+            `${this.baseUrl}/api/schedule/update/all`,
             scheduleData
         );
         }
@@ -369,7 +370,7 @@ export class AuthService {
 
         this.isEnrolling = true;
 
-        return this.http.post<any>(`http://localhost:3000/exams/enroll/${token}`, {})
+        return this.http.post<any>(`${this.baseUrl}/api/exams/enroll/${token}`, {})
             .pipe(
                 finalize(() => {
                     this.isEnrolling = false;
@@ -378,7 +379,7 @@ export class AuthService {
     }
         
         confirmAppointment(token: string) {
-            return this.http.post<any>(`http://localhost:3000/confirm-appointment/${token}`, {});
+            return this.http.post<any>(`${this.baseUrl}/api/confirm-appointment/${token}`, {});
         }
 
 }

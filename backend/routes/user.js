@@ -235,13 +235,13 @@ router.get('/confirm-appointment/:token', async (req, res) => {
   }
 
   if (appointment.confirmed) {
-    return res.send('Esta cita ya estaba confirmada ✅');
+    return res.send('Esta cita ya estaba confirmada ');
   }
 
   appointment.confirmed = true;
   await appointment.save();
 
-  res.send('¡Tu cita ha sido confirmada correctamente! ✅');
+  res.send('¡Tu cita ha sido confirmada correctamente! ');
 });
 
 

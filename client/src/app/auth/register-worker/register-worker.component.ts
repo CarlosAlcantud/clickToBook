@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import e from 'express';
+import { BaseService } from '../../base.service';
 
 const DAY_MAP: { [key: string]: number } = {
     sunday: 0,
@@ -25,7 +26,7 @@ const DAY_MAP: { [key: string]: number } = {
   templateUrl: './register-worker.component.html',
   styleUrls: ['./register-worker.component.css']
 })
-export class RegisterWorkerComponent implements OnInit {
+export class RegisterWorkerComponent extends BaseService implements OnInit  {
   registerForm: FormGroup;
   showResponseDialog: boolean = false; // Variable para mostrar/ocultar el diálogo de respuesta
   messageDialog: string = '';
@@ -35,6 +36,7 @@ export class RegisterWorkerComponent implements OnInit {
     private http: HttpClient,
     private router: Router
   ) {
+    super();
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -78,7 +80,7 @@ export class RegisterWorkerComponent implements OnInit {
         days: selectedDays
       };
 
-      this.http.post('http://localhost:3000/worker/createWorker', workerData)
+      this.http.post(`${this.baseUrl}/api/worker/createWorker`, workerData)
         .subscribe({
           next: (response: any) => {
             this.messageDialog = response.message;

@@ -58,7 +58,7 @@ router.post(
 
         console.log(appointment);
         appointment.save();
-        axios.patch('http://localhost:3000/user/addClasses', {
+        axios.patch('http://localhost:3000/api/user/addClasses', {
             userId: req.userData.userId,
             classes: -1 // Decrease by 1 class
         });
@@ -80,7 +80,7 @@ router.post(
                 'worker': req.body.user.clientWorker,
             });
             appointment.save();
-            axios.patch('http://localhost:3000/user/addClasses', {
+            axios.patch('http://localhost:3000/api/user/addClasses', {
                 userId: req.body.user.clientId,
                 classes: -1 // Decrease by 1 class
             });
@@ -215,7 +215,7 @@ router.delete('/deleteAppointment/:appointmentId',
                 Appointment.findByIdAndDelete(req.params.appointmentId)
                 .then(() => {
                         // Llamamos a addClasses para sumar una clase
-                        return axios.patch('http://localhost:3000/user/addClasses', {
+                        return axios.patch('http://localhost:3000/api/user/addClasses', {
                             userId: userId,
                             classes: 1 // Incrementar en 1 clase
                         });

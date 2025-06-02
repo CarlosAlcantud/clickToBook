@@ -7,6 +7,8 @@ const Exam = require('./database/models/exam');
 const jwt = require('jsonwebtoken');
 const secretKey = "jfqweijro ijqewrlk qjweklrjñ qlkwejr klqjwekñrl jqweklrj lñqjre klñjqrkl jñq w";
 const messageForExam = require('./messages'); // Assuming you have a messages.js file for email templates
+const config = require('./config/config');
+
 async function checkExams(){
 
     try {
@@ -54,7 +56,7 @@ async function checkExams(){
                         exam.posibleUsers.push(posibleUserExam);
                         token = generateConfirmationToken(posibleUserExam, exam._id, expiration); // Token expires in 1 day
                         // confirmationLink = `http://localhost:3000/exams/enroll/${token}`;
-                        confirmationLink = `http://localhost:4200/confirmation/exam/${token}`;
+                        confirmationLink = `${config.frontendUrl}/confirmation/exam/${token}`;
                         // message = `
                         //     <p>Hola ${posibleUser.username},</p>
                         //     <p>Desde el equipo clickToBook queremos informarle que su autoescuela ATZ Driving.</p>

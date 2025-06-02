@@ -8,10 +8,10 @@ import { AuthService } from "../auth/auth.service";
 import { Router } from "@angular/router";
 import { Exam } from "./exam.model";
 import { ExamUser } from "./exam.model";
-
+import { BaseService } from "../base.service";
 
 @Injectable({providedIn: 'root'})
-export class AppointmentsService{
+export class AppointmentsService extends BaseService {
 
     //Emiter For the appointments 
     appointments: Appointment[] = [];
@@ -40,6 +40,7 @@ export class AppointmentsService{
 
     upperCase: boolean = false; // Variable para controlar el formato de fecha
     constructor(private http: HttpClient, private autService: AuthService, private router:Router) {
+        super();
         this.dateSelected$.subscribe(date => {
             this.urlDate = this.formatDateToLocalString(date);
         });
@@ -78,13 +79,13 @@ export class AppointmentsService{
         if (this.autService.getIsWorker() && clientData) {
             console.log("Enviando petición con datos de cliente:", clientData);
             return this.http.get<{ hour: string }[]>(
-                `http://localhost:3000/schedule/${this.urlDate}`,
+                `${this.baseUrl}/api/schedule/${this.urlDate}`,
                 { params: {clientWorker: clientData.clientWorker, currentRoute } }
             );
         } else {
             // Para usuarios normales, usar GET
             return this.http.get<{ hour: string }[]>(
-                `http://localhost:3000/schedule/${this.urlDate}`,
+                `${this.baseUrl}/api/schedule/${this.urlDate}`,
             );
         }
     }
@@ -97,7 +98,7 @@ export class AppointmentsService{
     getAppointments() {
         this.http
             .get<{ message: string; appointments: any[] }>(
-                "http://localhost:3000/appointments/forUser", 
+                `${this.baseUrl}/api/appointments/forUser`, 
             ).pipe(
                 map((appointmentData) => {
                
@@ -135,7 +136,7 @@ export class AppointmentsService{
         console.log("getWorkerAppointments, la fecha seleccionada es "+ this.urlDate + " y la fecha pasada por parametros es: "+fecha);
         this.http
             .get<{ message: string; workerAppointments: any[] }>(
-                "http://localhost:3000/worker/Appointments", 
+                `${this.baseUrl}/api/worker/Appointments`, 
             )
             .pipe(
                 map((appointmentData) => {
@@ -197,7 +198,7 @@ export class AppointmentsService{
             console.log('Los datos que se envian al back son: cuando es un cliente son:  ',data.classes);
         }
         return this.http.post<{ message: string }>(
-        "http://localhost:3000/appointments/createAppointment", data
+        `${this.baseUrl}/api/appointments/createAppointment`, data
         ).pipe(
             tap(
                 responseData => {
@@ -215,7 +216,7 @@ export class AppointmentsService{
 
     deleteAppointment(appointmentId: string) {
         this.http
-            .delete("http://localhost:3000/appointments/deleteAppointment/" + appointmentId)
+            .delete(`${this.baseUrl}/api/appointments/deleteAppointment/` + appointmentId)
             .subscribe(() => {
                 // Eliminar del array de citas del trabajador
                 
@@ -245,7 +246,7 @@ export class AppointmentsService{
         };
         
         return this.http.patch<{message: string, appointment?: any}>(
-            "http://localhost:3000/appointments/updateAppointment", 
+            `${this.baseUrl}/api/appointments/updateAppointment`, 
             updateData
           );
     }
@@ -311,7 +312,7 @@ export class AppointmentsService{
         const formattedDate = this.formatDateForDatabase(dateObject, '09:00');
         
         return this.http.post<{ message: string }>(
-            "http://localhost:3000/exams/createExam", 
+            `${this.baseUrl}/api/exams/createExam`, 
             { examDate: formattedDate, limit }
         ).pipe(
             tap(response => {
@@ -332,7 +333,7 @@ export class AppointmentsService{
         console.log("getExams - Se llama a coger los exams");
         this.http
             .get<{ message: string; exams: any[] }>(
-                "http://localhost:3000/exams", 
+                `${this.baseUrl}/api/exams`, 
             ).pipe(
                 map((examsData) => {
                
@@ -372,7 +373,7 @@ export class AppointmentsService{
     getPossibleExams() {
     console.log("getPossibleExams - Se llama a coger los exams posibles");
     return this.http.get<{ message: string; exams: any[] }>(
-        `http://localhost:3000/exams/possibleExams`
+        `${this.baseUrl}/api/exams/possibleExams`
     ).pipe(
         map((response) => {
             if (!response.exams) {
@@ -396,7 +397,7 @@ export class AppointmentsService{
 
     getEnrolledExam() {
     return this.http.get<string[]>(
-        "http://localhost:3000/exams/enrolledExam"
+        `${this.baseUrl}/api/exams/enrolledExam`
     ).pipe(
         map((enrolledExamData) => {
             this.upperCase = true;
@@ -409,7 +410,7 @@ export class AppointmentsService{
     enrollToExam(examId: string): Observable<{ message: string }> {
         console.log("Se llama a inscribirse al examen con id: " + examId);
         return this.http.post<{ message: string }>(
-            `http://localhost:3000/exams/enroll`, 
+            `${this.baseUrl}/api/exams/enroll`, 
             { examId: examId }
         ).pipe(
             tap(response => {

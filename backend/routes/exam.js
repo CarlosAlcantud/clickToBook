@@ -147,7 +147,7 @@ router.post(
             if (updatedExam) {
                 console.log("Se van a actualizar las clases del usuario");
                 try {
-                await axios.patch('http://localhost:3000/user/addClasses', {
+                await axios.patch('http://localhost:3000/api/user/addClasses', {
                     userId: data.user.userId,
                     classes: -1
                     });
@@ -220,7 +220,7 @@ router.post(
                 });
             }
             try {
-                await axios.patch('http://localhost:3000/user/addClasses', {
+                await axios.patch('http://localhost:3000/api/user/addClasses', {
                     userId: userId,
                     classes: -1
                 });

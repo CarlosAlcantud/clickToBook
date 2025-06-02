@@ -108,20 +108,25 @@ app.use(helmet({
 //Routes 
 
 const appointmentsRoutes = require('./routes/appointments');
-app.use("/appointments", appointmentsRoutes);
+app.use("/api/appointments", appointmentsRoutes);
 
 const scheduleRoutes = require('./routes/schedule');
-app.use("/schedule", scheduleRoutes);
+app.use("/api/schedule", scheduleRoutes);
 
 const userRoutes = require('./routes/user');
-app.use(userRoutes);
+app.use("/api",userRoutes);
 
 const workerRoutes = require('./routes/worker');
-app.use("/worker",workerRoutes);
+app.use("/api/worker",workerRoutes);
 
 const examRoutes = require('./routes/exam');
-app.use("/exams", examRoutes);
+app.use("/api/exams", examRoutes);
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../client/dist/client/browser')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
+});
 
 app.listen(3000, () => console.log('ClickToBook ready to go!'));
 
