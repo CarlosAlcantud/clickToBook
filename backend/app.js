@@ -128,5 +128,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
 });
 
-app.listen(3000, () => console.log('ClickToBook ready to go!'));
-
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`ClickToBook running on port ${PORT}`);
+});
