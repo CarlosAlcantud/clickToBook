@@ -114,23 +114,27 @@ const scheduleRoutes = require('./routes/schedule');
 app.use("/api/schedule", scheduleRoutes);
 
 const userRoutes = require('./routes/user');
-app.use("/api",userRoutes);
+app.use("/api", userRoutes);
 
 const workerRoutes = require('./routes/worker');
-app.use("/api/worker",workerRoutes);
+app.use("/api/worker", workerRoutes);
 
 const examRoutes = require('./routes/exam');
 app.use("/api/exams", examRoutes);
 
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../client/dist/client/browser')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
+
+// ⚠️ Asegura que el healthcheck funcione
+app.get('/', (req, res) => {
+  res.send('ClickToBook API is running');
 });
 
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
+// ⚠️ Angular: atrapa rutas del cliente
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
 });
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`ClickToBook running on port ${PORT}`);
