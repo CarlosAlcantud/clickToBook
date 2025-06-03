@@ -128,6 +128,9 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
 });
 
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`ClickToBook running on port ${PORT}`);
