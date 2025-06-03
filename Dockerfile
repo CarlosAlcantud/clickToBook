@@ -21,12 +21,12 @@ COPY . /app/
 # Install dependencies and build
 RUN --mount=type=cache,id=s/4551adfb-0280-437d-8004-0f3eef25c4b5-node_modules/cache,target=/app/node_modules/.cache \
     cd backend && \
-    rm -rf node_modules package-lock.json && \
-    npm ci && \
+    rm -rf node_modules && \
+    npm install && \
     cd .. && \
     cd client && \
-    rm -rf node_modules package-lock.json && \
-    npm ci && \
+    rm -rf node_modules && \
+    npm install && \
     npm run build && \
     cd ..
 
