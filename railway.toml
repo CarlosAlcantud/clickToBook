@@ -1,6 +1,18 @@
 [build]
 builder = "nixpacks"
-buildCommand = "rm -rf node_modules/.cache && npm install && cd backend && rm -rf node_modules && npm ci && cd ../client && npm install && npm run build"
+buildCommand = """
+    # Clean installation for backend
+    cd backend && \
+    rm -rf node_modules package-lock.json && \
+    npm ci && \
+    cd .. && \
+    # Clean installation for client
+    cd client && \
+    rm -rf node_modules package-lock.json && \
+    npm ci && \
+    npm run build && \
+    cd ..
+"""
 
 [deploy]
 startCommand = "cd backend && npm rebuild bcrypt --build-from-source && npm start"
