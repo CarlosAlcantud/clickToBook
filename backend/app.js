@@ -126,7 +126,7 @@ const path = require('path');
 app.use(express.static(path.join(__dirname, '../client/dist/client/browser')));
 
 // ⚠️ Asegura que el healthcheck funcione
-app.get('/', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.send('ClickToBook API is running');
 });
 
