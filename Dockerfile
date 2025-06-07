@@ -3,8 +3,6 @@ FROM node:18-alpine
 # Install Python and build dependencies (needed for bcrypt, etc.)
 RUN apk add --no-cache python3 make g++ 
 
-# Set working directory
-WORKDIR /app
 
 # Add non-root user
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
