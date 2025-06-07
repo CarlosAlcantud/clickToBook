@@ -40,4 +40,4 @@ ENV PORT 3000
 EXPOSE 3000
 
 # Iniciar la aplicación backend
-CMD ["sh", "-c", "cd backend && npm rebuild bcrypt --build-from-source && npm start"]
+CMD ["npm", "start", "--prefix", "backend"]
