@@ -15,7 +15,8 @@ COPY backend/package.json backend/package-lock.json ./backend/
 COPY client/package.json client/package-lock.json ./client/
 
 # Install backend and frontend dependencies as root
-RUN cd backend && npm ci && cd ../client && npm ci && npm run build
+RUN npm ci 
+RUN cd ./client && npm run build
 
 # Copy full source after deps (so Docker layer cache isn't busted on each code change)
 COPY . .
