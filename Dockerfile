@@ -15,6 +15,7 @@ COPY backend/package.json backend/package-lock.json ./backend/
 COPY client/package.json client/package-lock.json ./client/
 
 # Install backend and frontend dependencies as root
+RUN pwd
 RUN npm install -g @angular/cli@17.3.10
 RUN npm ci 
 RUN cd ./client && npm run build
