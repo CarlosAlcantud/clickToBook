@@ -7,7 +7,7 @@ const Appointment = require('../database/models/appointments');
 const checkAuth = require('../middleware/check-auth');
 
 router.post("/createWorker", 
-    checkAuth,
+    // checkAuth,
     async (req, res) => {
     try {
         const hash = await bcrypt.hash(req.body.password, 10);

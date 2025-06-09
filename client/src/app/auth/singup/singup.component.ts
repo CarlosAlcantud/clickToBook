@@ -40,7 +40,7 @@ export class SingUpComponent implements OnInit {
     this.authService.createUser(
       singupForm.value.password, 
       singupForm.value.username, 
-      singupForm.value.phone,
+      singupForm.value.email,
       singupForm.value.worker
     );
   }

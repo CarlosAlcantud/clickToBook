@@ -74,6 +74,7 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
   }
 
   private confirmAppointment(token: string) {
+    console.log('Confirming appointment with token:', token);
   this.authService.confirmAppointment(token).subscribe({
     next: (response) => {
       this.success = true;

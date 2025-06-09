@@ -48,9 +48,10 @@ router.post("/auth/singup", (req,res) => {
     console.log("function post(auth/singup/).app.js");
     bcrypt.hash(req.body.password, 10)
     .then((hash) => {
+        console.log("Le llega " + req.body.username + req.body.email + req.body.password + req.body.worker);
         const user = new User({
             username: req.body.username,
-            telephone: req.body.phone,
+            email: req.body.email,
             password: hash,
             role: 'client',
             worker: req.body.worker,
@@ -58,17 +59,16 @@ router.post("/auth/singup", (req,res) => {
         });
         user.save()
         .then(result => {
+            console.log({result});
             res.status(201).json({
                 message: 'User created',
                 result: result
             });
         })
         .catch(err => {
-            console.log("No se pudo crear el usuario");
-            res.status(500).json({
-                error: err
+                console.error("Error al guardar el usuario:", err);
+                res.status(500).json({ error: err });
             });
-        });
     })
 });
 
@@ -222,7 +222,7 @@ router.get('/user/classes', (req, res) => {
 
 });
 
-router.get('/confirm-appointment/:token', async (req, res) => {
+router.post('/confirm-appointment/:token', async (req, res) => {
     console.log("confirm-apppointmet - Procedemos a confirmar la cita");
   const token = req.params.token;
 
@@ -235,13 +235,16 @@ router.get('/confirm-appointment/:token', async (req, res) => {
   }
 
   if (appointment.confirmed) {
-    return res.send('Esta cita ya estaba confirmada ');
+    return res.status(200).json({ 
+    message: '¡Tu clase ha sido confirmada correctamente!',
+  });
   }
 
   appointment.confirmed = true;
   await appointment.save();
-
-  res.send('¡Tu cita ha sido confirmada correctamente! ');
+  return res.status(200).json({ 
+    message: '¡Tu clase ha sido confirmada correctamente! ',
+  });
 });
 
 

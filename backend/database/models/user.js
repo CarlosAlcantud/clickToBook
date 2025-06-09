@@ -31,20 +31,20 @@ const UserSchema = new mongoose.Schema({
             message: 'Debe proporcionar un email o un teléfono'
         }  
     },
-    telephone: {
-        type: String,
-        trim: true,
-        unique: true,
-        required: true,
-        // sparse:true,
-        // Validación personalizada para comprobar que al menos uno de email o telefono está presente
-        validate: {
-            validator: function (value) {
-                return this.email || value; // Devuelve true si el teléfono está presente o si el email está presente
-            },
-            message: 'Debe proporcionar un teléfono.'
-        }
-    },
+    // telephone: {
+    //     type: String,
+    //     trim: true,
+    //     unique: true,
+    //     required: false,
+    //     // sparse:true,
+    //     // Validación personalizada para comprobar que al menos uno de email o telefono está presente
+    //     validate: {
+    //         validator: function (value) {
+    //             return this.email || value; // Devuelve true si el teléfono está presente o si el email está presente
+    //         },
+    //         message: 'Debe proporcionar un teléfono.'
+    //     }
+    // },
     role: {
         type: String,
         enum: ['admin', 'worker', 'client'],

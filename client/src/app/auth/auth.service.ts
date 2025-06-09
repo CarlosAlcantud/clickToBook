@@ -82,9 +82,9 @@ export class AuthService extends BaseService {
 
 
     
-    createUser(password: string, username: string, phone: string, workerId: string) {
+    createUser(password: string, username: string, email: string, workerId: string) {
         console.log("El valor del workerId cuando se va a crear el alumno es: " + workerId);
-        const authData: AuthData = {password: password, username: username, phone: phone, worker: workerId};
+        const authData: AuthData = {password: password, username: username, email: email, worker: workerId};
         //console.log('email: ', email, 'password: ', password, 'username: ', username);
         this.http.post(`${this.baseUrl}/api/auth/singup`, authData)
         .subscribe(response => {
@@ -378,8 +378,8 @@ export class AuthService extends BaseService {
             );
     }
         
-        confirmAppointment(token: string) {
-            return this.http.post<any>(`${this.baseUrl}/api/confirm-appointment/${token}`, {});
-        }
+    confirmAppointment(token: string) {
+        return this.http.post<any>(`${this.baseUrl}/api/confirm-appointment/${token}`, {});
+    }
 
 }
